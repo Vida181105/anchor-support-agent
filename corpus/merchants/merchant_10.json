@@ -1,0 +1,310 @@
+{
+  "merchant_id": "merchant_10",
+  "business_name": "Lumen Craft Studio",
+  "business_type": "sole_proprietorship",
+  "category": "ecommerce",
+  "signup_date": "2025-06-02",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-06-09",
+    "documents": [
+      {
+        "type": "pan_card",
+        "status": "verified",
+        "submitted_date": "2025-06-03",
+        "reviewed_date": "2025-06-06"
+      },
+      {
+        "type": "address_proof",
+        "status": "verified",
+        "submitted_date": "2025-06-03",
+        "reviewed_date": "2025-06-09"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+3",
+    "last_payout": {
+      "date": "2026-09-12",
+      "amount": 38600
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 41200,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": false,
+    "t1_request_date": null
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": true,
+    "eligible": true,
+    "requested_date": "2026-08-20",
+    "approval_date": "2026-08-31",
+    "note": "International acceptance went live 2026-08-31. International transactions receive additional automated risk screening; a higher proportion of RISK_BLOCK declines in the first weeks of international volume is expected while the risk engine calibrates to this merchant's patterns."
+  },
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_10_001",
+      "date": "2026-07-03",
+      "amount": 4201,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_002",
+      "date": "2026-07-03",
+      "amount": 6462,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_003",
+      "date": "2026-07-03",
+      "amount": 4741,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_004",
+      "date": "2026-07-03",
+      "amount": 1941,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_005",
+      "date": "2026-07-05",
+      "amount": 3923,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_006",
+      "date": "2026-07-06",
+      "amount": 2707,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_007",
+      "date": "2026-07-07",
+      "amount": 4366,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_008",
+      "date": "2026-07-07",
+      "amount": 5286,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_10_009",
+      "date": "2026-07-07",
+      "amount": 2826,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_010",
+      "date": "2026-07-09",
+      "amount": 6219,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_011",
+      "date": "2026-07-11",
+      "amount": 4243,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "CVV_MISMATCH"
+    },
+    {
+      "id": "txn_10_012",
+      "date": "2026-07-13",
+      "amount": 6631,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_013",
+      "date": "2026-07-13",
+      "amount": 1866,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_014",
+      "date": "2026-07-15",
+      "amount": 4816,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_015",
+      "date": "2026-07-15",
+      "amount": 5015,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_016",
+      "date": "2026-07-17",
+      "amount": 2343,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_017",
+      "date": "2026-07-17",
+      "amount": 2658,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_018",
+      "date": "2026-07-18",
+      "amount": 7386,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_019",
+      "date": "2026-07-19",
+      "amount": 5309,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_020",
+      "date": "2026-07-19",
+      "amount": 4359,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_10_001",
+      "date": "2026-09-03",
+      "amount": 10197,
+      "currency": "USD",
+      "method": "upi",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_002",
+      "date": "2026-09-04",
+      "amount": 2854,
+      "currency": "USD",
+      "method": "wallet",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_003",
+      "date": "2026-09-06",
+      "amount": 10275,
+      "currency": "USD",
+      "method": "upi",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_004",
+      "date": "2026-09-06",
+      "amount": 10733,
+      "currency": "USD",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "RISK_BLOCK",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_005",
+      "date": "2026-09-06",
+      "amount": 3198,
+      "currency": "USD",
+      "method": "upi",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_006",
+      "date": "2026-09-07",
+      "amount": 6468,
+      "currency": "USD",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "RISK_BLOCK",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_007",
+      "date": "2026-09-08",
+      "amount": 4218,
+      "currency": "USD",
+      "method": "wallet",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_008",
+      "date": "2026-09-09",
+      "amount": 3386,
+      "currency": "USD",
+      "method": "upi",
+      "status": "captured",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_009",
+      "date": "2026-09-10",
+      "amount": 5810,
+      "currency": "USD",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "INVALID_EXPIRY",
+      "cross_border": true
+    },
+    {
+      "id": "txn_10_010",
+      "date": "2026-09-10",
+      "amount": 8797,
+      "currency": "USD",
+      "method": "wallet",
+      "status": "captured",
+      "cross_border": true
+    }
+  ]
+}

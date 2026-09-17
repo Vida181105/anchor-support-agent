@@ -1,0 +1,308 @@
+{
+  "merchant_id": "merchant_12",
+  "business_name": "Anjali Tiffin Services",
+  "business_type": "sole_proprietorship",
+  "category": "food_services",
+  "signup_date": "2026-08-01",
+  "kyc": {
+    "status": "rejected",
+    "verified_date": null,
+    "documents": [
+      {
+        "type": "pan_card",
+        "status": "verified",
+        "submitted_date": "2026-08-02",
+        "reviewed_date": "2026-08-04"
+      },
+      {
+        "type": "address_proof",
+        "status": "rejected",
+        "rejection_reason": "DOC_ILLEGIBLE",
+        "submitted_date": "2026-08-02",
+        "reviewed_date": "2026-08-05",
+        "notes": "Photo of utility bill is blurry; the account number and address fields cannot be read by the verification system."
+      },
+      {
+        "type": "address_proof",
+        "status": "rejected",
+        "rejection_reason": "DOC_ILLEGIBLE",
+        "submitted_date": "2026-08-19",
+        "reviewed_date": "2026-08-20",
+        "notes": "Same photo file re-uploaded (identical file hash to the 2026-08-02 submission); rejected again for the same legibility issue since the underlying scan was never replaced."
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+3",
+    "capped_due_to_kyc": true,
+    "volume_cap": 50000,
+    "last_payout": {
+      "date": "2026-09-11",
+      "amount": 18400
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 15200,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": false,
+    "t1_request_date": null
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": false,
+    "ineligibility_reason": "kyc_incomplete"
+  },
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_12_001",
+      "date": "2026-08-04",
+      "amount": 1254,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_002",
+      "date": "2026-08-04",
+      "amount": 394,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_003",
+      "date": "2026-08-05",
+      "amount": 1298,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_004",
+      "date": "2026-08-07",
+      "amount": 1259,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_005",
+      "date": "2026-08-08",
+      "amount": 595,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_006",
+      "date": "2026-08-08",
+      "amount": 479,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_007",
+      "date": "2026-08-09",
+      "amount": 1441,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_12_008",
+      "date": "2026-08-11",
+      "amount": 501,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_009",
+      "date": "2026-08-12",
+      "amount": 1258,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_010",
+      "date": "2026-08-14",
+      "amount": 1553,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_011",
+      "date": "2026-08-14",
+      "amount": 1054,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_12_012",
+      "date": "2026-08-16",
+      "amount": 1014,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_013",
+      "date": "2026-08-16",
+      "amount": 1666,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_014",
+      "date": "2026-08-17",
+      "amount": 1631,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_015",
+      "date": "2026-08-18",
+      "amount": 531,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_016",
+      "date": "2026-08-19",
+      "amount": 1060,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_017",
+      "date": "2026-08-21",
+      "amount": 417,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_018",
+      "date": "2026-08-22",
+      "amount": 1070,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_019",
+      "date": "2026-08-23",
+      "amount": 896,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_020",
+      "date": "2026-08-23",
+      "amount": 616,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_021",
+      "date": "2026-08-23",
+      "amount": 747,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_022",
+      "date": "2026-08-23",
+      "amount": 869,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_023",
+      "date": "2026-08-24",
+      "amount": 1306,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_024",
+      "date": "2026-08-24",
+      "amount": 998,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_025",
+      "date": "2026-08-24",
+      "amount": 1399,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_026",
+      "date": "2026-08-26",
+      "amount": 1640,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_027",
+      "date": "2026-08-27",
+      "amount": 701,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_TIMEOUT"
+    },
+    {
+      "id": "txn_12_028",
+      "date": "2026-08-27",
+      "amount": 1688,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_029",
+      "date": "2026-08-29",
+      "amount": 411,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_030",
+      "date": "2026-08-30",
+      "amount": 685,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    }
+  ]
+}

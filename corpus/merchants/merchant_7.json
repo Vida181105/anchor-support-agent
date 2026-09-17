@@ -1,0 +1,347 @@
+{
+  "merchant_id": "merchant_7",
+  "business_name": "Bloomfield Décor Studio",
+  "business_type": "sole_proprietorship",
+  "category": "ecommerce",
+  "signup_date": "2025-10-08",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-10-15",
+    "documents": [
+      {
+        "type": "pan_card",
+        "status": "verified",
+        "submitted_date": "2025-10-09",
+        "reviewed_date": "2025-10-12"
+      },
+      {
+        "type": "address_proof",
+        "status": "verified",
+        "submitted_date": "2025-10-09",
+        "reviewed_date": "2025-10-15"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+3",
+    "last_payout": {
+      "date": "2026-09-12",
+      "amount": 61200
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 48900,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": false,
+    "t1_request_date": null
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "refunds": [
+    {
+      "id": "refund_7_01",
+      "transaction_id": "txn_7_011",
+      "amount": 7738,
+      "status": "processed",
+      "initiated_date": "2026-09-05",
+      "processed_date": "2026-09-05",
+      "customer_eta": "2026-09-12"
+    }
+  ],
+  "webhook_log": [
+    {
+      "event_id": "evt_7_9001",
+      "event_type": "refund.processed",
+      "related_id": "refund_7_01",
+      "attempts": [
+        {
+          "attempt": 1,
+          "timestamp": "2026-09-05T14:02:00Z",
+          "response_code": 522
+        },
+        {
+          "attempt": 2,
+          "timestamp": "2026-09-05T14:03:00Z",
+          "response_code": 522
+        },
+        {
+          "attempt": 3,
+          "timestamp": "2026-09-05T14:08:00Z",
+          "response_code": 522
+        },
+        {
+          "attempt": 4,
+          "timestamp": "2026-09-05T14:38:00Z",
+          "response_code": 522
+        },
+        {
+          "attempt": 5,
+          "timestamp": "2026-09-05T16:38:00Z",
+          "response_code": 522
+        },
+        {
+          "attempt": 6,
+          "timestamp": "2026-09-05T22:38:00Z",
+          "response_code": 522
+        }
+      ],
+      "final_status": "undelivered",
+      "note": "Merchant's webhook endpoint returned 522 (connection timed out) on every attempt across the 24-hour retry window. The refund itself was fully processed on the platform side regardless of delivery status; a manual replay is available from the dashboard webhook log."
+    }
+  ],
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_7_001",
+      "date": "2026-07-26",
+      "amount": 4954,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_TIMEOUT"
+    },
+    {
+      "id": "txn_7_002",
+      "date": "2026-07-27",
+      "amount": 8702,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_003",
+      "date": "2026-07-27",
+      "amount": 5124,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_004",
+      "date": "2026-07-29",
+      "amount": 2510,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_005",
+      "date": "2026-07-29",
+      "amount": 6281,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_006",
+      "date": "2026-07-29",
+      "amount": 6132,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_007",
+      "date": "2026-07-30",
+      "amount": 6016,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_008",
+      "date": "2026-08-01",
+      "amount": 2830,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_009",
+      "date": "2026-08-01",
+      "amount": 2789,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_010",
+      "date": "2026-08-03",
+      "amount": 6586,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_011",
+      "date": "2026-08-05",
+      "amount": 7738,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "refunded"
+    },
+    {
+      "id": "txn_7_012",
+      "date": "2026-08-06",
+      "amount": 4262,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_013",
+      "date": "2026-08-06",
+      "amount": 6261,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_014",
+      "date": "2026-08-07",
+      "amount": 4176,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_015",
+      "date": "2026-08-07",
+      "amount": 3280,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_016",
+      "date": "2026-08-08",
+      "amount": 2365,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_017",
+      "date": "2026-08-10",
+      "amount": 4556,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_018",
+      "date": "2026-08-11",
+      "amount": 2580,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "CVV_MISMATCH"
+    },
+    {
+      "id": "txn_7_019",
+      "date": "2026-08-12",
+      "amount": 2521,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_020",
+      "date": "2026-08-14",
+      "amount": 4151,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_021",
+      "date": "2026-08-15",
+      "amount": 8927,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_022",
+      "date": "2026-08-17",
+      "amount": 5674,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_023",
+      "date": "2026-08-18",
+      "amount": 7455,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_024",
+      "date": "2026-08-19",
+      "amount": 3291,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_025",
+      "date": "2026-08-20",
+      "amount": 8044,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_026",
+      "date": "2026-08-21",
+      "amount": 9261,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_027",
+      "date": "2026-08-22",
+      "amount": 3178,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_028",
+      "date": "2026-08-22",
+      "amount": 2167,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_029",
+      "date": "2026-08-22",
+      "amount": 4132,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_030",
+      "date": "2026-08-24",
+      "amount": 6519,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    }
+  ]
+}

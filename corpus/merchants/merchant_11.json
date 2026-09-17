@@ -1,0 +1,297 @@
+{
+  "merchant_id": "merchant_11",
+  "business_name": "Greenleaf Organic Foods",
+  "business_type": "sole_proprietorship",
+  "category": "ecommerce",
+  "signup_date": "2025-03-01",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-03-09",
+    "documents": [
+      {
+        "type": "pan_card",
+        "status": "verified",
+        "submitted_date": "2025-03-02",
+        "reviewed_date": "2025-03-05"
+      },
+      {
+        "type": "address_proof",
+        "status": "verified",
+        "submitted_date": "2025-03-02",
+        "reviewed_date": "2025-03-09"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+3",
+    "last_payout": {
+      "date": "2026-09-12",
+      "amount": 52300
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 49800,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2026-09-15",
+    "note": "Merchant crossed the 90-day-no-disputes eligibility mark on 2026-09-01 and requested T+1 on 2026-09-15. Approval SLA is 5 business days from request, so the expected decision date is 2026-09-22 (2026-09-17 is only day 2 of 5)."
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_11_001",
+      "date": "2026-07-13",
+      "amount": 2168,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_002",
+      "date": "2026-07-13",
+      "amount": 3203,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_003",
+      "date": "2026-07-15",
+      "amount": 1116,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_004",
+      "date": "2026-07-15",
+      "amount": 2590,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_005",
+      "date": "2026-07-16",
+      "amount": 2671,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_006",
+      "date": "2026-07-16",
+      "amount": 944,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_007",
+      "date": "2026-07-18",
+      "amount": 3127,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_008",
+      "date": "2026-07-20",
+      "amount": 2366,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_009",
+      "date": "2026-07-21",
+      "amount": 2787,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_010",
+      "date": "2026-07-22",
+      "amount": 3773,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_011",
+      "date": "2026-07-22",
+      "amount": 1766,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_012",
+      "date": "2026-07-23",
+      "amount": 1046,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_013",
+      "date": "2026-07-24",
+      "amount": 3328,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_014",
+      "date": "2026-07-24",
+      "amount": 1467,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_015",
+      "date": "2026-07-24",
+      "amount": 1943,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_016",
+      "date": "2026-07-25",
+      "amount": 2504,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_017",
+      "date": "2026-07-26",
+      "amount": 1096,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_018",
+      "date": "2026-07-27",
+      "amount": 1235,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_019",
+      "date": "2026-07-27",
+      "amount": 2206,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_020",
+      "date": "2026-07-29",
+      "amount": 2155,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_021",
+      "date": "2026-07-29",
+      "amount": 2732,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "INVALID_EXPIRY"
+    },
+    {
+      "id": "txn_11_022",
+      "date": "2026-07-29",
+      "amount": 1633,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_023",
+      "date": "2026-07-31",
+      "amount": 3773,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_11_024",
+      "date": "2026-08-01",
+      "amount": 963,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_025",
+      "date": "2026-08-02",
+      "amount": 868,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_026",
+      "date": "2026-08-03",
+      "amount": 1055,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_11_027",
+      "date": "2026-08-03",
+      "amount": 1932,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_028",
+      "date": "2026-08-05",
+      "amount": 3287,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_029",
+      "date": "2026-08-06",
+      "amount": 2684,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_030",
+      "date": "2026-08-06",
+      "amount": 2972,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    }
+  ]
+}

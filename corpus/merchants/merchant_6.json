@@ -1,0 +1,312 @@
+{
+  "merchant_id": "merchant_6",
+  "business_name": "FitPulse Subscriptions",
+  "business_type": "private_limited",
+  "category": "subscription",
+  "signup_date": "2025-01-20",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-01-28",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2025-01-21",
+        "reviewed_date": "2025-01-24"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2025-01-21",
+        "reviewed_date": "2025-01-24"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2025-01-21",
+        "reviewed_date": "2025-01-28"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 342000
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 318500,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2025-05-01"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "mandates": [
+    {
+      "id": "mandate_6_442",
+      "customer_ref": "cust_88213",
+      "amount": 1499,
+      "frequency": "monthly",
+      "status": "paused",
+      "created_date": "2026-04-12",
+      "retry_attempts": [
+        {
+          "date": "2026-08-28",
+          "result": "failed",
+          "failure_code": "INSUFFICIENT_FUNDS"
+        },
+        {
+          "date": "2026-08-30",
+          "result": "failed",
+          "failure_code": "INSUFFICIENT_FUNDS"
+        },
+        {
+          "date": "2026-09-01",
+          "result": "failed",
+          "failure_code": "DO_NOT_HONOR"
+        }
+      ],
+      "paused_date": "2026-09-01",
+      "note": "Third consecutive retry failed on 2026-09-01; platform does not retry a 4th time. Mandate requires customer re-authorization before charges resume."
+    }
+  ],
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_6_001",
+      "date": "2026-07-07",
+      "amount": 1617,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_002",
+      "date": "2026-07-07",
+      "amount": 1990,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_003",
+      "date": "2026-07-08",
+      "amount": 2215,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_004",
+      "date": "2026-07-08",
+      "amount": 2510,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_005",
+      "date": "2026-07-08",
+      "amount": 1781,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_006",
+      "date": "2026-07-09",
+      "amount": 2371,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_007",
+      "date": "2026-07-09",
+      "amount": 2279,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_008",
+      "date": "2026-07-10",
+      "amount": 2185,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_009",
+      "date": "2026-07-11",
+      "amount": 2596,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_010",
+      "date": "2026-07-11",
+      "amount": 1620,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_011",
+      "date": "2026-07-11",
+      "amount": 1929,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_012",
+      "date": "2026-07-12",
+      "amount": 1349,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_013",
+      "date": "2026-07-14",
+      "amount": 844,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_014",
+      "date": "2026-07-15",
+      "amount": 1396,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_015",
+      "date": "2026-07-17",
+      "amount": 2349,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_016",
+      "date": "2026-07-19",
+      "amount": 995,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_017",
+      "date": "2026-07-20",
+      "amount": 1385,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_018",
+      "date": "2026-07-21",
+      "amount": 2023,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_019",
+      "date": "2026-07-21",
+      "amount": 1846,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_020",
+      "date": "2026-07-21",
+      "amount": 1114,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_021",
+      "date": "2026-07-23",
+      "amount": 1538,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_022",
+      "date": "2026-07-23",
+      "amount": 1587,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_023",
+      "date": "2026-07-24",
+      "amount": 1002,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_024",
+      "date": "2026-07-25",
+      "amount": 2116,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_025",
+      "date": "2026-07-25",
+      "amount": 1728,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_026",
+      "date": "2026-07-26",
+      "amount": 1137,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_027",
+      "date": "2026-07-28",
+      "amount": 2659,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_028",
+      "date": "2026-07-29",
+      "amount": 1161,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    }
+  ]
+}

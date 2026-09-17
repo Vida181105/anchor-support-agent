@@ -1,0 +1,305 @@
+{
+  "merchant_id": "merchant_15",
+  "business_name": "StudyStream Learning",
+  "business_type": "private_limited",
+  "category": "subscription",
+  "signup_date": "2024-09-05",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2024-09-13",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2024-09-06",
+        "reviewed_date": "2024-09-10"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2024-09-06",
+        "reviewed_date": "2024-09-10"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2024-09-06",
+        "reviewed_date": "2024-09-13"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 512000
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 498000,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2025-02-01"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "mandates": [
+    {
+      "id": "mandate_15_781",
+      "customer_ref": "cust_55021",
+      "amount": 799,
+      "frequency": "monthly",
+      "status": "charge_failed",
+      "created_date": "2025-11-01",
+      "note": "Customer upgraded from the 799 plan to the 1299 plan on 2026-09-02 via the merchant's integration, which attempted to charge 1299 against the existing mandate without creating a new one. The platform does not support modifying an active mandate's amount in place; a charge that deviates from the registered mandate amount is not covered by the recurring-charge authentication exemption and was declined by the issuing bank.",
+      "attempted_charges": [
+        {
+          "date": "2026-09-03",
+          "amount": 1299,
+          "result": "failed",
+          "failure_code": "DO_NOT_HONOR"
+        }
+      ]
+    }
+  ],
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_15_001",
+      "date": "2026-06-15",
+      "amount": 902,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_15_002",
+      "date": "2026-06-15",
+      "amount": 1303,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_003",
+      "date": "2026-06-16",
+      "amount": 450,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_004",
+      "date": "2026-06-17",
+      "amount": 758,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_005",
+      "date": "2026-06-17",
+      "amount": 1211,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_006",
+      "date": "2026-06-19",
+      "amount": 578,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_007",
+      "date": "2026-06-20",
+      "amount": 407,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_008",
+      "date": "2026-06-21",
+      "amount": 956,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_009",
+      "date": "2026-06-22",
+      "amount": 1188,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_010",
+      "date": "2026-06-22",
+      "amount": 1392,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_011",
+      "date": "2026-06-22",
+      "amount": 916,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_012",
+      "date": "2026-06-22",
+      "amount": 912,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_013",
+      "date": "2026-06-22",
+      "amount": 761,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "CVV_MISMATCH"
+    },
+    {
+      "id": "txn_15_014",
+      "date": "2026-06-23",
+      "amount": 520,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_015",
+      "date": "2026-06-24",
+      "amount": 582,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_016",
+      "date": "2026-06-25",
+      "amount": 1331,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_017",
+      "date": "2026-06-26",
+      "amount": 1166,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_018",
+      "date": "2026-06-27",
+      "amount": 478,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_019",
+      "date": "2026-06-28",
+      "amount": 336,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_020",
+      "date": "2026-06-28",
+      "amount": 391,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_021",
+      "date": "2026-06-28",
+      "amount": 496,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_022",
+      "date": "2026-06-29",
+      "amount": 367,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_15_023",
+      "date": "2026-07-01",
+      "amount": 578,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_024",
+      "date": "2026-07-02",
+      "amount": 1078,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_025",
+      "date": "2026-07-02",
+      "amount": 1162,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_026",
+      "date": "2026-07-03",
+      "amount": 382,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_027",
+      "date": "2026-07-04",
+      "amount": 668,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_028",
+      "date": "2026-07-05",
+      "amount": 336,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    }
+  ]
+}

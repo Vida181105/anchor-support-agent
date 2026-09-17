@@ -1,0 +1,349 @@
+{
+  "merchant_id": "merchant_2",
+  "business_name": "Trailblazer Holiday Co.",
+  "business_type": "private_limited",
+  "category": "travel",
+  "signup_date": "2025-02-14",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-02-20",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2025-02-15",
+        "reviewed_date": "2025-02-18"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2025-02-15",
+        "reviewed_date": "2025-02-18"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2025-02-15",
+        "reviewed_date": "2025-02-20"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 214000
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 198500,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2025-06-01"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": true,
+    "percentage": 15,
+    "rolling_window_days": 120,
+    "trigger_reason": "chargeback_rate_above_threshold",
+    "trigger_detail": "Chargeback rate hit 1.4% of trailing 30-day volume on 2026-08-22, driven by 9 chargebacks between 2026-08-05 and 2026-08-20 tied to cancelled package tours during a regional flight disruption.",
+    "applied_date": "2026-08-24",
+    "held_balance": 412000,
+    "release_schedule": [
+      {
+        "release_date": "2026-09-25",
+        "amount": 18500
+      },
+      {
+        "release_date": "2026-10-02",
+        "amount": 21300
+      },
+      {
+        "release_date": "2026-12-22",
+        "amount": 372200
+      }
+    ]
+  },
+  "international_payments": {
+    "enabled": true,
+    "eligible": true,
+    "requested_date": "2025-03-01",
+    "approval_date": "2025-03-06"
+  },
+  "disputes": [
+    {
+      "id": "disp_2_01",
+      "transaction_id": "txn_2_015",
+      "reason_code": "service_not_provided",
+      "status": "lost",
+      "opened_date": "2026-08-06",
+      "response_deadline": "2026-08-13",
+      "evidence_submitted_date": "2026-08-11",
+      "resolution": "chargeback_upheld",
+      "resolution_date": "2026-09-02",
+      "chargeback_fee_charged": true
+    },
+    {
+      "id": "disp_2_02",
+      "transaction_id": "txn_2_016",
+      "reason_code": "service_not_provided",
+      "status": "lost",
+      "opened_date": "2026-08-09",
+      "response_deadline": "2026-08-16",
+      "evidence_submitted_date": "2026-08-14",
+      "resolution": "chargeback_upheld",
+      "resolution_date": "2026-09-05",
+      "chargeback_fee_charged": true
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_2_001",
+      "date": "2026-07-20",
+      "amount": 14526,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_002",
+      "date": "2026-07-21",
+      "amount": 34953,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_003",
+      "date": "2026-07-23",
+      "amount": 50388,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_004",
+      "date": "2026-07-25",
+      "amount": 32531,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_005",
+      "date": "2026-07-26",
+      "amount": 45344,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_006",
+      "date": "2026-07-27",
+      "amount": 27805,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_007",
+      "date": "2026-07-27",
+      "amount": 20456,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_2_008",
+      "date": "2026-07-27",
+      "amount": 31198,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_009",
+      "date": "2026-07-29",
+      "amount": 50210,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_010",
+      "date": "2026-07-30",
+      "amount": 42158,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_011",
+      "date": "2026-07-31",
+      "amount": 48633,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_012",
+      "date": "2026-08-01",
+      "amount": 30408,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_013",
+      "date": "2026-08-03",
+      "amount": 37138,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_014",
+      "date": "2026-08-04",
+      "amount": 33454,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_015",
+      "date": "2026-08-05",
+      "amount": 37028,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_016",
+      "date": "2026-08-05",
+      "amount": 41500,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_017",
+      "date": "2026-08-06",
+      "amount": 23424,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_018",
+      "date": "2026-08-08",
+      "amount": 47818,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_019",
+      "date": "2026-08-08",
+      "amount": 39657,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_020",
+      "date": "2026-08-08",
+      "amount": 13503,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_021",
+      "date": "2026-08-09",
+      "amount": 37953,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_022",
+      "date": "2026-08-11",
+      "amount": 44674,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_023",
+      "date": "2026-08-11",
+      "amount": 27778,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_024",
+      "date": "2026-08-11",
+      "amount": 25404,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_025",
+      "date": "2026-08-11",
+      "amount": 15716,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_2_026",
+      "date": "2026-08-11",
+      "amount": 21223,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_027",
+      "date": "2026-08-11",
+      "amount": 31705,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_TIMEOUT"
+    },
+    {
+      "id": "txn_2_028",
+      "date": "2026-08-11",
+      "amount": 49256,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_TIMEOUT"
+    },
+    {
+      "id": "txn_2_029",
+      "date": "2026-08-12",
+      "amount": 30359,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_030",
+      "date": "2026-08-14",
+      "amount": 46559,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    }
+  ]
+}

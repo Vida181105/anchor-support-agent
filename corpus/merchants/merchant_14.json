@@ -1,0 +1,320 @@
+{
+  "merchant_id": "merchant_14",
+  "business_name": "Zenith Fitness Equipment",
+  "business_type": "private_limited",
+  "category": "electronics",
+  "signup_date": "2025-03-22",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-03-30",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2025-03-23",
+        "reviewed_date": "2025-03-27"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2025-03-23",
+        "reviewed_date": "2025-03-27"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2025-03-23",
+        "reviewed_date": "2025-03-30"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 118000,
+      "note": "Includes a -500 line item for the non-refundable chargeback fee on disp_14_01, separate from the transaction amount itself, which was returned to the merchant when the dispute was won."
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 104500,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2025-07-01"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "disputes": [
+    {
+      "id": "disp_14_01",
+      "transaction_id": "txn_14_020",
+      "reason_code": "unauthorized_transaction",
+      "status": "won",
+      "opened_date": "2026-08-20",
+      "response_deadline": "2026-08-27",
+      "evidence_submitted_date": "2026-08-24",
+      "resolution": "merchant_won",
+      "resolution_date": "2026-09-14",
+      "chargeback_fee_charged": true,
+      "chargeback_fee_amount": 500,
+      "note": "Disputed amount was returned to the merchant on winning the dispute. The 500 chargeback fee, charged at the time the dispute was opened to cover network processing costs, is non-refundable regardless of outcome."
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_14_001",
+      "date": "2026-07-05",
+      "amount": 7171,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_002",
+      "date": "2026-07-05",
+      "amount": 7582,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_003",
+      "date": "2026-07-06",
+      "amount": 13694,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_14_004",
+      "date": "2026-07-07",
+      "amount": 14085,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_005",
+      "date": "2026-07-09",
+      "amount": 5754,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_006",
+      "date": "2026-07-10",
+      "amount": 3816,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_14_007",
+      "date": "2026-07-10",
+      "amount": 7209,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_008",
+      "date": "2026-07-11",
+      "amount": 11192,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_009",
+      "date": "2026-07-13",
+      "amount": 14919,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_010",
+      "date": "2026-07-13",
+      "amount": 6013,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "INVALID_EXPIRY"
+    },
+    {
+      "id": "txn_14_011",
+      "date": "2026-07-15",
+      "amount": 7168,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_012",
+      "date": "2026-07-16",
+      "amount": 10126,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_14_013",
+      "date": "2026-07-17",
+      "amount": 5203,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_014",
+      "date": "2026-07-18",
+      "amount": 12518,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_015",
+      "date": "2026-07-19",
+      "amount": 16222,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_016",
+      "date": "2026-07-20",
+      "amount": 7666,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_017",
+      "date": "2026-07-21",
+      "amount": 6982,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_018",
+      "date": "2026-07-22",
+      "amount": 4535,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_019",
+      "date": "2026-07-23",
+      "amount": 3926,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_020",
+      "date": "2026-07-24",
+      "amount": 8155,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_021",
+      "date": "2026-07-25",
+      "amount": 8260,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_022",
+      "date": "2026-07-25",
+      "amount": 13954,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_14_023",
+      "date": "2026-07-25",
+      "amount": 7704,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_024",
+      "date": "2026-07-27",
+      "amount": 10397,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_025",
+      "date": "2026-07-28",
+      "amount": 4132,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_026",
+      "date": "2026-07-28",
+      "amount": 6642,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_027",
+      "date": "2026-07-29",
+      "amount": 6881,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_028",
+      "date": "2026-07-30",
+      "amount": 12971,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_029",
+      "date": "2026-07-30",
+      "amount": 10224,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_030",
+      "date": "2026-07-31",
+      "amount": 8627,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    }
+  ]
+}
