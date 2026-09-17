@@ -1,0 +1,297 @@
+{
+  "merchant_id": "merchant_1",
+  "business_name": "Kavya Handloom Exports",
+  "business_type": "sole_proprietorship",
+  "category": "ecommerce",
+  "signup_date": "2025-11-03",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-11-10",
+    "documents": [
+      {
+        "type": "pan_card",
+        "status": "verified",
+        "submitted_date": "2025-11-04",
+        "reviewed_date": "2025-11-06"
+      },
+      {
+        "type": "address_proof",
+        "status": "verified",
+        "submitted_date": "2025-11-04",
+        "reviewed_date": "2025-11-10"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+3",
+    "last_payout": {
+      "date": "2026-09-11",
+      "amount": 184300
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 96500,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": false,
+    "t1_request_date": null,
+    "note": "Oldest unsettled batch captured 2026-09-15; T+3 means settlement on 2026-09-18 (2 business days elapsed as of 2026-09-17)."
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_1_001",
+      "date": "2026-07-20",
+      "amount": 2422,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_002",
+      "date": "2026-07-21",
+      "amount": 4199,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_003",
+      "date": "2026-07-21",
+      "amount": 1406,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_004",
+      "date": "2026-07-22",
+      "amount": 4397,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_005",
+      "date": "2026-07-22",
+      "amount": 5318,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_1_006",
+      "date": "2026-07-24",
+      "amount": 5487,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_007",
+      "date": "2026-07-24",
+      "amount": 4531,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_008",
+      "date": "2026-07-25",
+      "amount": 3756,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_009",
+      "date": "2026-07-25",
+      "amount": 5546,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_010",
+      "date": "2026-07-26",
+      "amount": 2112,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_011",
+      "date": "2026-07-27",
+      "amount": 4609,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_012",
+      "date": "2026-07-29",
+      "amount": 3554,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_013",
+      "date": "2026-07-29",
+      "amount": 2553,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_014",
+      "date": "2026-07-30",
+      "amount": 3918,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_1_015",
+      "date": "2026-07-31",
+      "amount": 4258,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_016",
+      "date": "2026-08-01",
+      "amount": 3246,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_017",
+      "date": "2026-08-01",
+      "amount": 2939,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_018",
+      "date": "2026-08-02",
+      "amount": 2662,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_019",
+      "date": "2026-08-04",
+      "amount": 4179,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_020",
+      "date": "2026-08-04",
+      "amount": 4731,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_021",
+      "date": "2026-08-06",
+      "amount": 3091,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_022",
+      "date": "2026-08-08",
+      "amount": 3336,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_023",
+      "date": "2026-08-10",
+      "amount": 2998,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_024",
+      "date": "2026-08-12",
+      "amount": 3603,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_025",
+      "date": "2026-08-13",
+      "amount": 3435,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_026",
+      "date": "2026-08-15",
+      "amount": 5495,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_027",
+      "date": "2026-08-16",
+      "amount": 2830,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_028",
+      "date": "2026-08-18",
+      "amount": 3332,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "DO_NOT_HONOR"
+    },
+    {
+      "id": "txn_1_029",
+      "date": "2026-08-18",
+      "amount": 5137,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_030",
+      "date": "2026-08-19",
+      "amount": 5051,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    }
+  ]
+}

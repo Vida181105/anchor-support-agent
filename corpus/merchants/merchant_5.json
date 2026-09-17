@@ -1,0 +1,305 @@
+{
+  "merchant_id": "merchant_5",
+  "business_name": "VitaCare Pharmacy Direct",
+  "business_type": "private_limited",
+  "category": "pharmaceuticals",
+  "signup_date": "2025-09-01",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2025-09-10",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2025-09-02",
+        "reviewed_date": "2025-09-06"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2025-09-02",
+        "reviewed_date": "2025-09-06"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2025-09-02",
+        "reviewed_date": "2025-09-10"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 88000
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 91200,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2026-01-05"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": false,
+    "requested_date": "2026-09-01",
+    "ineligibility_reason": "business_category_excluded",
+    "note": "Category 'pharmaceuticals' is on the excluded list for international acceptance regardless of KYC status. KYC has been fully verified since 2025-09-10."
+  },
+  "disputes": [],
+  "transactions": [
+    {
+      "id": "txn_5_001",
+      "date": "2026-07-24",
+      "amount": 2733,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_002",
+      "date": "2026-07-26",
+      "amount": 2995,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_003",
+      "date": "2026-07-26",
+      "amount": 3156,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "INVALID_EXPIRY"
+    },
+    {
+      "id": "txn_5_004",
+      "date": "2026-07-26",
+      "amount": 2206,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_005",
+      "date": "2026-07-26",
+      "amount": 1845,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_006",
+      "date": "2026-07-27",
+      "amount": 2786,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_5_007",
+      "date": "2026-07-27",
+      "amount": 764,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_008",
+      "date": "2026-07-27",
+      "amount": 3313,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_009",
+      "date": "2026-07-27",
+      "amount": 1594,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_010",
+      "date": "2026-07-27",
+      "amount": 3262,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_011",
+      "date": "2026-07-28",
+      "amount": 817,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_012",
+      "date": "2026-07-28",
+      "amount": 933,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_013",
+      "date": "2026-07-30",
+      "amount": 2345,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_014",
+      "date": "2026-07-30",
+      "amount": 1705,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_015",
+      "date": "2026-07-31",
+      "amount": 2040,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_016",
+      "date": "2026-07-31",
+      "amount": 3353,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "CVV_MISMATCH"
+    },
+    {
+      "id": "txn_5_017",
+      "date": "2026-08-01",
+      "amount": 2220,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_018",
+      "date": "2026-08-02",
+      "amount": 1964,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_019",
+      "date": "2026-08-04",
+      "amount": 1076,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_020",
+      "date": "2026-08-05",
+      "amount": 2123,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_021",
+      "date": "2026-08-06",
+      "amount": 1047,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_022",
+      "date": "2026-08-07",
+      "amount": 857,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_023",
+      "date": "2026-08-07",
+      "amount": 1666,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_024",
+      "date": "2026-08-07",
+      "amount": 1493,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_025",
+      "date": "2026-08-07",
+      "amount": 2584,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_026",
+      "date": "2026-08-07",
+      "amount": 2678,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_027",
+      "date": "2026-08-08",
+      "amount": 2675,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_5_028",
+      "date": "2026-08-08",
+      "amount": 2729,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_029",
+      "date": "2026-08-09",
+      "amount": 2491,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_030",
+      "date": "2026-08-09",
+      "amount": 1648,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    }
+  ]
+}

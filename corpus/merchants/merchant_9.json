@@ -1,0 +1,318 @@
+{
+  "merchant_id": "merchant_9",
+  "business_name": "Orbit Consumer Electronics",
+  "business_type": "private_limited",
+  "category": "electronics",
+  "signup_date": "2024-11-12",
+  "kyc": {
+    "status": "verified",
+    "verified_date": "2024-11-20",
+    "documents": [
+      {
+        "type": "certificate_of_incorporation",
+        "status": "verified",
+        "submitted_date": "2024-11-13",
+        "reviewed_date": "2024-11-17"
+      },
+      {
+        "type": "pan_card_company",
+        "status": "verified",
+        "submitted_date": "2024-11-13",
+        "reviewed_date": "2024-11-17"
+      },
+      {
+        "type": "signatory_id_proof",
+        "status": "verified",
+        "submitted_date": "2024-11-13",
+        "reviewed_date": "2024-11-20"
+      }
+    ]
+  },
+  "settlement_schedule": {
+    "cycle": "T+1",
+    "last_payout": {
+      "date": "2026-09-16",
+      "amount": 276000
+    },
+    "next_payout": {
+      "date": "2026-09-18",
+      "amount": 264500,
+      "status": "scheduled"
+    },
+    "t1_eligibility_requested": true,
+    "t1_request_date": "2025-03-01"
+  },
+  "hold": {
+    "active": false
+  },
+  "reserve": {
+    "active": false
+  },
+  "international_payments": {
+    "enabled": false,
+    "eligible": true,
+    "requested_date": null
+  },
+  "disputes": [
+    {
+      "id": "disp_9_01",
+      "transaction_id": "txn_9_009",
+      "reason_code": "product_not_as_described",
+      "status": "under_review",
+      "opened_date": "2026-08-10",
+      "response_deadline": "2026-08-17",
+      "evidence_submitted_date": "2026-08-15",
+      "resolution": null,
+      "resolution_date": null,
+      "note": "Issuing bank's decision timeline for this reason code is 30-45 days from evidence submission. As of 2026-09-17 (33 days after submission), the dispute is still within the normal window and has not exceeded it."
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_9_001",
+      "date": "2026-06-21",
+      "amount": 12074,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_002",
+      "date": "2026-06-21",
+      "amount": 17220,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_003",
+      "date": "2026-06-21",
+      "amount": 18345,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_004",
+      "date": "2026-06-21",
+      "amount": 9940,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_005",
+      "date": "2026-06-22",
+      "amount": 9918,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_TIMEOUT"
+    },
+    {
+      "id": "txn_9_006",
+      "date": "2026-06-24",
+      "amount": 23148,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_007",
+      "date": "2026-06-24",
+      "amount": 10716,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_008",
+      "date": "2026-06-25",
+      "amount": 23113,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_009",
+      "date": "2026-06-26",
+      "amount": 13701,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_9_010",
+      "date": "2026-06-27",
+      "amount": 25804,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_011",
+      "date": "2026-06-27",
+      "amount": 11410,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_012",
+      "date": "2026-06-27",
+      "amount": 8887,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_013",
+      "date": "2026-06-27",
+      "amount": 6420,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "failed",
+      "failure_code": "INSUFFICIENT_FUNDS"
+    },
+    {
+      "id": "txn_9_014",
+      "date": "2026-06-29",
+      "amount": 18753,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_015",
+      "date": "2026-06-29",
+      "amount": 7743,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_016",
+      "date": "2026-06-29",
+      "amount": 10008,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_017",
+      "date": "2026-06-29",
+      "amount": 12136,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_018",
+      "date": "2026-06-29",
+      "amount": 22333,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_019",
+      "date": "2026-06-29",
+      "amount": 25211,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_020",
+      "date": "2026-06-29",
+      "amount": 19587,
+      "currency": "INR",
+      "method": "upi",
+      "status": "failed",
+      "failure_code": "UPI_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "txn_9_021",
+      "date": "2026-07-01",
+      "amount": 25183,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "CVV_MISMATCH"
+    },
+    {
+      "id": "txn_9_022",
+      "date": "2026-07-02",
+      "amount": 15023,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_023",
+      "date": "2026-07-04",
+      "amount": 14516,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_024",
+      "date": "2026-07-04",
+      "amount": 8679,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_025",
+      "date": "2026-07-05",
+      "amount": 24033,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_026",
+      "date": "2026-07-06",
+      "amount": 17542,
+      "currency": "INR",
+      "method": "card",
+      "status": "failed",
+      "failure_code": "INVALID_EXPIRY"
+    },
+    {
+      "id": "txn_9_027",
+      "date": "2026-07-08",
+      "amount": 17101,
+      "currency": "INR",
+      "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_028",
+      "date": "2026-07-08",
+      "amount": 15522,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_029",
+      "date": "2026-07-09",
+      "amount": 27115,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_030",
+      "date": "2026-07-09",
+      "amount": 9975,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    }
+  ]
+}
