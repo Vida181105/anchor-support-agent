@@ -18,14 +18,19 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 
-# Free-tier models only. Never point this client at a Pro model.
+# Free-tier Flash / Flash-Lite models only. Never point this client at a Pro
+# model. Verified live against the API on 2026-09-17; the Gemini model
+# lineup moves fast, so if a model here starts 404ing, re-run
+# `client.models.list()` and update this set rather than guessing new names.
 ALLOWED_MODELS = {
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
+    "gemini-flash-latest",
+    "gemini-flash-lite-latest",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-3.1-flash-lite",
 }
 
 
