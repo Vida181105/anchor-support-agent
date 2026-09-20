@@ -10,6 +10,7 @@ re-runnable on a free API key without burning the daily quota.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -230,5 +231,135 @@ class LLMClient:
         def call():
             response = client.models.embed_content(model=model, contents=text, config=config)
             return response.embeddings[0].values
+
+        return self._retry_on_rate_limit(call)
+
+    def generate_turn(
+        self,
+        turns: list[dict],
+        model: str = DEFAULT_MODEL,
+        tools: list[dict] | None = None,
+        response_json_schema: dict | None = None,
+        temperature: float = 0.0,
+    ) -> dict:
+        """Advance a multi-turn (optionally tool-calling) conversation by
+        one model turn.
+
+        `turns` is a plain, JSON-serializable list - never a google.genai
+        SDK object - so the caller (src/agent.py) stays decoupled from the
+        SDK and so this call can be cached exactly like generate()/embed().
+        Each entry is one of:
+          {"role": "user", "text": "..."}
+          {"role": "model", "function_call": {"name": "...", "args": {...}}}
+          {"role": "model", "text": "..."}
+          {"role": "function", "name": "...", "response": {...}}
+
+        Returns {"function_call": {"name", "args"}} or {"text": "..."}.
+
+        `tools` and `response_json_schema` are mutually exclusive in
+        practice (the underlying API does not reliably support forced
+        JSON output in the same call as function declarations) - this
+        method doesn't forbid combining them, but src/agent.py never does.
+        """
+        if model not in ALLOWED_MODELS:
+            raise ValueError(
+                f"Model '{model}' is not an allowed free-tier model. "
+                f"Allowed: {sorted(ALLOWED_MODELS)}"
+            )
+
+        params: dict[str, Any] = {
+            "temperature": temperature,
+            "tools": tools,
+            "response_json_schema": response_json_schema,
+        }
+        cache_input = json.dumps(turns, sort_keys=True, ensure_ascii=False)
+        key = _cache_key("agent_turn", model, cache_input, params)
+        cache_path = self._cache_path(key)
+
+        if cache_path.exists():
+            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+            return cached["result"]
+
+        result = self._generate_turn_with_backoff(turns, model, tools, response_json_schema, temperature)
+
+        cache_path.write_text(
+            json.dumps(
+                {"turns": turns, "model": model, "params": params, "result": result},
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        return result
+
+    def _generate_turn_with_backoff(
+        self,
+        turns: list[dict],
+        model: str,
+        tools: list[dict] | None,
+        response_json_schema: dict | None,
+        temperature: float,
+    ) -> dict:
+        from google.genai import types
+
+        client = self._get_client()
+        contents = []
+        for turn in turns:
+            role = turn["role"]
+            if role == "user":
+                contents.append(types.Content(role="user", parts=[types.Part(text=turn["text"])]))
+            elif role == "model" and "function_call" in turn:
+                fc = turn["function_call"]
+                part = types.Part(function_call=types.FunctionCall(name=fc["name"], args=fc["args"]))
+                # Gemini 3.x rejects a replayed function_call turn that's
+                # missing its original thought_signature ("required for
+                # tools to work correctly") - discovered by hitting this
+                # exact 400 error during development, not anticipated up
+                # front. Round-tripped as base64 since it's opaque bytes.
+                if fc.get("thought_signature"):
+                    part.thought_signature = base64.b64decode(fc["thought_signature"])
+                contents.append(types.Content(role="model", parts=[part]))
+            elif role == "model":
+                contents.append(types.Content(role="model", parts=[types.Part(text=turn["text"])]))
+            elif role == "function":
+                contents.append(
+                    types.Content(
+                        role="user",
+                        parts=[
+                            types.Part(
+                                function_response=types.FunctionResponse(
+                                    name=turn["name"], response=turn["response"]
+                                )
+                            )
+                        ],
+                    )
+                )
+            else:
+                raise ValueError(f"unknown turn role: {role!r}")
+
+        config_kwargs: dict[str, Any] = {"temperature": temperature}
+        if tools:
+            declarations = [
+                types.FunctionDeclaration(
+                    name=t["name"], description=t["description"], parameters=t["parameters"]
+                )
+                for t in tools
+            ]
+            config_kwargs["tools"] = [types.Tool(function_declarations=declarations)]
+        if response_json_schema:
+            config_kwargs["response_mime_type"] = "application/json"
+            config_kwargs["response_json_schema"] = response_json_schema
+
+        config = types.GenerateContentConfig(**config_kwargs)
+
+        def call():
+            response = client.models.generate_content(model=model, contents=contents, config=config)
+            part = response.candidates[0].content.parts[0]
+            if part.function_call is not None:
+                fc_result = {"name": part.function_call.name, "args": dict(part.function_call.args)}
+                if part.thought_signature:
+                    fc_result["thought_signature"] = base64.b64encode(part.thought_signature).decode("ascii")
+                return {"function_call": fc_result}
+            return {"text": response.text}
 
         return self._retry_on_rate_limit(call)
