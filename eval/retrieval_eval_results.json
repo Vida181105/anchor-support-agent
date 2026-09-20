@@ -1,0 +1,435 @@
+[
+  {
+    "ticket_id": "ticket_001",
+    "register": "terse",
+    "correct": [
+      "doc:settlement-cycles#c1"
+    ],
+    "retrieved_top5": [
+      "doc:settlement-cycles#c5",
+      "doc:settlement-cycles#c6",
+      "doc:refund-timelines#c2",
+      "doc:settlement-cycles#c1",
+      "doc:settlement-cycles#c3"
+    ],
+    "hit@1": false,
+    "hit@3": false,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_094",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:settlement-cycles#c1"
+    ],
+    "retrieved_top5": [
+      "doc:refund-timelines#c2",
+      "doc:settlement-cycles#c6",
+      "doc:settlement-cycles#c5",
+      "doc:chargebacks-disputes#c4",
+      "doc:settlement-cycles#c3"
+    ],
+    "hit@1": false,
+    "hit@3": false,
+    "hit@5": false
+  },
+  {
+    "ticket_id": "ticket_002",
+    "register": "long",
+    "correct": [
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c6"
+    ],
+    "retrieved_top5": [
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c2",
+      "doc:rolling-reserves#c1",
+      "doc:rolling-reserves#c4",
+      "doc:rolling-reserves#c5"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_024",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c6"
+    ],
+    "retrieved_top5": [
+      "doc:rolling-reserves#c4",
+      "doc:rolling-reserves#c6",
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c8",
+      "doc:account-review-holds#c5"
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_003",
+    "register": "medium",
+    "correct": [
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c6"
+    ],
+    "retrieved_top5": [
+      "doc:kyc-documents#c6",
+      "doc:kyc-documents#c2",
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c5",
+      "doc:account-review-holds#c3"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_091",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c6"
+    ],
+    "retrieved_top5": [
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c6",
+      "doc:kyc-documents#c5",
+      "doc:account-review-holds#c3",
+      "doc:kyc-documents#c2"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_004",
+    "register": "terse",
+    "correct": [
+      "doc:account-review-holds#c5"
+    ],
+    "retrieved_top5": [
+      "doc:account-review-holds#c5",
+      "doc:account-review-holds#c2",
+      "doc:rolling-reserves#c1",
+      "doc:rolling-reserves#c4",
+      "doc:account-review-holds#c1"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_093",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:account-review-holds#c1",
+      "doc:account-review-holds#c5"
+    ],
+    "retrieved_top5": [
+      "doc:account-review-holds#c1",
+      "doc:account-review-holds#c6",
+      "doc:payment-failure-codes#c4",
+      "doc:account-review-holds#c2",
+      "doc:kyc-documents#c6"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_005",
+    "register": "medium",
+    "correct": [
+      "doc:international-payments#c1"
+    ],
+    "retrieved_top5": [
+      "doc:international-payments#c2",
+      "doc:international-payments#c1",
+      "doc:international-payments#c7",
+      "doc:international-payments#c5",
+      "doc:international-payments#c6"
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_099",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:international-payments#c1"
+    ],
+    "retrieved_top5": [
+      "doc:international-payments#c2",
+      "doc:international-payments#c6",
+      "doc:international-payments#c5",
+      "doc:international-payments#c7",
+      "doc:international-payments#c1"
+    ],
+    "hit@1": false,
+    "hit@3": false,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_006",
+    "register": "medium",
+    "correct": [
+      "doc:subscription-mandates#c4"
+    ],
+    "retrieved_top5": [
+      "doc:subscription-mandates#c4",
+      "doc:subscription-mandates#c5",
+      "doc:payment-failure-codes#c5",
+      "doc:payment-failure-codes#c2",
+      "doc:refund-timelines#c5"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_020",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:subscription-mandates#c4"
+    ],
+    "retrieved_top5": [
+      "doc:subscription-mandates#c4",
+      "doc:subscription-mandates#c5",
+      "doc:payment-failure-codes#c5",
+      "doc:payment-failure-codes#c1",
+      "doc:payment-failure-codes#c3"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_035",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:webhooks#c2",
+      "doc:webhooks#c6"
+    ],
+    "retrieved_top5": [
+      "doc:refund-timelines#c2",
+      "doc:refund-timelines#c6",
+      "doc:refund-timelines#c3",
+      "doc:refund-timelines#c5",
+      "doc:refund-timelines#c4"
+    ],
+    "hit@1": false,
+    "hit@3": false,
+    "hit@5": false
+  },
+  {
+    "ticket_id": "ticket_008",
+    "register": "medium",
+    "correct": [
+      "doc:refund-timelines#c3"
+    ],
+    "retrieved_top5": [
+      "doc:refund-timelines#c3",
+      "doc:rolling-reserves#c4",
+      "doc:settlement-cycles#c4",
+      "doc:settlement-cycles#c6",
+      "doc:payment-failure-codes#c6"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_037",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:refund-timelines#c3"
+    ],
+    "retrieved_top5": [
+      "doc:rolling-reserves#c4",
+      "doc:refund-timelines#c3",
+      "doc:account-review-holds#c5",
+      "doc:account-review-holds#c2",
+      "doc:account-review-holds#c1"
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_009",
+    "register": "medium",
+    "correct": [
+      "doc:chargebacks-disputes#c4"
+    ],
+    "retrieved_top5": [
+      "doc:chargebacks-disputes#c4",
+      "doc:account-review-holds#c3",
+      "doc:chargebacks-disputes#c3",
+      "doc:chargebacks-disputes#c2",
+      "doc:account-review-holds#c6"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_039",
+    "register": "terse",
+    "correct": [
+      "doc:chargebacks-disputes#c4"
+    ],
+    "retrieved_top5": [
+      "doc:chargebacks-disputes#c4",
+      "doc:refund-timelines#c6",
+      "doc:chargebacks-disputes#c1",
+      "doc:chargebacks-disputes#c3",
+      "doc:chargebacks-disputes#c2"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_010",
+    "register": "medium",
+    "correct": [
+      "doc:international-payments#c5"
+    ],
+    "retrieved_top5": [
+      "doc:international-payments#c5",
+      "doc:payment-failure-codes#c4",
+      "doc:international-payments#c7",
+      "doc:international-payments#c2",
+      "doc:international-payments#c1"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_041",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:international-payments#c5"
+    ],
+    "retrieved_top5": [
+      "doc:international-payments#c5",
+      "doc:payment-failure-codes#c1",
+      "doc:payment-failure-codes#c5",
+      "doc:payment-failure-codes#c2",
+      "doc:international-payments#c2"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_047",
+    "register": "terse",
+    "correct": [
+      "doc:settlement-cycles#c6"
+    ],
+    "retrieved_top5": [
+      "doc:settlement-cycles#c6",
+      "doc:refund-timelines#c2",
+      "doc:account-review-holds#c2",
+      "doc:settlement-cycles#c5",
+      "doc:chargebacks-disputes#c4"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_013",
+    "register": "medium",
+    "correct": [
+      "doc:settlement-cycles#c6"
+    ],
+    "retrieved_top5": [
+      "doc:settlement-cycles#c6",
+      "doc:settlement-cycles#c5",
+      "doc:account-review-holds#c5",
+      "doc:rolling-reserves#c4",
+      "doc:account-review-holds#c2"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_050",
+    "register": "medium",
+    "correct": [
+      "doc:kyc-documents#c7"
+    ],
+    "retrieved_top5": [
+      "doc:kyc-documents#c7",
+      "doc:kyc-documents#c1",
+      "doc:kyc-documents#c5",
+      "doc:kyc-documents#c6",
+      "doc:account-review-holds#c1"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_055",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:kyc-documents#c1"
+    ],
+    "retrieved_top5": [
+      "doc:kyc-documents#c1",
+      "doc:kyc-documents#c5",
+      "doc:kyc-documents#c7",
+      "doc:kyc-documents#c6",
+      "doc:kyc-documents#c4"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_069",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:settlement-cycles#c3"
+    ],
+    "retrieved_top5": [
+      "doc:settlement-cycles#c3",
+      "doc:international-payments#c3",
+      "doc:settlement-cycles#c1",
+      "doc:rolling-reserves#c4",
+      "doc:settlement-cycles#c6"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_007",
+    "register": "long_multi_issue",
+    "correct": [
+      "doc:payment-failure-codes#c2",
+      "doc:webhooks#c2",
+      "doc:webhooks#c6"
+    ],
+    "retrieved_top5": [
+      "doc:webhooks#c6",
+      "doc:webhooks#c4",
+      "doc:webhooks#c2",
+      "doc:webhooks#c1",
+      "doc:refund-timelines#c5"
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  }
+]
