@@ -1,0 +1,618 @@
+[
+  {
+    "ticket_id": "ticket_001",
+    "register": "terse",
+    "correct": [
+      "doc:settlement-cycles#c1"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "T+3 settlement schedule next payout date"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:settlement-cycles#c5",
+        "doc:settlement-cycles#c2",
+        "doc:settlement-cycles#c1",
+        "doc:settlement-cycles#c3",
+        "doc:kyc-documents#c4"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_094",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:settlement-cycles#c1"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "T+3 settlement cycle schedule next payout date"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:settlement-cycles#c5",
+        "doc:settlement-cycles#c2",
+        "doc:settlement-cycles#c1",
+        "doc:settlement-cycles#c3",
+        "doc:international-payments#c6"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_002",
+    "register": "long",
+    "correct": [
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c6"
+    ],
+    "identity_outcome": "CONFIRMED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "reserve applied due to chargeback rate above threshold 1.4 percent rolling window 120 days release schedule"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:rolling-reserves#c3",
+        "doc:rolling-reserves#c5",
+        "doc:rolling-reserves#c7",
+        "doc:rolling-reserves#c2",
+        "doc:chargebacks-disputes#c6"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_024",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:rolling-reserves#c3",
+      "doc:rolling-reserves#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "rolling reserve release schedule chargeback rate threshold"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:rolling-reserves#c7",
+        "doc:chargebacks-disputes#c6",
+        "doc:rolling-reserves#c5",
+        "doc:rolling-reserves#c1",
+        "doc:rolling-reserves#c3"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": false,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_003",
+    "register": "medium",
+    "correct": [
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "KYC address proof rejection DOC_MISMATCH bank statement private limited company"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:kyc-documents#c6",
+        "doc:kyc-documents#c2",
+        "doc:kyc-documents#c1",
+        "doc:kyc-documents#c7",
+        "doc:kyc-documents#c5"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_091",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:kyc-documents#c3",
+      "doc:kyc-documents#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "KYC document rejected address proof DOC_MISMATCH resubmission review process"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:kyc-documents#c6",
+        "doc:kyc-documents#c2",
+        "doc:kyc-documents#c3",
+        "doc:kyc-documents#c5",
+        "doc:account-review-holds#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_004",
+    "register": "terse",
+    "correct": [
+      "doc:account-review-holds#c5"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "partial hold on settlement fraud signature review expected resolution date"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:account-review-holds#c5",
+        "doc:account-review-holds#c2",
+        "doc:settlement-cycles#c4",
+        "doc:account-review-holds#c6",
+        "doc:account-review-holds#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_093",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:account-review-holds#c1",
+      "doc:account-review-holds#c5"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "partial hold transactions fraud signature pattern matching expected resolution date"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:account-review-holds#c5",
+        "doc:chargebacks-disputes#c4",
+        "doc:rolling-reserves#c3",
+        "doc:account-review-holds#c2",
+        "doc:settlement-cycles#c4"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_005",
+    "register": "medium",
+    "correct": [
+      "doc:international-payments#c1"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "international payments ineligibility reason business category excluded pharmaceuticals"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:international-payments#c2",
+        "doc:international-payments#c7",
+        "doc:international-payments#c1",
+        "doc:international-payments#c5",
+        "doc:international-payments#c6"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_099",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:international-payments#c1"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "international payments ineligible business category excluded pharmaceuticals"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:international-payments#c2",
+        "doc:international-payments#c7",
+        "doc:international-payments#c1",
+        "doc:international-payments#c5",
+        "doc:international-payments#c6"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_006",
+    "register": "medium",
+    "correct": [
+      "doc:subscription-mandates#c4"
+    ],
+    "identity_outcome": "CONFIRMED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "subscription mandate paused after 3 consecutive failed retry attempts insufficient funds do not honor"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:subscription-mandates#c4",
+        "doc:subscription-mandates#c1",
+        "doc:payment-failure-codes#c5",
+        "doc:subscription-mandates#c6",
+        "doc:subscription-mandates#c5"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_020",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:subscription-mandates#c4"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "subscription mandate paused after multiple retry failures insufficient funds do not honor"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:subscription-mandates#c4",
+        "doc:subscription-mandates#c5",
+        "doc:subscription-mandates#c1",
+        "doc:payment-failure-codes#c2",
+        "doc:subscription-mandates#c6"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_035",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:webhooks#c2",
+      "doc:webhooks#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "refund processed successfully but webhook undelivered response code 522"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:webhooks#c6",
+        "doc:webhooks#c4",
+        "doc:webhooks#c2",
+        "doc:webhooks#c5",
+        "doc:webhooks#c7"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_008",
+    "register": "medium",
+    "correct": [
+      "doc:refund-timelines#c3"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "refund deduction from settlement batch timing logic"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:refund-timelines#c3",
+        "doc:settlement-cycles#c4",
+        "doc:refund-timelines#c4",
+        "doc:refund-timelines#c2",
+        "doc:settlement-cycles#c6"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_037",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:refund-timelines#c3"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "refund deduction from settlement batch payout last payout line items"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:refund-timelines#c3",
+        "doc:rolling-reserves#c4",
+        "doc:payment-failure-codes#c6",
+        "doc:refund-timelines#c5",
+        "doc:settlement-cycles#c4"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_009",
+    "register": "medium",
+    "correct": [
+      "doc:chargebacks-disputes#c4"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "dispute status under review timeline resolution process chargeback"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:chargebacks-disputes#c4",
+        "doc:chargebacks-disputes#c1",
+        "doc:refund-timelines#c6",
+        "doc:chargebacks-disputes#c2",
+        "doc:chargebacks-disputes#c5"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_039",
+    "register": "terse",
+    "correct": [
+      "doc:chargebacks-disputes#c4"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "dispute status under review response deadline evidence submitted date"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:chargebacks-disputes#c4",
+        "doc:chargebacks-disputes#c2",
+        "doc:chargebacks-disputes#c3",
+        "doc:refund-timelines#c6",
+        "doc:account-review-holds#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_010",
+    "register": "medium",
+    "correct": [
+      "doc:international-payments#c5"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "international cross border payments risk block failure error reasons"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:international-payments#c5",
+        "doc:payment-failure-codes#c4",
+        "doc:international-payments#c7",
+        "doc:international-payments#c2",
+        "doc:payment-failure-codes#c1"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_041",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:international-payments#c5"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "cross border international payment failure RISK_BLOCK reason"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:international-payments#c5",
+        "doc:payment-failure-codes#c4",
+        "doc:international-payments#c7",
+        "doc:payment-failure-codes#c1",
+        "doc:international-payments#c2"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_047",
+    "register": "terse",
+    "correct": [
+      "doc:settlement-cycles#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "T+3 settlement schedule last payout settled platform side bank clearance pending next payout scheduled"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:settlement-cycles#c5",
+        "doc:settlement-cycles#c2",
+        "doc:settlement-cycles#c6",
+        "doc:settlement-cycles#c1",
+        "doc:kyc-documents#c4"
+      ]
+    ],
+    "hit@1": false,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_013",
+    "register": "medium",
+    "correct": [
+      "doc:settlement-cycles#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "settled_platform_side bank_clearance_status pending settlement schedule T+3"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:settlement-cycles#c6",
+        "doc:settlement-cycles#c2",
+        "doc:kyc-documents#c4",
+        "doc:settlement-cycles#c5",
+        "doc:settlement-cycles#c1"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_050",
+    "register": "medium",
+    "correct": [
+      "doc:kyc-documents#c7"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "business type change sole proprietorship to private limited company KYC documents required"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:kyc-documents#c7",
+        "doc:kyc-documents#c1",
+        "doc:kyc-documents#c5",
+        "doc:kyc-documents#c6",
+        "doc:kyc-documents#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_055",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:kyc-documents#c1"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 2,
+    "constructed_queries": [
+      "private limited company KYC documents address proof verification rejected",
+      "partnership firm KYC documents required partners individual document set"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:kyc-documents#c6",
+        "doc:kyc-documents#c2",
+        "doc:kyc-documents#c3",
+        "doc:kyc-documents#c5",
+        "doc:kyc-documents#c7"
+      ],
+      [
+        "doc:kyc-documents#c1",
+        "doc:kyc-documents#c5",
+        "doc:kyc-documents#c7",
+        "doc:kyc-documents#c6",
+        "doc:kyc-documents#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_069",
+    "register": "terse_hinglish",
+    "correct": [
+      "doc:settlement-cycles#c3"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "authorization capture difference payment flow capture authorize order confirmation"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:settlement-cycles#c3",
+        "doc:international-payments#c3",
+        "doc:refund-timelines#c4",
+        "doc:rolling-reserves#c8",
+        "doc:rolling-reserves#c4"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  },
+  {
+    "ticket_id": "ticket_007",
+    "register": "long_multi_issue",
+    "correct": [
+      "doc:payment-failure-codes#c2",
+      "doc:webhooks#c2",
+      "doc:webhooks#c6"
+    ],
+    "identity_outcome": "UNCORROBORATED",
+    "num_search_calls": 1,
+    "constructed_queries": [
+      "webhook refund.processed final_status undelivered response_code 522 retry policy"
+    ],
+    "retrieved_per_query": [
+      [
+        "doc:webhooks#c2",
+        "doc:webhooks#c6",
+        "doc:webhooks#c5",
+        "doc:webhooks#c4",
+        "doc:webhooks#c3"
+      ]
+    ],
+    "hit@1": true,
+    "hit@3": true,
+    "hit@5": true
+  }
+]
