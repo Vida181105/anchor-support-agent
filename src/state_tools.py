@@ -150,6 +150,74 @@ def _name_similarity(query: str, business_name: str) -> float:
     return ratio
 
 
+def resolve_reference(reference: str) -> dict:
+    """Deterministic cross-merchant lookup: given a dispute/transaction/
+    refund/mandate id or a mandate's customer_ref (e.g. "disp_14_01",
+    "txn_3_007", "cust_88213"), find which merchant's fixture it actually
+    belongs to.
+
+    This is what makes identity cross-checking a real lookup instead of a
+    fuzzy-match heuristic: a ticket citing disp_14_01 while claiming to be
+    merchant_9 is not "probably" a mismatch - disp_14_01 only exists on
+    merchant_14's fixture, full stop. Searches every merchant's fixture
+    (not just a claimed one), since the whole point is finding out whether
+    a reference belongs to a *different* merchant than the one claimed.
+
+    Returns the not-found sentinel if the reference matches nothing
+    anywhere in the corpus (e.g. it isn't a real id at all, or was
+    mistyped) - that is a fact worth surfacing, not silently swallowing.
+    """
+    reference = reference.strip()
+
+    for path in sorted(MERCHANTS_DIR.glob("merchant_*.json")):
+        merchant = json.loads(path.read_text(encoding="utf-8"))
+        merchant_id = merchant["merchant_id"]
+
+        for i, dispute in enumerate(merchant.get("disputes", [])):
+            if dispute.get("id") == reference:
+                return make_evidence(
+                    f"state:{merchant_id}.disputes[{i}]",
+                    {"merchant_id": merchant_id, "reference_type": "dispute", "record": dispute},
+                    "state",
+                )
+        for i, txn in enumerate(merchant.get("transactions", [])):
+            if txn.get("id") == reference:
+                return make_evidence(
+                    f"state:{merchant_id}.transactions[{i}]",
+                    {"merchant_id": merchant_id, "reference_type": "transaction", "record": txn},
+                    "state",
+                )
+        for i, refund in enumerate(merchant.get("refunds", [])):
+            if refund.get("id") == reference:
+                return make_evidence(
+                    f"state:{merchant_id}.refunds[{i}]",
+                    {"merchant_id": merchant_id, "reference_type": "refund", "record": refund},
+                    "state",
+                )
+        for i, mandate in enumerate(merchant.get("mandates", [])):
+            if mandate.get("id") == reference:
+                return make_evidence(
+                    f"state:{merchant_id}.mandates[{i}]",
+                    {"merchant_id": merchant_id, "reference_type": "mandate", "record": mandate},
+                    "state",
+                )
+            if mandate.get("customer_ref") == reference:
+                return make_evidence(
+                    f"state:{merchant_id}.mandates[{i}]",
+                    {"merchant_id": merchant_id, "reference_type": "customer_ref", "record": mandate},
+                    "state",
+                )
+
+    return {
+        "not_found": True,
+        "reference": reference,
+        "message": (
+            f"No dispute/transaction/refund/mandate/customer_ref matches "
+            f"{reference!r} in any merchant fixture"
+        ),
+    }
+
+
 def find_merchant_by_name(query: str, top_n: int = 5) -> list[dict]:
     """Fuzzy-match `query` against every merchant's business_name.
 

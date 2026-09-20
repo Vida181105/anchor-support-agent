@@ -10,6 +10,7 @@ from src.state_tools import (
     get_settlement_schedule,
     get_transactions,
     is_not_found,
+    resolve_reference,
 )
 
 
@@ -188,3 +189,61 @@ def test_find_merchant_by_name_never_returns_not_found_sentinel():
     results = find_merchant_by_name("zzzzzznonexistentbusinesszzzzz")
     assert not is_not_found(results)
     assert isinstance(results, list)
+
+
+# --- resolve_reference --------------------------------------------------
+
+def test_resolve_reference_finds_dispute_on_the_correct_merchant():
+    result = resolve_reference("disp_14_01")
+    assert not is_not_found(result)
+    assert result["evidence_id"] == "state:merchant_14.disputes[0]"
+    assert result["content"]["merchant_id"] == "merchant_14"
+    assert result["content"]["reference_type"] == "dispute"
+    assert result["content"]["record"]["id"] == "disp_14_01"
+
+
+def test_resolve_reference_finds_transaction():
+    result = resolve_reference("txn_1_001")
+    assert result["content"]["merchant_id"] == "merchant_1"
+    assert result["content"]["reference_type"] == "transaction"
+
+
+def test_resolve_reference_finds_refund():
+    result = resolve_reference("refund_8_01")
+    assert result["content"]["merchant_id"] == "merchant_8"
+    assert result["content"]["reference_type"] == "refund"
+
+
+def test_resolve_reference_finds_mandate_by_id():
+    result = resolve_reference("mandate_6_442")
+    assert result["content"]["merchant_id"] == "merchant_6"
+    assert result["content"]["reference_type"] == "mandate"
+
+
+def test_resolve_reference_finds_mandate_by_customer_ref():
+    result = resolve_reference("cust_88213")
+    assert result["content"]["merchant_id"] == "merchant_6"
+    assert result["content"]["reference_type"] == "customer_ref"
+    assert result["content"]["record"]["id"] == "mandate_6_442"
+
+
+def test_resolve_reference_not_found_for_unknown_reference():
+    result = resolve_reference("disp_999_99")
+    assert is_not_found(result)
+    assert "evidence_id" not in result
+
+
+def test_resolve_reference_strips_surrounding_whitespace():
+    result = resolve_reference("  disp_14_01  ")
+    assert not is_not_found(result)
+    assert result["content"]["merchant_id"] == "merchant_14"
+
+
+@pytest.mark.parametrize("merchant_id", ALL_MERCHANT_IDS)
+def test_resolve_reference_never_leaks_hidden_keys(merchant_id):
+    # exercise every dispute id in the corpus through resolve_reference,
+    # not just merchant_14's
+    merchant = json.load(open(f"corpus/merchants/{merchant_id}.json"))
+    for dispute in merchant.get("disputes", []):
+        result = resolve_reference(dispute["id"])
+        assert _find_hidden_keys(result["content"]) == []
