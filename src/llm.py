@@ -1,10 +1,11 @@
 """Disk-cached Gemini client.
 
-Every call is keyed by a hash of (model, prompt, params). A cache hit returns
-straight from disk with no network request; a miss calls Gemini, retrying on
-429s with exponential backoff and jitter, and writes the result to disk before
-returning it. This is what makes the evaluation harness re-runnable on a free
-API key without burning the daily quota.
+Every call (text generation or embedding) is keyed by a hash of
+(kind, model, text, params). A cache hit returns straight from disk with no
+network request; a miss calls Gemini, retrying on 429s with exponential
+backoff and jitter, and writes the result to disk before returning it. This
+is what makes the evaluation harness - and, per Unit 2, the policy index -
+re-runnable on a free API key without burning the daily quota.
 """
 
 from __future__ import annotations
@@ -16,6 +17,8 @@ import random
 import time
 from pathlib import Path
 from typing import Any
+
+from src.config import EMBEDDING_DIMENSIONALITY, EMBEDDING_MODEL
 
 DEFAULT_CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
@@ -38,9 +41,13 @@ class RateLimitExceeded(RuntimeError):
     """Raised when Gemini keeps returning 429 past the retry budget."""
 
 
-def _cache_key(model: str, prompt: str, params: dict[str, Any]) -> str:
+def _cache_key(kind: str, model: str, text: str, params: dict[str, Any]) -> str:
+    # `kind` ("generate" vs "embed") keeps the two call types from ever
+    # colliding in the cache even though they share one directory - belt
+    # and suspenders, since `model` alone already differs between a
+    # generation model and an embedding model in practice.
     payload = json.dumps(
-        {"model": model, "prompt": prompt, "params": params},
+        {"kind": kind, "model": model, "text": text, "params": params},
         sort_keys=True,
         ensure_ascii=False,
     )
@@ -112,7 +119,7 @@ class LLMClient:
             params["max_output_tokens"] = max_output_tokens
         params.update(extra_params)
 
-        key = _cache_key(model, prompt, params)
+        key = _cache_key("generate", model, prompt, params)
         cache_path = self._cache_path(key)
 
         if cache_path.exists():
@@ -136,24 +143,12 @@ class LLMClient:
         )
         return text
 
-    def _call_with_backoff(self, prompt: str, model: str, params: dict[str, Any]) -> str:
-        from google.genai import types
-
-        client = self._get_client()
-        config = types.GenerateContentConfig(
-            temperature=params.get("temperature", 0.0),
-            max_output_tokens=params.get("max_output_tokens"),
-        )
-
+    def _retry_on_rate_limit(self, call):
+        """Run `call()`, retrying with exponential backoff + jitter on 429s."""
         attempt = 0
         while True:
             try:
-                response = client.models.generate_content(
-                    model=model,
-                    contents=prompt,
-                    config=config,
-                )
-                return response.text
+                return call()
             except Exception as exc:  # noqa: BLE001 - broad on purpose, retry logic below
                 if not _is_rate_limit_error(exc) or attempt >= self.max_retries:
                     if _is_rate_limit_error(exc):
@@ -164,3 +159,76 @@ class LLMClient:
                 delay = self.base_delay * (2**attempt) + random.uniform(0, 1)
                 time.sleep(delay)
                 attempt += 1
+
+    def _call_with_backoff(self, prompt: str, model: str, params: dict[str, Any]) -> str:
+        from google.genai import types
+
+        client = self._get_client()
+        config = types.GenerateContentConfig(
+            temperature=params.get("temperature", 0.0),
+            max_output_tokens=params.get("max_output_tokens"),
+        )
+
+        def call():
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=config,
+            )
+            return response.text
+
+        return self._retry_on_rate_limit(call)
+
+    def embed(
+        self,
+        text: str,
+        model: str = EMBEDDING_MODEL,
+        task_type: str = "RETRIEVAL_DOCUMENT",
+        output_dimensionality: int = EMBEDDING_DIMENSIONALITY,
+    ) -> list[float]:
+        """Return an embedding vector for `text`, using the disk cache when possible.
+
+        `task_type` should be "RETRIEVAL_DOCUMENT" when embedding something
+        that will be searched over (e.g. a policy chunk) and
+        "RETRIEVAL_QUERY" when embedding the search query itself - Gemini's
+        embedding model is asymmetric and expects this distinction for
+        good retrieval quality.
+        """
+        params = {"task_type": task_type, "output_dimensionality": output_dimensionality}
+        key = _cache_key("embed", model, text, params)
+        cache_path = self._cache_path(key)
+
+        if cache_path.exists():
+            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+            return cached["embedding"]
+
+        vector = self._embed_with_backoff(text, model, params)
+
+        cache_path.write_text(
+            json.dumps(
+                {
+                    "model": model,
+                    "text": text,
+                    "params": params,
+                    "embedding": vector,
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        return vector
+
+    def _embed_with_backoff(self, text: str, model: str, params: dict[str, Any]) -> list[float]:
+        from google.genai import types
+
+        client = self._get_client()
+        config = types.EmbedContentConfig(
+            task_type=params["task_type"],
+            output_dimensionality=params["output_dimensionality"],
+        )
+
+        def call():
+            response = client.models.embed_content(model=model, contents=text, config=config)
+            return response.embeddings[0].values
+
+        return self._retry_on_rate_limit(call)

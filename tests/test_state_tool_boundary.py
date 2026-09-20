@@ -1,22 +1,24 @@
-"""Enforces the `_derivation` boundary at the one place it actually matters:
-the return value of a state tool the agent calls.
+"""Enforces the `_derivation` boundary at the mechanism every state tool is
+required to route through: src.evidence.make_evidence.
 
 corpus/README.md and the merchant fixtures establish the convention that any
 key beginning with `_` (e.g. `_derivation`) is eval-only and must never reach
-the agent. Nothing enforces that yet because no state tool exists — this
-test is written against the interface Phase 1 is expected to add
-(`src/state_tools.py`, exposing `get_merchant_state(merchant_id: str) -> dict`)
-so that it starts failing the moment that tool exists and leaks a hidden key,
-instead of silently passing forever because the import fails.
+the agent. Rather than wait for src/state_tools.py to exist to prove this
+(and skip vacuously until then), this test feeds every real merchant
+fixture - which already has `_derivation` at several nesting depths, per
+Phase 0's fixes - through make_evidence directly and asserts none of it
+survives. That is the actual guarantee: any tool built on top of
+make_evidence inherits it for free.
+
+This does not, by itself, prove a given tool *uses* make_evidence instead
+of returning a raw dict. tests/test_state_tools.py (added alongside the
+real tools) closes that gap by calling the tools themselves.
 """
 
 import glob
 import json
 
-import pytest
-
-STATE_TOOLS_MODULE = "src.state_tools"
-STATE_TOOLS_FUNCTION = "get_merchant_state"
+from src.evidence import make_evidence
 
 
 def _find_hidden_keys(obj, path=""):
@@ -33,34 +35,31 @@ def _find_hidden_keys(obj, path=""):
     return hits
 
 
-def _load_state_tool():
-    try:
-        module = __import__(STATE_TOOLS_MODULE, fromlist=[STATE_TOOLS_FUNCTION])
-    except ImportError:
-        return None
-    return getattr(module, STATE_TOOLS_FUNCTION, None)
+def _merchant_fixtures():
+    files = sorted(glob.glob("corpus/merchants/merchant_*.json"))
+    assert files, "no merchant fixtures found to test against"
+    return [json.load(open(f)) for f in files]
 
 
-def test_state_tool_never_returns_hidden_keys():
-    get_merchant_state = _load_state_tool()
-    if get_merchant_state is None:
-        pytest.skip(
-            f"no state tools yet — implement {STATE_TOOLS_MODULE}.{STATE_TOOLS_FUNCTION}"
-            f"(merchant_id) and this test will start enforcing the _derivation boundary "
-            f"instead of skipping"
-        )
+def test_real_fixtures_contain_hidden_keys_before_wrapping():
+    """Sanity check on the test itself: if this fails, the fixtures no
+    longer exercise the boundary at all and the assertion below would pass
+    vacuously.
+    """
+    total_hits = sum(len(_find_hidden_keys(m)) for m in _merchant_fixtures())
+    assert total_hits > 0, (
+        "no _-prefixed keys found in any merchant fixture - this test would "
+        "pass even with no stripping logic at all"
+    )
 
-    merchant_ids = [
-        json.load(open(f))["merchant_id"]
-        for f in sorted(glob.glob("corpus/merchants/merchant_*.json"))
-    ]
-    assert merchant_ids, "no merchant fixtures found to test against"
 
+def test_make_evidence_strips_every_real_fixture_clean():
     violations = {}
-    for merchant_id in merchant_ids:
-        result = get_merchant_state(merchant_id)
-        hits = _find_hidden_keys(result)
+    for merchant in _merchant_fixtures():
+        envelope = make_evidence(
+            f"state:{merchant['merchant_id']}", merchant, "state"
+        )
+        hits = _find_hidden_keys(envelope["content"])
         if hits:
-            violations[merchant_id] = hits
-
-    assert not violations, f"state tool leaked hidden (_-prefixed) keys: {violations}"
+            violations[merchant["merchant_id"]] = hits
+    assert not violations, f"hidden keys survived make_evidence: {violations}"

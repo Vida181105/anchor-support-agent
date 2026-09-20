@@ -36,7 +36,7 @@ corpus.
   section once tickets/fixtures reference its chunk id — append new sections
   at the end instead.
 
-### Merchant state fields: `state:<merchant-id>.<dotted.path>`
+### Merchant state fields: `state:<merchant-id>[.<dotted.path>]`
 
 - `<merchant-id>` is the merchant's id as used in `corpus/merchants/*.json`
   (e.g. `merchant_7`).
@@ -47,6 +47,12 @@ corpus.
   status field.
 - Paths are stable because they name fields, not values: a field's value can
   change (e.g. a payout date moving forward) without changing its id.
+- The path is optional: a bare `state:merchant_7` cites the merchant's whole
+  account-state record as one unit. This is what a bulk lookup
+  (`get_merchant_state`) returns evidence for; a tool that fetches one
+  specific field (e.g. `get_settlement_schedule`) should cite the narrower
+  path instead, since that is what the Phase 3 verifier checks a claim
+  against — prefer the most specific id a tool actually has.
 
 ## Regenerating the policy KB
 
