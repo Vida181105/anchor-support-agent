@@ -1,0 +1,9 @@
+{
+  "id": "ticket_014",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-09-16T15:00:00+05:30",
+  "channel": "email",
+  "subject": "Won the dispute but still got charged a fee?",
+  "body": "Quick question - we won a dispute recently (disp_14_01) and I can see the transaction amount was returned to us in yesterday's payout, which is great. But I also noticed a separate 500 rupee deduction in the same batch that I'm assuming is a chargeback fee for the same case. If we won, shouldn't that fee also be reversed? Seems odd to still be penalized for a dispute that was resolved in our favor. Can you confirm whether this is correct or an error.",
+  "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute"
+}

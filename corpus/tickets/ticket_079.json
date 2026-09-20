@@ -1,0 +1,9 @@
+{
+  "id": "ticket_079",
+  "merchant_id": null,
+  "timestamp": "2026-08-17T18:30:00+05:30",
+  "channel": "email",
+  "subject": "double charge?",
+  "body": "customer keeps saying payment failed but money got deducted from his account, please check and refund if double charged",
+  "true_root_cause": "insufficient_information_missing_merchant_id"
+}

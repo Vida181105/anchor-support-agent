@@ -1,0 +1,9 @@
+{
+  "id": "ticket_057",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-09-01T15:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "for subscriptions does the very first charge always need OTP even for small amounts? trying to reduce checkout friction for new signups",
+  "true_root_cause": "mandate_first_charge_authentication_generic"
+}

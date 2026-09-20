@@ -1,0 +1,9 @@
+{
+  "id": "ticket_046",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-09-16T08:00:00+05:30",
+  "channel": "email",
+  "subject": "still not received",
+  "body": "checked my account again this morning still nothing, this is now 2 days since it showed settled on your end, getting worried",
+  "true_root_cause": "bank_side_settlement_delay"
+}

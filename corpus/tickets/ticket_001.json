@@ -1,0 +1,9 @@
+{
+  "id": "ticket_001",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-09-17T09:14:00+05:30",
+  "channel": "email",
+  "subject": "money not come",
+  "body": "sir my payment not come till now 2 days already gone check my account plzz its urgent i need money today",
+  "true_root_cause": "settlement_mid_cycle_t3_not_delayed"
+}

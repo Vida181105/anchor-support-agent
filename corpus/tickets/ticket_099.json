@@ -1,0 +1,9 @@
+{
+  "id": "ticket_099",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-08-28T13:45:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "kb tak international milega bataya nahi abhi tak",
+  "true_root_cause": "international_payments_ineligible_business_category"
+}

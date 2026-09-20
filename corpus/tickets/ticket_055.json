@@ -1,0 +1,9 @@
+{
+  "id": "ticket_055",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-07-15T08:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "partnership firm ke liye kaunsa document chahiye KYC ke liye, sab partners ka alag alag lagega kya",
+  "true_root_cause": "kyc_requirements_generic_partnership"
+}

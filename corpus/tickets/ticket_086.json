@@ -1,0 +1,12 @@
+{
+  "id": "ticket_086",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-08-27T11:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "So the document keeps getting rejected as we discussed, AND now I'm also seeing some UPI payments fail with timeout errors from customers, is that also something on your end or unrelated to the KYC thing?",
+  "true_root_cause": [
+    "kyc_rejected_doc_illegible_resubmission_unchanged",
+    "upi_timeout_generic_customer_side"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_118",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-07-08T10:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "galti se dusra document upload ho gaya tha, use kaise hataye ya wapis kaise badle",
+  "true_root_cause": "kyc_resubmission_no_cooldown_generic"
+}

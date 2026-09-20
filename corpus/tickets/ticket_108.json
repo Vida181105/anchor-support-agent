@@ -1,0 +1,9 @@
+{
+  "id": "ticket_108",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-08-25T09:15:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "abhi tak international ka reason nahi mila clear",
+  "true_root_cause": "risk_block_spike_after_international_approval"
+}

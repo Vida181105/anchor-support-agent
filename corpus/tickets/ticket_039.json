@@ -1,0 +1,9 @@
+{
+  "id": "ticket_039",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-09-10T09:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "dispute status??",
+  "true_root_cause": "dispute_within_normal_bank_review_window"
+}

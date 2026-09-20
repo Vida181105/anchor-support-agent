@@ -1,0 +1,9 @@
+{
+  "id": "ticket_045",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-08-25T13:20:00+05:30",
+  "channel": "email",
+  "subject": "low payout amount",
+  "body": "Also separately my payouts are really small even on busy days, is that because of the pending KYC thing? Just want to understand if fixing that document issue will actually change the amount I get.",
+  "true_root_cause": "volume_capped_pending_kyc"
+}

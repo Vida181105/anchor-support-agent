@@ -35,7 +35,8 @@
     },
     "t1_eligibility_requested": true,
     "t1_request_date": "2026-09-15",
-    "note": "Merchant crossed the 90-day-no-disputes eligibility mark on 2026-09-01 and requested T+1 on 2026-09-15. Approval SLA is 5 business days from request, so the expected decision date is 2026-09-22 (2026-09-17 is only day 2 of 5)."
+    "oldest_unsettled_batch_captured_date": "2026-09-15",
+    "_derivation": "signup_date (2025-03-01) is far past the 90-day eligibility mark, disputes is empty, so the merchant is eligible per corpus/policy/settlement-cycles.md's T+1 criteria. t1_request_date (2026-09-15) is 2 calendar days before CORPUS_NOW (2026-09-17) — well inside the stated 5-business-day approval SLA. The merchant's impatience is premature, not a stuck request."
   },
   "hold": {
     "active": false
@@ -291,6 +292,22 @@
       "amount": 2972,
       "currency": "INR",
       "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_031",
+      "date": "2026-09-15",
+      "amount": 5400,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_11_032",
+      "date": "2026-09-15",
+      "amount": 4900,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

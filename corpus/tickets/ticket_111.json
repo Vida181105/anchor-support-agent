@@ -1,0 +1,9 @@
+{
+  "id": "ticket_111",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-09-13T20:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "kitna time aur lagega dispute me seriously",
+  "true_root_cause": "dispute_within_normal_bank_review_window"
+}

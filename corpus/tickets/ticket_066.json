@@ -1,0 +1,9 @@
+{
+  "id": "ticket_066",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-09-02T11:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "for international transactions is the amount converted at the time of the payment or when it actually settles to us? trying to understand a small mismatch",
+  "true_root_cause": "international_currency_conversion_timing_generic"
+}

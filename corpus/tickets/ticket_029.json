@@ -1,0 +1,9 @@
+{
+  "id": "ticket_029",
+  "merchant_id": "merchant_4",
+  "timestamp": "2026-09-16T09:30:00+05:30",
+  "channel": "email",
+  "subject": "hold update?",
+  "body": "any update on when the held amount will be released? it's been 3 days since you flagged those orders",
+  "true_root_cause": "partial_account_hold_flagged_batch"
+}

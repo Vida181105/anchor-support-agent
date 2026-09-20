@@ -33,7 +33,13 @@
     "last_payout": {
       "date": "2026-09-15",
       "amount": 132400,
-      "note": "This batch includes a -7400 line item for refund_8_01, processed on 2026-09-12 against a transaction that had already settled on 2026-08-03. The refund was deducted from this later batch, not the original one."
+      "line_items": [
+        {
+          "type": "refund_deduction",
+          "refund_id": "refund_8_01",
+          "amount": -7400
+        }
+      ]
     },
     "next_payout": {
       "date": "2026-09-18",
@@ -41,7 +47,9 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15",
+    "_derivation": "refund_8_01.original_transaction_settled_date (2026-08-03) is well before deducted_from_settlement_batch_date (2026-09-15), matching corpus/policy/refund-timelines.md's rule that a refund is deducted from the batch active when the refund is processed, not from the original transaction's batch."
   },
   "hold": {
     "active": false
@@ -311,6 +319,22 @@
       "amount": 3588,
       "currency": "INR",
       "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_8_031",
+      "date": "2026-09-15",
+      "amount": 39800,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_8_032",
+      "date": "2026-09-15",
+      "amount": 22100,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

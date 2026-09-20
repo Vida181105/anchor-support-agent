@@ -52,3 +52,12 @@ address-proof documents tied to that bank account are rejected as
 `DOC_MISMATCH` even though the document itself is genuine. The correct fix
 is to submit a document that shows the company name directly, such as a
 GST registration certificate, rather than resubmitting bank-linked proof.
+
+## Changing business type
+
+Converting a registered entity type (for example, a sole proprietorship
+incorporating as a private limited company) is treated the same as a
+re-verification trigger: it counts as a change to the business's registered
+structure, so KYC must be redone in full against the document set required
+for the new entity type, rather than layered on top of the original
+sole-proprietorship KYC.

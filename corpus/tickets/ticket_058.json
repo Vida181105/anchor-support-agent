@@ -1,0 +1,9 @@
+{
+  "id": "ticket_058",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-08-05T11:15:00+05:30",
+  "channel": "email",
+  "subject": "customer-side mandate cancellation",
+  "body": "can a customer revoke their subscription directly from their bank app without telling us? just want to understand if that's a thing we need to build for",
+  "true_root_cause": "mandate_customer_revocation_generic"
+}

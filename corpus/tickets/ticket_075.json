@@ -1,0 +1,9 @@
+{
+  "id": "ticket_075",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-08-02T11:40:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hi just wanted to check - does a RISK_BLOCK decline ever get reconsidered if we think it was a mistake, or is it final",
+  "true_root_cause": "risk_block_appealable_generic"
+}

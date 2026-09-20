@@ -49,3 +49,11 @@ International payments follow the merchant's existing settlement cycle
 (T+3 or T+1) but are settled in a separate batch from domestic
 transactions, since the currency conversion step adds a processing stage
 that domestic payments do not go through.
+
+## Approval review depth
+
+The approval review for international acceptance is the same process and
+timeline for every merchant regardless of typical transaction size; there
+is no separate or deeper review track for merchants expecting high-ticket
+international volume. Category eligibility and KYC status are the only
+factors that affect approval.

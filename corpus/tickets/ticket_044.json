@@ -1,0 +1,9 @@
+{
+  "id": "ticket_044",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-08-22T09:15:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "phir se reject?? yaar kya problem hai isme, same cheez bheji thi",
+  "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged"
+}

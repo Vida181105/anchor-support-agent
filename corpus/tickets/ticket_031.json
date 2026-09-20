@@ -1,0 +1,9 @@
+{
+  "id": "ticket_031",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-09-13T08:15:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "international kab on hoga? customers wait kar rahe hai",
+  "true_root_cause": "international_payments_ineligible_business_category"
+}

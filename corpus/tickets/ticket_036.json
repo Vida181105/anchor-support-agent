@@ -1,0 +1,9 @@
+{
+  "id": "ticket_036",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-09-07T13:00:00+05:30",
+  "channel": "email",
+  "subject": "webhook redelivery question",
+  "body": "Dev here - we checked our endpoint logs and we're seeing repeated connection timeouts (522) on inbound webhook calls from your platform around 5th Sept afternoon, looks like our server had a brief outage window. Can you confirm whether the retry window has fully lapsed for the refund.processed event tied to our order from that day, and is there a way to trigger a manual redelivery from our side via API or does it have to be from the dashboard?",
+  "true_root_cause": "webhook_undelivered_refund_already_processed"
+}

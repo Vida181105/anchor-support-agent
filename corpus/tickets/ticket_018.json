@@ -1,0 +1,9 @@
+{
+  "id": "ticket_018",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-16T10:15:00+05:30",
+  "channel": "email",
+  "subject": "Re: Re: reserve on my account - still no real answer",
+  "body": "I spoke to someone from your team on call about this last week and they said someone would follow up with the exact release schedule for the reserve amount, but I still haven't received anything in writing. As I mentioned before, this reserve is a big problem for our cash flow going into the festive season bookings. Can I please get a straight answer this time - what is the exact date and amount of the next release, and is there any way to get this reviewed early given it's been a month since the chargebacks happened?",
+  "true_root_cause": "rolling_reserve_after_chargeback_spike"
+}

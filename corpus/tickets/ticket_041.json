@@ -1,0 +1,9 @@
+{
+  "id": "ticket_041",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-09-12T20:00:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "international payment fail ho raha hai baar baar kyu",
+  "true_root_cause": "risk_block_spike_after_international_approval"
+}

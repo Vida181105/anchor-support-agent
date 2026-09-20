@@ -1,0 +1,9 @@
+{
+  "id": "ticket_069",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-08-06T13:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "capture aur authorize me kya fark hai, humein order confirm hote hi paisa aa jata hai ya baad me",
+  "true_root_cause": "capture_vs_authorization_generic"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_025",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-08-28T12:30:00+05:30",
+  "channel": "email",
+  "subject": "lost disputes + reserve connection",
+  "body": "Following up on the two disputes we lost (disp_2_01 and disp_2_02) - both cancelled tour bookings from that flight disruption week. We did respond within the window with proof of the original booking confirmation but still lost both. Can someone explain what additional evidence would have actually changed the outcome, for future reference? Also assuming these two are what triggered the reserve I saw applied a few days later - can you confirm that's the connection?",
+  "true_root_cause": "rolling_reserve_after_chargeback_spike"
+}

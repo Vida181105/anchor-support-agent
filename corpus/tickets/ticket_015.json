@@ -1,0 +1,9 @@
+{
+  "id": "ticket_015",
+  "merchant_id": "merchant_15",
+  "timestamp": "2026-09-05T11:11:00+05:30",
+  "channel": "email",
+  "subject": "plan upgrade payment not going through for a student",
+  "body": "hi team, ek customer (cust_55021) apne 799 wale plan se 1299 wale plan pe upgrade karna chahta tha, humne apni side se upgrade trigger kiya but the charge failed with DO_NOT_HONOR. customer ka card normally kaam karta hai, unhone already 799 pe kai baar successfully pay kiya hai purane subscription pe. ab wo upgrade nahi kar pa rahe aur humein lag raha hai koi issue hai payment gateway me. please check kyu fail ho raha hai, customer thoda irritated ho gaya hai is wajah se.",
+  "true_root_cause": "mandate_amount_change_requires_new_mandate"
+}

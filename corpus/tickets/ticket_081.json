@@ -1,0 +1,11 @@
+{
+  "id": "ticket_081",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-08-26T12:40:00+05:30",
+  "channel": "email",
+  "subject": "KYC rejected again",
+  "body": "hi we run a daily lunch/tiffin delivery service, resent the exact same electricity bill photo you guys said was blurry last time and it just got rejected again for the same reason. this is the second time now, please just tell me what specifically to do differently because clearly resending isn't working",
+  "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged",
+  "true_merchant_id": "merchant_12",
+  "identity_note": "merchant_id submitted (merchant_3, a manufacturing company whose own KYC issue is an unrelated DOC_MISMATCH on a bank statement) does not match the body, which describes a food-delivery business and an electricity-bill DOC_ILLEGIBLE resubmission - that's merchant_12. Trusting the submitted ID pulls a record that is ALSO currently KYC-rejected with a same-file resubmission also rejected, so the wrong-merchant answer would look plausible while citing the wrong rejection reason (DOC_MISMATCH) and the wrong fix (submit a company-name document, not a clearer scan)."
+}

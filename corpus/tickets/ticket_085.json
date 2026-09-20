@@ -1,0 +1,12 @@
+{
+  "id": "ticket_085",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-01T09:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "1) reserve abhi tak wahi hai koi change nahi 2) alag se - international payments ke liye currency conversion kitna extra fee hai humein samajh nahi aa raha",
+  "true_root_cause": [
+    "rolling_reserve_after_chargeback_spike",
+    "international_conversion_fee_not_a_separate_line_item"
+  ]
+}

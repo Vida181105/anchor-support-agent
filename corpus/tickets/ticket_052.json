@@ -1,0 +1,9 @@
+{
+  "id": "ticket_052",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-08-01T09:00:00+05:30",
+  "channel": "email",
+  "subject": "dispute evidence question",
+  "body": "What counts as valid evidence for a dispute where the customer claims the product wasn't as described? We want to be prepared next time this comes up.",
+  "true_root_cause": "dispute_evidence_requirements_generic"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_092",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-09-15T12:00:00+05:30",
+  "channel": "email",
+  "subject": "re: chargeback fee escalation",
+  "body": "Re: my message from last week about the fee - support said on chat this would be looked into by a specialist and I'd hear back in 48 hours, that's now passed",
+  "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute"
+}

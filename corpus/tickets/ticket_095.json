@@ -1,0 +1,9 @@
+{
+  "id": "ticket_095",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-09-13T10:10:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "order fail ho gaya customer ka international card se",
+  "true_root_cause": "risk_block_spike_after_international_approval"
+}

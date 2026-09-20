@@ -1,0 +1,9 @@
+{
+  "id": "ticket_119",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-09-16T20:15:00+05:30",
+  "channel": "email",
+  "subject": "re: settlement mismatch",
+  "body": "ok makes sense now thanks for explaining last time, one more - does this happen with EVERY refund or only if the original txn already settled",
+  "true_root_cause": "refund_deducted_from_later_settlement_batch"
+}

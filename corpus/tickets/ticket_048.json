@@ -1,0 +1,9 @@
+{
+  "id": "ticket_048",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-09-17T09:45:00+05:30",
+  "channel": "email",
+  "subject": "re: chargeback fee",
+  "body": "still dont think its fair we won and still got charged that fee, can this be reversed as a one time thing",
+  "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute"
+}

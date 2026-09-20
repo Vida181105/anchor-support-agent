@@ -1,0 +1,9 @@
+{
+  "id": "ticket_035",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-09-06T11:20:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "refund show nahi ho raha status pending customer ne dobara email kiya hai",
+  "true_root_cause": "webhook_undelivered_refund_already_processed"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_038",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-09-16T15:40:00+05:30",
+  "channel": "email",
+  "subject": "reconciliation still off",
+  "body": "Going back through last week's numbers again and I'm still not matching a couple of batches to my own order sheet, off by a few thousand each time. I think it might be the same refund-timing thing you explained before but want to double check since it's happening more than once now.",
+  "true_root_cause": "refund_deducted_from_later_settlement_batch"
+}

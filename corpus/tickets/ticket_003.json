@@ -1,0 +1,9 @@
+{
+  "id": "ticket_003",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-07-22T11:05:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "KYC rejected again",
+  "body": "I resubmitted my address proof like you guys asked and it got REJECTED AGAIN with the same reason. I dont understand what is wrong with it, its a genuine bank statement from my own company account. This is the second time now and my settlement amount is capped, I am losing business because of this. Please tell me exactly what document you want because clearly the one I have is not working and I am not going to keep guessing.",
+  "true_root_cause": "kyc_rejected_doc_mismatch_bank_account_name"
+}

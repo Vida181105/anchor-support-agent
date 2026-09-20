@@ -1,0 +1,9 @@
+{
+  "id": "ticket_091",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-08-14T08:50:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "jaisa maine pichli baar bataya tha, wahi document dobara bhej diya hai, ab please jaldi review kar dena",
+  "true_root_cause": "kyc_rejected_doc_mismatch_bank_account_name"
+}

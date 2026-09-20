@@ -1,0 +1,9 @@
+{
+  "id": "ticket_054",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-08-14T12:10:00+05:30",
+  "channel": "email",
+  "subject": "upi timeout errors",
+  "body": "getting a lot of UPI_TIMEOUT errors from customers lately is that on our end or the customers phone/app",
+  "true_root_cause": "upi_timeout_generic_customer_side"
+}

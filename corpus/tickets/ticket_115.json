@@ -1,0 +1,9 @@
+{
+  "id": "ticket_115",
+  "merchant_id": "merchant_15",
+  "timestamp": "2026-09-04T18:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "ek customer bola card charge hua but subscription upgrade nahi hua, dobara charge na ho jaye is baat ka dar hai unhe",
+  "true_root_cause": "mandate_amount_change_requires_new_mandate"
+}

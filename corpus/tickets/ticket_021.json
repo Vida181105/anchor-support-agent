@@ -1,0 +1,9 @@
+{
+  "id": "ticket_021",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-09-17T11:30:00+05:30",
+  "channel": "email",
+  "subject": "re: money not come",
+  "body": "hi again re my earlier mail, dashboard still shows same pending payout is this normal for how long does t+3 actually take end to end",
+  "true_root_cause": "settlement_mid_cycle_t3_not_delayed"
+}

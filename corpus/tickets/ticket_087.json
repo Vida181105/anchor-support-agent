@@ -1,0 +1,12 @@
+{
+  "id": "ticket_087",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-09-10T14:00:00+05:30",
+  "channel": "email",
+  "subject": "mandate + refund question",
+  "body": "Two separate items: first, the mandate_6_442 situation is still unresolved on our end (customer wants to know how to restart it). Second, unrelated - do partial refunds count against a customer's original order total or can we issue more than the original amount by mistake if we're not careful?",
+  "true_root_cause": [
+    "subscription_mandate_paused_after_retries",
+    "partial_refunds_generic"
+  ]
+}

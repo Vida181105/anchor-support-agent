@@ -1,0 +1,12 @@
+{
+  "id": "ticket_030",
+  "merchant_id": "merchant_4",
+  "timestamp": "2026-09-14T19:00:00+05:30",
+  "channel": "email",
+  "subject": "missing payout + refund timeline question",
+  "body": "Hi, two things - first, part of yesterday's payout is missing and I don't understand why (already emailed about this). Second, separately, can you remind me what the usual refund timeline is for a customer paying by UPI? Just planning around a return we're expecting.",
+  "true_root_cause": [
+    "partial_account_hold_flagged_batch",
+    "refund_timeline_upi_generic"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_065",
+  "merchant_id": "merchant_15",
+  "timestamp": "2026-08-25T10:40:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "If a customer's mandate amount needs to increase later, do we edit the existing one or is there a proper way to do this cleanly on our side going forward (not the failed charge from before, just asking for future signups)",
+  "true_root_cause": "mandate_amount_change_requires_new_mandate_generic"
+}

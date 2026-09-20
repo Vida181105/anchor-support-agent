@@ -1,0 +1,9 @@
+{
+  "id": "ticket_004",
+  "merchant_id": "merchant_4",
+  "timestamp": "2026-09-15T20:03:00+05:30",
+  "channel": "email",
+  "subject": "ACCOUNT BLOCKED??",
+  "body": "why is my account blocked money not coming full amount only partial come whats going on this never happened before FIX THIS",
+  "true_root_cause": "partial_account_hold_flagged_batch"
+}

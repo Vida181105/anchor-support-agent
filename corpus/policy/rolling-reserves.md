@@ -50,3 +50,19 @@ The total amount currently held in reserve, and the schedule on which it
 will be released, is visible on the merchant dashboard under "Reserve
 Balance." Amounts scheduled for release appear there up to 90 days in
 advance of their release date.
+
+## What counts toward the chargeback rate
+
+The chargeback rate used to evaluate the reserve trigger counts only
+chargebacks that were actually upheld against the merchant (i.e., disputes
+the merchant lost) within the trailing 30-day window. A dispute that was
+opened and then resolved in the merchant's favor does not count toward this
+rate, since no funds were ultimately reversed.
+
+## Reserve scope
+
+A reserve withholds a percentage of each day's total settlement; it is not
+scoped to specific transactions, payment methods, or order types. There is
+no mechanism to apply a reserve to only part of a merchant's transaction
+mix — once triggered, it applies uniformly to the whole account's daily
+settlement until it is removed.

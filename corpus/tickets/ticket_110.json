@@ -1,0 +1,9 @@
+{
+  "id": "ticket_110",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-07-28T14:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "Hi, not urgent, just curious for planning purposes - if we ever DO get a rolling reserve applied someday, does it affect the whole account or can it be scoped to just certain kinds of transactions?",
+  "true_root_cause": "reserve_scope_generic"
+}

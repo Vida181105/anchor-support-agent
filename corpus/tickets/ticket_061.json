@@ -1,0 +1,9 @@
+{
+  "id": "ticket_061",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-07-28T10:05:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "quick one - does DO_NOT_HONOR always mean the card is blocked or could it be something more minor thats getting reported the same way",
+  "true_root_cause": "do_not_honor_generic_ambiguous_code"
+}

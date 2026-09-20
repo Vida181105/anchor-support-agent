@@ -1,0 +1,9 @@
+{
+  "id": "ticket_051",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-08-28T10:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "customer bola refund nahi mila card pe, kitna time lagta hai card refund me normally",
+  "true_root_cause": "refund_timeline_card_generic"
+}

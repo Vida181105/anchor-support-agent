@@ -1,0 +1,9 @@
+{
+  "id": "ticket_101",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-09-05T10:15:00+05:30",
+  "channel": "email",
+  "subject": "losing patience",
+  "body": "Look, I've been more than patient here. I run a small fabrication business, not a bank - I don't have a compliance team to decode what 'DOC_MISMATCH' means. Every time I ask, I get a slightly different generic answer. Either tell me the exact document type and exact name that needs to appear on it, in one sentence, or connect me to someone who can, because right now I am losing orders every week this stays unresolved and I am genuinely considering moving to a competitor who can actually explain what they need from me.",
+  "true_root_cause": "kyc_rejected_doc_mismatch_bank_account_name"
+}

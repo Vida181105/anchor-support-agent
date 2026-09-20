@@ -1,0 +1,9 @@
+{
+  "id": "ticket_022",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-09-14T11:00:00+05:30",
+  "channel": "email",
+  "subject": "faster settlement option?",
+  "body": "Hello, quick question separate from any current issue - we've been selling on the platform for almost a year now with zero disputes. Is there a faster settlement option than T+3? Would love to know if we qualify and how to apply.",
+  "true_root_cause": "t1_eligible_but_not_requested"
+}

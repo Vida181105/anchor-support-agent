@@ -1,0 +1,11 @@
+{
+  "id": "ticket_017",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-09-15T13:33:00+05:30",
+  "channel": "email",
+  "subject": "chargeback fee even after winning",
+  "body": "Hi, this is Zenith Fitness Equipment. We just won a dispute we'd been fighting (case disp_14_01) and got the transaction amount back in the payout, but there's still a 500 rupee chargeback fee sitting in the same batch that wasn't reversed. If we won the case shouldn't that fee come back to us too? Please advise.",
+  "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute",
+  "true_merchant_id": "merchant_14",
+  "identity_note": "merchant_id field submitted with this ticket (merchant_9) does not match the business name and case reference in the body, which belong to merchant_14."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_094",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-09-16T19:45:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "payment aaya nahi abhi tak",
+  "true_root_cause": "settlement_mid_cycle_t3_not_delayed"
+}

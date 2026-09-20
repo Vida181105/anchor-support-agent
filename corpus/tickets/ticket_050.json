@@ -1,0 +1,9 @@
+{
+  "id": "ticket_050",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-08-10T14:00:00+05:30",
+  "channel": "email",
+  "subject": "changing business type",
+  "body": "What documents do I need if I want to switch my account from sole proprietorship to a private limited company? Do I have to redo KYC from scratch?",
+  "true_root_cause": "kyc_requirements_generic_business_type_change"
+}

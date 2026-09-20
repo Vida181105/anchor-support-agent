@@ -1,0 +1,9 @@
+{
+  "id": "ticket_049",
+  "merchant_id": "merchant_15",
+  "timestamp": "2026-09-08T11:30:00+05:30",
+  "channel": "email",
+  "subject": "upgrade charges failing - pattern question",
+  "body": "Engineering here - confirming a pattern before we raise this internally. All our plan-upgrade charge attempts are failing with DO_NOT_HONOR, but downgrades and same-tier renewals go through fine. Is that consistent with an amount-based authentication rule on your end, or should we be looking at something in our own integration?",
+  "true_root_cause": "mandate_amount_change_requires_new_mandate"
+}

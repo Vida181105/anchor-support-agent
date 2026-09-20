@@ -1,0 +1,9 @@
+{
+  "id": "ticket_020",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-09-06T09:00:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "customer ka subscription band q hua koi retry nahi ho raha",
+  "true_root_cause": "subscription_mandate_paused_after_retries"
+}

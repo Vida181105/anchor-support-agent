@@ -1,0 +1,9 @@
+{
+  "id": "ticket_105",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-08-02T15:10:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "quick one, does the chargeback fee amount vary by dispute reason or is it always the same flat amount",
+  "true_root_cause": "chargeback_fee_flat_amount_generic"
+}

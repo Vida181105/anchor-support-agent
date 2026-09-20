@@ -1,0 +1,9 @@
+{
+  "id": "ticket_006",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-09-04T08:55:00+05:30",
+  "channel": "email",
+  "subject": "Customer subscription stopped charging - bug?",
+  "body": "One of our customers (ref cust_88213) has a monthly plan that just stopped renewing. Looking at the logs on our side it seems like the charge attempt failed a couple of times this week and now nothing is happening at all, no more attempts. Is this a bug on your end? We haven't changed anything about this customer's plan. Need this fixed asap because they're asking us why their subscription got cancelled.",
+  "true_root_cause": "subscription_mandate_paused_after_retries"
+}

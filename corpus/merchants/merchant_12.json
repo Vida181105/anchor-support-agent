@@ -20,7 +20,7 @@
         "rejection_reason": "DOC_ILLEGIBLE",
         "submitted_date": "2026-08-02",
         "reviewed_date": "2026-08-05",
-        "notes": "Photo of utility bill is blurry; the account number and address fields cannot be read by the verification system."
+        "content_hash": "sha256:c19e402fa8b1"
       },
       {
         "type": "address_proof",
@@ -28,9 +28,10 @@
         "rejection_reason": "DOC_ILLEGIBLE",
         "submitted_date": "2026-08-19",
         "reviewed_date": "2026-08-20",
-        "notes": "Same photo file re-uploaded (identical file hash to the 2026-08-02 submission); rejected again for the same legibility issue since the underlying scan was never replaced."
+        "content_hash": "sha256:c19e402fa8b1"
       }
-    ]
+    ],
+    "_derivation": "Both address-proof submissions share the same content_hash — the resubmission was the identical file, never replaced with a clearer scan. Per corpus/policy/kyc-documents.md, resubmitting an unchanged file is rejected again for the same reason; the fix is a new, legible scan, not another resubmission of the same photo."
   },
   "settlement_schedule": {
     "cycle": "T+3",
@@ -46,7 +47,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15"
   },
   "hold": {
     "active": false
@@ -302,6 +304,22 @@
       "amount": 685,
       "currency": "INR",
       "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_031",
+      "date": "2026-09-15",
+      "amount": 1100,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_12_032",
+      "date": "2026-09-15",
+      "amount": 980,
+      "currency": "INR",
+      "method": "wallet",
       "status": "captured"
     }
   ]

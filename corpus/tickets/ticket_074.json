@@ -1,0 +1,9 @@
+{
+  "id": "ticket_074",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-07-20T15:30:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "subscription retry fail hone ke baad kitni baar try karta hai system apne aap",
+  "true_root_cause": "mandate_retry_cap_generic"
+}

@@ -40,7 +40,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": true,
-    "t1_request_date": "2025-02-01"
+    "t1_request_date": "2025-02-01",
+    "oldest_unsettled_batch_captured_date": "2026-09-17"
   },
   "hold": {
     "active": false
@@ -61,7 +62,6 @@
       "frequency": "monthly",
       "status": "charge_failed",
       "created_date": "2025-11-01",
-      "note": "Customer upgraded from the 799 plan to the 1299 plan on 2026-09-02 via the merchant's integration, which attempted to charge 1299 against the existing mandate without creating a new one. The platform does not support modifying an active mandate's amount in place; a charge that deviates from the registered mandate amount is not covered by the recurring-charge authentication exemption and was declined by the issuing bank.",
       "attempted_charges": [
         {
           "date": "2026-09-03",
@@ -69,7 +69,9 @@
           "result": "failed",
           "failure_code": "DO_NOT_HONOR"
         }
-      ]
+      ],
+      "upgrade_requested_date": "2026-09-02",
+      "_derivation": "mandate.amount (registered) is 799; attempted_charges[0].amount is 1299 — a mismatch. corpus/policy/subscription-mandates.md states an active mandate's amount cannot be modified in place (a new mandate must be created instead) and that a charge deviating from the registered amount is not covered by the recurring-charge authentication exemption, so the issuing bank's DO_NOT_HONOR decline is expected behavior, not a platform bug."
     }
   ],
   "disputes": [],
@@ -299,6 +301,22 @@
       "amount": 336,
       "currency": "INR",
       "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_029",
+      "date": "2026-09-17",
+      "amount": 799,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_15_030",
+      "date": "2026-09-17",
+      "amount": 799,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

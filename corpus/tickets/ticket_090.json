@@ -1,0 +1,9 @@
+{
+  "id": "ticket_090",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-09-05T10:40:00+05:30",
+  "channel": "email",
+  "subject": "re: previous delayed payout ticket",
+  "body": "Reference ticket from last month about a similar delayed payout - is this the same kind of issue or something new? Wanted to flag in case it's a pattern with our account specifically.",
+  "true_root_cause": "bank_side_settlement_delay"
+}

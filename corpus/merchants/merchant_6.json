@@ -40,7 +40,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": true,
-    "t1_request_date": "2025-05-01"
+    "t1_request_date": "2025-05-01",
+    "oldest_unsettled_batch_captured_date": "2026-09-17"
   },
   "hold": {
     "active": false
@@ -79,7 +80,7 @@
         }
       ],
       "paused_date": "2026-09-01",
-      "note": "Third consecutive retry failed on 2026-09-01; platform does not retry a 4th time. Mandate requires customer re-authorization before charges resume."
+      "_derivation": "retry_attempts has exactly 3 entries, all failed, spanning 2026-08-28 to 2026-09-01. Per corpus/policy/subscription-mandates.md, the platform allows up to 3 automatic retries before pausing the mandate; a 4th attempt is not made. status='paused' is the expected outcome, not a malfunction — the merchant must prompt the customer to re-authorize."
     }
   ],
   "disputes": [],
@@ -306,6 +307,22 @@
       "amount": 1161,
       "currency": "INR",
       "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_029",
+      "date": "2026-09-17",
+      "amount": 1499,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_6_030",
+      "date": "2026-09-17",
+      "amount": 1499,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

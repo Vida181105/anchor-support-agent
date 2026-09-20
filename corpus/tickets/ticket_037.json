@@ -1,0 +1,9 @@
+{
+  "id": "ticket_037",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-09-16T08:50:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "matlab galat kaata gaya paisa? please explain jaldi accountant puch raha hai",
+  "true_root_cause": "refund_deducted_from_later_settlement_batch"
+}

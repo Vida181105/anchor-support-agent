@@ -1,0 +1,9 @@
+{
+  "id": "ticket_120",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-08-20T09:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "general question - roughly how often do bank-side clearance delays like this actually happen, is it common",
+  "true_root_cause": "bank_side_settlement_delay_frequency_generic"
+}

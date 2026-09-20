@@ -49,3 +49,9 @@ chargeback rate used for this calculation is measured over a trailing
 30-day window and is recalculated daily, so an account can cross the
 reserve threshold days after the chargebacks themselves occurred, once
 enough of them land within the same rolling window.
+
+## Chargeback fee amount
+
+The chargeback fee is a flat amount per case, set by the card network and
+passed through unchanged by the platform. It does not vary by dispute
+reason code, transaction amount, or outcome.

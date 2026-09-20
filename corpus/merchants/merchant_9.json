@@ -40,7 +40,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": true,
-    "t1_request_date": "2025-03-01"
+    "t1_request_date": "2025-03-01",
+    "oldest_unsettled_batch_captured_date": "2026-09-17"
   },
   "hold": {
     "active": false
@@ -64,7 +65,7 @@
       "evidence_submitted_date": "2026-08-15",
       "resolution": null,
       "resolution_date": null,
-      "note": "Issuing bank's decision timeline for this reason code is 30-45 days from evidence submission. As of 2026-09-17 (33 days after submission), the dispute is still within the normal window and has not exceeded it."
+      "_derivation": "evidence_submitted_date is 2026-08-15. Elapsed days from CORPUS_NOW (2026-09-17) is 33, which is within corpus/policy/chargebacks-disputes.md's stated 30-45 day issuing-bank decision window. status='under_review' is expected, not a platform delay."
     }
   ],
   "transactions": [
@@ -310,6 +311,22 @@
       "id": "txn_9_030",
       "date": "2026-07-09",
       "amount": 9975,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_031",
+      "date": "2026-09-17",
+      "amount": 16200,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_9_032",
+      "date": "2026-09-17",
+      "amount": 14800,
       "currency": "INR",
       "method": "netbanking",
       "status": "captured"

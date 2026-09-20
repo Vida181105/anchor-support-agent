@@ -1,0 +1,9 @@
+{
+  "id": "ticket_059",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-07-10T09:50:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "whats the actual response window once a dispute notification comes in, is it business days or calendar days",
+  "true_root_cause": "dispute_response_window_generic"
+}

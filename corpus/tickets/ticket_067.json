@@ -1,0 +1,9 @@
+{
+  "id": "ticket_067",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-08-12T16:15:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "once we win a dispute does the chargeback fee also get refunded or just the transaction amount",
+  "true_root_cause": "chargeback_fee_nonrefundable_generic"
+}

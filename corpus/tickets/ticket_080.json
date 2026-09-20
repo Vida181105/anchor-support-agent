@@ -1,0 +1,9 @@
+{
+  "id": "ticket_080",
+  "merchant_id": null,
+  "timestamp": "2026-07-29T09:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hello can you tell me why my kyc got rejected",
+  "true_root_cause": "insufficient_information_missing_merchant_id"
+}

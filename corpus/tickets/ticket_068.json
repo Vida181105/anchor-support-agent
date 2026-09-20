@@ -1,0 +1,9 @@
+{
+  "id": "ticket_068",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-07-31T09:10:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hi is there an api way to check webhook delivery status or do we have to log into the dashboard every time",
+  "true_root_cause": "webhook_delivery_status_dashboard_only_generic"
+}

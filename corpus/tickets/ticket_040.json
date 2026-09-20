@@ -1,0 +1,9 @@
+{
+  "id": "ticket_040",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-09-16T18:00:00+05:30",
+  "channel": "email",
+  "subject": "please escalate",
+  "body": "This has now been going on for weeks with zero movement. Your team told me earlier this could be escalated if it drags on - well it has dragged on, so I'd like this escalated please, not another generic 'still under review' reply.",
+  "true_root_cause": "dispute_within_normal_bank_review_window"
+}

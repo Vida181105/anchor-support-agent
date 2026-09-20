@@ -1,0 +1,9 @@
+{
+  "id": "ticket_096",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-10T08:00:00+05:30",
+  "channel": "email",
+  "subject": "Reserve impact on our operations - need a real answer",
+  "body": "Good morning. I wanted to write a longer note this time because I don't think my earlier messages captured how serious this is for us. Trailblazer runs almost entirely on cash flow from weekly settlements to pay our local tour operators and drivers upfront before each trip. With 15% of every payout going into this reserve since late August, we've had to delay payments to two of our ground partners in Meghalaya, which is genuinely damaging relationships we've spent years building. I understand chargebacks happened and I'm not disputing that they happened. What I need is clarity - an actual date range, in writing, for when this reserve starts winding down, and whether there's any process to get it reviewed early if we can show our dispute rate has come back down since. Please have someone senior look at this, not just another templated reply about the standard reserve policy.",
+  "true_root_cause": "rolling_reserve_after_chargeback_spike"
+}

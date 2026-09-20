@@ -1,0 +1,9 @@
+{
+  "id": "ticket_013",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-09-17T07:40:00+05:30",
+  "channel": "email",
+  "subject": "URGENT - settled money not in my bank account",
+  "body": "Dashboard is showing my payout from 3 days back as \"settled\" but I checked my bank account this morning and the money is simply not there. I called my bank and they have no record of receiving anything from you. This is a huge amount for us and I am extremely worried something has gone wrong. Please investigate immediately and tell me where this money actually is, I cannot understand how something can be \"settled\" and also not exist in my account.",
+  "true_root_cause": "bank_side_settlement_delay"
+}

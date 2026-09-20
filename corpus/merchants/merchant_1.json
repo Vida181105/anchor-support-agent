@@ -35,7 +35,8 @@
     },
     "t1_eligibility_requested": false,
     "t1_request_date": null,
-    "note": "Oldest unsettled batch captured 2026-09-15; T+3 means settlement on 2026-09-18 (2 business days elapsed as of 2026-09-17)."
+    "oldest_unsettled_batch_captured_date": "2026-09-15",
+    "_derivation": "Oldest unsettled batch captured 2026-09-15 (Tuesday); T+3 in business days lands on 2026-09-18 (Wed 16=day1, Thu 17=day2, Fri 18=day3). As of CORPUS_NOW (2026-09-17, Thursday), only 2 of 3 business days have elapsed — this is expected, not a delay."
   },
   "hold": {
     "active": false
@@ -291,6 +292,30 @@
       "amount": 5051,
       "currency": "INR",
       "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_031",
+      "date": "2026-09-15",
+      "amount": 41200,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_032",
+      "date": "2026-09-15",
+      "amount": 33600,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_1_033",
+      "date": "2026-09-15",
+      "amount": 21700,
+      "currency": "INR",
+      "method": "netbanking",
       "status": "captured"
     }
   ]

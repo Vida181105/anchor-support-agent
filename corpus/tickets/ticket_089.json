@@ -1,0 +1,9 @@
+{
+  "id": "ticket_089",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-08-31T16:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "as per our chat on whatsapp business support last week, you said someone would look into the settlement mismatch and get back to me, still waiting",
+  "true_root_cause": "refund_deducted_from_later_settlement_batch"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_028",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-07-25T14:45:00+05:30",
+  "channel": "email",
+  "subject": "payout amount seems too low",
+  "body": "My payouts are tiny compared to what we're actually processing, way below our real order volume. Is there some kind of cap on my account? Nothing was mentioned about this when we signed up.",
+  "true_root_cause": "volume_capped_pending_kyc"
+}

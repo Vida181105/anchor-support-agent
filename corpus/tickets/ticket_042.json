@@ -1,0 +1,9 @@
+{
+  "id": "ticket_042",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-09-11T10:30:00+05:30",
+  "channel": "email",
+  "subject": "currency fee question",
+  "body": "Is there a currency conversion fee for the USD orders we've started getting? Doesn't seem to show separately on the settlement report and I want to make sure I'm pricing things correctly.",
+  "true_root_cause": "international_conversion_fee_not_a_separate_line_item"
+}

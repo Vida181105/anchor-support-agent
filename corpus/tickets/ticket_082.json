@@ -1,0 +1,11 @@
+{
+  "id": "ticket_082",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-09-16T14:10:00+05:30",
+  "channel": "email",
+  "subject": "re: chargeback fee",
+  "body": "This is Zenith - following up again on the chargeback fee from the dispute we won (disp_14_01), still think that shouldn't have been charged given the outcome.",
+  "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute",
+  "true_merchant_id": "merchant_14",
+  "identity_note": "merchant_id submitted is merchant_5 (VitaCare Pharmacy Direct), but the body names 'Zenith' and cites dispute id disp_14_01, which belongs to merchant_14 (Zenith Fitness Equipment) - an unrelated pharmaceuticals account has no such dispute on record, so this mismatch is easy to catch by checking the cited dispute id against the claimed merchant."
+}

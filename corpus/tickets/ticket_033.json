@@ -1,0 +1,9 @@
+{
+  "id": "ticket_033",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-09-03T21:10:00+05:30",
+  "channel": "email",
+  "subject": "angry customer re subscription",
+  "body": "Our customer support inbox is getting hammered by this one subscriber (cust_88213) who says we cancelled her plan without any notice, she's threatening to leave a bad review. Can someone please explain in plain terms what happened so I can respond to her properly, and is there anything we can do to restart it without her having to redo her card details from scratch?",
+  "true_root_cause": "subscription_mandate_paused_after_retries"
+}

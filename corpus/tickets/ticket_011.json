@@ -1,0 +1,9 @@
+{
+  "id": "ticket_011",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-09-17T08:02:00+05:30",
+  "channel": "email",
+  "subject": "T+1 request pending",
+  "body": "hi i applied for t1 settlement two days back still shows pending on dashboard how long does this take normally just want to know timeline thanks",
+  "true_root_cause": "t1_request_within_approval_sla"
+}

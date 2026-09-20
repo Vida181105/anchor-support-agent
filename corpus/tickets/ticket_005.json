@@ -1,0 +1,9 @@
+{
+  "id": "ticket_005",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-09-10T14:20:00+05:30",
+  "channel": "email",
+  "subject": "International payments still not enabled",
+  "body": "Hello, I requested international payments about a week and a half back. My KYC has been fully verified for almost a year now, so I don't understand what the holdup is. We have customers from the US and UK wanting to order but we can't accept their cards. Can you please expedite this or at least tell me what's pending on your end. We're a licensed pharmacy, everything is above board.",
+  "true_root_cause": "international_payments_ineligible_business_category"
+}

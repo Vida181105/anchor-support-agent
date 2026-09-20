@@ -34,7 +34,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15"
   },
   "hold": {
     "active": false
@@ -47,7 +48,7 @@
     "eligible": true,
     "requested_date": "2026-08-20",
     "approval_date": "2026-08-31",
-    "note": "International acceptance went live 2026-08-31. International transactions receive additional automated risk screening; a higher proportion of RISK_BLOCK declines in the first weeks of international volume is expected while the risk engine calibrates to this merchant's patterns."
+    "_derivation": "approval_date (2026-08-31) is within the last few weeks of CORPUS_NOW (2026-09-17). cross_border transactions in the transaction list show a materially higher RISK_BLOCK rate than domestic ones in the same window, matching corpus/policy/international-payments.md's stated risk-engine calibration behavior for newly approved international merchants — not a platform malfunction."
   },
   "disputes": [],
   "transactions": [
@@ -214,7 +215,7 @@
       "status": "captured"
     },
     {
-      "id": "txn_10_001",
+      "id": "txn_10_021",
       "date": "2026-09-03",
       "amount": 10197,
       "currency": "USD",
@@ -223,7 +224,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_002",
+      "id": "txn_10_022",
       "date": "2026-09-04",
       "amount": 2854,
       "currency": "USD",
@@ -232,7 +233,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_003",
+      "id": "txn_10_023",
       "date": "2026-09-06",
       "amount": 10275,
       "currency": "USD",
@@ -241,7 +242,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_004",
+      "id": "txn_10_024",
       "date": "2026-09-06",
       "amount": 10733,
       "currency": "USD",
@@ -251,7 +252,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_005",
+      "id": "txn_10_025",
       "date": "2026-09-06",
       "amount": 3198,
       "currency": "USD",
@@ -260,7 +261,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_006",
+      "id": "txn_10_026",
       "date": "2026-09-07",
       "amount": 6468,
       "currency": "USD",
@@ -270,7 +271,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_007",
+      "id": "txn_10_027",
       "date": "2026-09-08",
       "amount": 4218,
       "currency": "USD",
@@ -279,7 +280,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_008",
+      "id": "txn_10_028",
       "date": "2026-09-09",
       "amount": 3386,
       "currency": "USD",
@@ -288,7 +289,7 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_009",
+      "id": "txn_10_029",
       "date": "2026-09-10",
       "amount": 5810,
       "currency": "USD",
@@ -298,13 +299,21 @@
       "cross_border": true
     },
     {
-      "id": "txn_10_010",
+      "id": "txn_10_030",
       "date": "2026-09-10",
       "amount": 8797,
       "currency": "USD",
       "method": "wallet",
       "status": "captured",
       "cross_border": true
+    },
+    {
+      "id": "txn_10_031",
+      "date": "2026-09-15",
+      "amount": 5200,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
     }
   ]
 }

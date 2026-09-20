@@ -1,0 +1,9 @@
+{
+  "id": "ticket_097",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-09-01T06:30:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "kyc phir se dekh lo please",
+  "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged"
+}

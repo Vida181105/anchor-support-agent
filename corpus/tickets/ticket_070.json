@@ -1,0 +1,9 @@
+{
+  "id": "ticket_070",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-07-22T10:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "for a rejected KYC document is there a cooldown before we can try again or is it instant",
+  "true_root_cause": "kyc_resubmission_no_cooldown_generic"
+}

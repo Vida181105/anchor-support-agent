@@ -1,0 +1,9 @@
+{
+  "id": "ticket_053",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-07-30T16:40:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hey do webhooks retry automatically if my server is down for a bit or do I have to manually resend everything",
+  "true_root_cause": "webhook_retry_schedule_generic"
+}

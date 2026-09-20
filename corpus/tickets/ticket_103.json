@@ -1,0 +1,9 @@
+{
+  "id": "ticket_103",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-08-02T09:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hi does having even one open dispute reset the 90 day clock for T1 eligibility or does it just pause it",
+  "true_root_cause": "t1_eligibility_dispute_rule_generic"
+}

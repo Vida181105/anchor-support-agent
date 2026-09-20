@@ -1,0 +1,9 @@
+{
+  "id": "ticket_112",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-08-05T11:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "does a chargeback that we eventually WIN still count toward the chargeback rate that triggers a reserve, or only the ones we lose",
+  "true_root_cause": "chargeback_rate_calculation_generic"
+}

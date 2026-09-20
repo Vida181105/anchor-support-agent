@@ -1,0 +1,9 @@
+{
+  "id": "ticket_078",
+  "merchant_id": null,
+  "timestamp": "2026-09-01T13:00:00+05:30",
+  "channel": "email",
+  "subject": "account review follow up",
+  "body": "Hi, following up on the account review that was opened on our account, any timeline update?",
+  "true_root_cause": "insufficient_information_missing_merchant_id"
+}

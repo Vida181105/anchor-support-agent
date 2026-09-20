@@ -26,7 +26,8 @@
         "rejection_reason": "DOC_MISMATCH",
         "submitted_date": "2026-07-03",
         "reviewed_date": "2026-07-06",
-        "notes": "Bank statement submitted as address proof is held in the name of director Rohit Malhotra, not 'Northline Fabrication Pvt Ltd'."
+        "document_holder_name": "Rohit Malhotra",
+        "content_hash": "sha256:7f3a9c1e2b8d4f60"
       },
       {
         "type": "address_proof",
@@ -34,9 +35,11 @@
         "rejection_reason": "DOC_MISMATCH",
         "submitted_date": "2026-07-20",
         "reviewed_date": "2026-07-21",
-        "notes": "Resubmission was the same bank statement re-uploaded unchanged; rejected again for the same reason."
+        "document_holder_name": "Rohit Malhotra",
+        "content_hash": "sha256:7f3a9c1e2b8d4f60"
       }
-    ]
+    ],
+    "_derivation": "document_holder_name ('Rohit Malhotra') on both address-proof submissions does not match business_name ('Northline Fabrication Pvt Ltd'), matching the 'document ownership mismatch' case in corpus/policy/kyc-documents.md — the bank account is held by a director, not the company. Both submissions share the same content_hash, so the resubmission was the identical file re-uploaded, which is rejected again for the same reason per policy (resubmitting an unchanged file does not trigger a different result)."
   },
   "settlement_schedule": {
     "cycle": "T+3",
@@ -47,12 +50,13 @@
       "amount": 42000
     },
     "next_payout": {
-      "date": "2026-09-19",
+      "date": "2026-09-21",
       "amount": 31000,
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-16"
   },
   "hold": {
     "active": false
@@ -308,6 +312,22 @@
       "amount": 1872,
       "currency": "INR",
       "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_3_031",
+      "date": "2026-09-16",
+      "amount": 12400,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_3_032",
+      "date": "2026-09-16",
+      "amount": 8900,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

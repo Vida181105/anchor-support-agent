@@ -1,0 +1,9 @@
+{
+  "id": "ticket_064",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-08-10T07:45:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "sunday ko bhi settlement hota hai kya ya sirf weekdays",
+  "true_root_cause": "business_days_exclude_weekends_generic"
+}

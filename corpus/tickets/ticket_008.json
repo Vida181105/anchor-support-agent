@@ -1,0 +1,9 @@
+{
+  "id": "ticket_008",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-09-15T12:10:00+05:30",
+  "channel": "email",
+  "subject": "settlement amount doesn't match my records",
+  "body": "The amount settled on 15th Sept doesn't tally with what I calculated from my order list for that period, its short by exactly 7400 rupees. I went back and this seems to match a refund I processed a few days ago for an order that was originally paid back in early August and had already been settled long before. Why is a refund from an old, already-settled order being taken out of an unrelated settlement batch weeks later? Please explain the logic here, my accountant is asking me to reconcile this.",
+  "true_root_cause": "refund_deducted_from_later_settlement_batch"
+}

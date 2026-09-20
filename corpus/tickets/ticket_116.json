@@ -1,0 +1,9 @@
+{
+  "id": "ticket_116",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-07-22T08:15:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "sorry to keep asking but is there a way to get webhook alerts on email too or only via the endpoint",
+  "true_root_cause": "webhook_delivery_status_dashboard_only_generic"
+}

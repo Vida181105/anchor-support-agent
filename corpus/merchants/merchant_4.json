@@ -32,10 +32,13 @@
       "date": "2026-09-18",
       "amount": 34000,
       "status": "partially_held",
-      "note": "Full batch was 121000; 87000 held pending review of flagged transactions, remaining 34000 unaffected and scheduled normally."
+      "gross_batch_amount": 121000,
+      "held_amount": 87000
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15",
+    "_derivation": "next_payout.amount (34000) = gross_batch_amount (121000) - held_amount (87000). held_amount corresponds exactly to hold.affected_transaction_ids; the remaining transactions captured the same day are unaffected and settle normally."
   },
   "hold": {
     "active": true,
@@ -302,6 +305,22 @@
       "amount": 7268,
       "currency": "INR",
       "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_4_031",
+      "date": "2026-09-15",
+      "amount": 18400,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_4_032",
+      "date": "2026-09-15",
+      "amount": 15600,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

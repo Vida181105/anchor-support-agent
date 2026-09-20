@@ -33,7 +33,13 @@
     "last_payout": {
       "date": "2026-09-16",
       "amount": 118000,
-      "note": "Includes a -500 line item for the non-refundable chargeback fee on disp_14_01, separate from the transaction amount itself, which was returned to the merchant when the dispute was won."
+      "line_items": [
+        {
+          "type": "chargeback_fee",
+          "dispute_id": "disp_14_01",
+          "amount": -500
+        }
+      ]
     },
     "next_payout": {
       "date": "2026-09-18",
@@ -41,7 +47,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": true,
-    "t1_request_date": "2025-07-01"
+    "t1_request_date": "2025-07-01",
+    "oldest_unsettled_batch_captured_date": "2026-09-17"
   },
   "hold": {
     "active": false
@@ -67,7 +74,7 @@
       "resolution_date": "2026-09-14",
       "chargeback_fee_charged": true,
       "chargeback_fee_amount": 500,
-      "note": "Disputed amount was returned to the merchant on winning the dispute. The 500 chargeback fee, charged at the time the dispute was opened to cover network processing costs, is non-refundable regardless of outcome."
+      "_derivation": "resolution is 'merchant_won' and chargeback_fee_charged is true with chargeback_fee_amount 500. corpus/policy/chargebacks-disputes.md states the chargeback fee is charged regardless of outcome and is non-refundable even when the merchant wins — so the -500 line item is correct and expected, not an error."
     }
   ],
   "transactions": [
@@ -314,6 +321,22 @@
       "amount": 8627,
       "currency": "INR",
       "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_031",
+      "date": "2026-09-17",
+      "amount": 11200,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_14_032",
+      "date": "2026-09-17",
+      "amount": 9600,
+      "currency": "INR",
+      "method": "netbanking",
       "status": "captured"
     }
   ]

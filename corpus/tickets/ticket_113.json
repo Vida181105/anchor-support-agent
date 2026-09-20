@@ -1,0 +1,9 @@
+{
+  "id": "ticket_113",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-09-14T09:40:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "koi aur tarika hai KYC karwane ka, ye online wala kaam nahi kar raha mere liye",
+  "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged"
+}

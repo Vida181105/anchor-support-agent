@@ -47,3 +47,9 @@ refund, settlement, or dispute — those records update in the platform's
 systems regardless of whether the merchant's endpoint ever received
 notice. A merchant who never received a `refund.processed` webhook may
 still find the refund fully processed when checking the dashboard directly.
+
+## Checking delivery status outside the dashboard
+
+Webhook delivery status is only available through the dashboard's webhook
+log; there is no separate API endpoint for querying past delivery attempts,
+and delivery status is not emailed or otherwise pushed to the merchant.

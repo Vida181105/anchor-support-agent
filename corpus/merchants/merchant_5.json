@@ -40,7 +40,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": true,
-    "t1_request_date": "2026-01-05"
+    "t1_request_date": "2026-01-05",
+    "oldest_unsettled_batch_captured_date": "2026-09-17"
   },
   "hold": {
     "active": false
@@ -53,7 +54,7 @@
     "eligible": false,
     "requested_date": "2026-09-01",
     "ineligibility_reason": "business_category_excluded",
-    "note": "Category 'pharmaceuticals' is on the excluded list for international acceptance regardless of KYC status. KYC has been fully verified since 2025-09-10."
+    "_derivation": "category is 'pharmaceuticals', which corpus/policy/international-payments.md lists as excluded from international acceptance regardless of KYC status. kyc.status is 'verified', so the ineligibility is category-driven, not KYC-driven — the merchant's own assumption (that KYC is the blocker) is incorrect."
   },
   "disputes": [],
   "transactions": [
@@ -299,6 +300,22 @@
       "amount": 1648,
       "currency": "INR",
       "method": "wallet",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_031",
+      "date": "2026-09-17",
+      "amount": 2100,
+      "currency": "INR",
+      "method": "upi",
+      "status": "captured"
+    },
+    {
+      "id": "txn_5_032",
+      "date": "2026-09-17",
+      "amount": 1850,
+      "currency": "INR",
+      "method": "card",
       "status": "captured"
     }
   ]

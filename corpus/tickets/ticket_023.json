@@ -1,0 +1,9 @@
+{
+  "id": "ticket_023",
+  "merchant_id": "merchant_1",
+  "timestamp": "2026-08-05T09:40:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "two of our card payments failed today one said insufficient funds one said do not honor, customer says their card is fine, can you check whats wrong on your side",
+  "true_root_cause": "generic_bank_side_declines_not_platform_issue"
+}

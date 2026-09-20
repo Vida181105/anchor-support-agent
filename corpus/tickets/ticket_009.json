@@ -1,0 +1,9 @@
+{
+  "id": "ticket_009",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-09-17T10:30:00+05:30",
+  "channel": "email",
+  "subject": "Dispute still pending after a month, what is taking so long",
+  "body": "We submitted our evidence for a dispute (product not as described claim) back on August 15th and it's now been over a month with the status still stuck on \"under review\". Our team followed all the instructions, sent the product photos and everything requested. At what point does this get escalated or resolved? A month feels excessive for something that should be straightforward.",
+  "true_root_cause": "dispute_within_normal_bank_review_window"
+}

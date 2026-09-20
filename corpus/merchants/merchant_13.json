@@ -35,7 +35,7 @@
       "amount": 73800,
       "status": "settled_platform_side",
       "bank_clearance_status": "pending",
-      "note": "Batch was released on schedule on 2026-09-14 and shows as 'settled' on the dashboard. The receiving bank has not yet cleared the funds into the merchant's account as of 2026-09-17 (3 days later). This is a bank-side delay, outside the platform's settlement SLA; such delays typically resolve within 1-2 additional business days."
+      "released_date": "2026-09-14"
     },
     "next_payout": {
       "date": "2026-09-18",
@@ -43,7 +43,9 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15",
+    "_derivation": "last_payout.status is 'settled_platform_side' with bank_clearance_status 'pending' as of CORPUS_NOW (2026-09-17), 3 days after released_date (2026-09-14). Matches corpus/policy/settlement-cycles.md's 'Delayed settlement due to bank-side issues' section: a bank-side delay, outside the platform's SLA, typically resolving within 1-2 more business days."
   },
   "hold": {
     "active": false
@@ -296,6 +298,22 @@
       "amount": 3474,
       "currency": "INR",
       "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_13_031",
+      "date": "2026-09-15",
+      "amount": 28400,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_13_032",
+      "date": "2026-09-15",
+      "amount": 19600,
+      "currency": "INR",
+      "method": "upi",
       "status": "captured"
     }
   ]

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_088",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-09-16T09:00:00+05:30",
+  "channel": "email",
+  "subject": "re: phone call with Priya",
+  "body": "Calling back to what your colleague Priya told me on the phone Monday - she said the T+1 request would clear by end of week. Just checking that's still on track since I haven't seen anything change yet.",
+  "true_root_cause": "t1_request_within_approval_sla"
+}

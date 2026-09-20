@@ -1,0 +1,9 @@
+{
+  "id": "ticket_076",
+  "merchant_id": "merchant_14",
+  "timestamp": "2026-07-18T14:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "trying to understand something - if a batch settlement falls on a day our account happens to have some kind of hold, does the WHOLE days batch get delayed or just the flagged part",
+  "true_root_cause": "settlement_batching_generic"
+}

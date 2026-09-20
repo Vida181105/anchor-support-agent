@@ -1,0 +1,9 @@
+{
+  "id": "ticket_060",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-08-22T13:30:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "agar partial refund karna hai kitni baar kar sakte hai ek hi order pe",
+  "true_root_cause": "partial_refunds_generic"
+}

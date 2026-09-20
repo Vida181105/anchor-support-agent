@@ -1,0 +1,9 @@
+{
+  "id": "ticket_047",
+  "merchant_id": "merchant_13",
+  "timestamp": "2026-09-17T06:10:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "WHERE IS MY MONEY",
+  "true_root_cause": "bank_side_settlement_delay"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_002",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-16T18:42:00+05:30",
+  "channel": "email",
+  "subject": "Why is 15% of every payout being held now?",
+  "body": "Hi team,\n\nI run Trailblazer Holiday Co. and I noticed starting late August that our payouts have dropped significantly compared to what our transaction volume actually was. I checked the dashboard and it looks like some kind of reserve has been applied but nobody told us about this directly, we just saw the numbers change.\n\nWe did have a rough patch in early August where a bunch of package tours got cancelled because of the flight disruptions in the north-east region, and a few customers went straight to their banks instead of asking us for refunds. I get that those chargebacks happened, but is this reserve going to be permanent now? How long is 15% of our money going to sit there and when do we actually see it again?\n\nThis is a big chunk of our working capital and we need to plan around it. Please explain clearly what triggered this and when it ends.\n\nRegards,\nAnkita (Trailblazer Holiday Co.)",
+  "true_root_cause": "rolling_reserve_after_chargeback_spike"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_106",
+  "merchant_id": "merchant_6",
+  "timestamp": "2026-08-15T12:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "SUBSCRIPTION CANCEL HO GAYA BINA BATAYE YE KYA HAI",
+  "true_root_cause": "subscription_mandate_paused_after_retries"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ticket_024",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-05T16:00:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "",
+  "body": "reserve kab tak rahega bhai itna paisa atka hua hai",
+  "true_root_cause": "rolling_reserve_after_chargeback_spike"
+}

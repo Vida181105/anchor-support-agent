@@ -1,0 +1,9 @@
+{
+  "id": "ticket_062",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-08-18T14:50:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "if a refund fails after we initiate it (like if the customers card expired since then) what happens, does it retry on its own",
+  "true_root_cause": "failed_refund_no_auto_retry_generic"
+}

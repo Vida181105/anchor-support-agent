@@ -1,0 +1,9 @@
+{
+  "id": "ticket_102",
+  "merchant_id": "merchant_15",
+  "timestamp": "2026-07-14T11:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "students ka payment kyu fail ho raha hai jab plan upgrade karte hai",
+  "true_root_cause": "mandate_amount_change_requires_new_mandate"
+}

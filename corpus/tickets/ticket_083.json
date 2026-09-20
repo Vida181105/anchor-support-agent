@@ -1,0 +1,11 @@
+{
+  "id": "ticket_083",
+  "merchant_id": "merchant_23",
+  "timestamp": "2026-08-11T10:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hi my settlement hasnt come yet please check whats going on with my account",
+  "true_root_cause": "invalid_merchant_id_provided",
+  "true_merchant_id": null,
+  "identity_note": "merchant_id submitted (merchant_23) does not correspond to any merchant in the corpus. There is no fixture to look up at all - this is a different failure mode from a wrong-but-existing id (D1/D2/ticket_017) or a missing id (ticket_016 and Block C): here the platform must recognize the id itself is invalid, not merely unspecified or mismatched."
+}

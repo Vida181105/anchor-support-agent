@@ -50,7 +50,6 @@
     "percentage": 15,
     "rolling_window_days": 120,
     "trigger_reason": "chargeback_rate_above_threshold",
-    "trigger_detail": "Chargeback rate hit 1.4% of trailing 30-day volume on 2026-08-22, driven by 9 chargebacks between 2026-08-05 and 2026-08-20 tied to cancelled package tours during a regional flight disruption.",
     "applied_date": "2026-08-24",
     "held_balance": 412000,
     "release_schedule": [
@@ -66,7 +65,18 @@
         "release_date": "2026-12-22",
         "amount": 372200
       }
-    ]
+    ],
+    "trigger_metric": {
+      "name": "chargeback_rate_30d",
+      "value_pct": 1.4,
+      "as_of_date": "2026-08-22",
+      "contributing_chargeback_count": 9,
+      "contributing_window": {
+        "start": "2026-08-05",
+        "end": "2026-08-20"
+      }
+    },
+    "_derivation": "Category 'travel' is a higher-risk category per policy (15% / 120-day reserve tier). trigger_metric shows a 1.4% trailing-30-day chargeback rate, above the 1% default trigger threshold in corpus/policy/rolling-reserves.md, so the reserve is correctly applied at the higher-risk tier rate and duration."
   },
   "international_payments": {
     "enabled": true,
@@ -341,6 +351,22 @@
       "id": "txn_2_030",
       "date": "2026-08-14",
       "amount": 46559,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_031",
+      "date": "2026-09-17",
+      "amount": 142300,
+      "currency": "INR",
+      "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_2_032",
+      "date": "2026-09-17",
+      "amount": 91600,
       "currency": "INR",
       "method": "card",
       "status": "captured"

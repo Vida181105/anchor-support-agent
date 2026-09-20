@@ -1,0 +1,12 @@
+{
+  "id": "ticket_032",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-09-12T17:30:00+05:30",
+  "channel": "email",
+  "subject": "international + failed payments",
+  "body": "Two separate things - (1) international payments still not live for us, any update? and (2) we had 3 payments fail yesterday all DO_NOT_HONOR, is that related to the same review or just normal bank declines?",
+  "true_root_cause": [
+    "international_payments_ineligible_business_category",
+    "generic_bank_side_declines_not_platform_issue"
+  ]
+}

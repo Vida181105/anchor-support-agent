@@ -34,7 +34,8 @@
       "status": "scheduled"
     },
     "t1_eligibility_requested": false,
-    "t1_request_date": null
+    "t1_request_date": null,
+    "oldest_unsettled_batch_captured_date": "2026-09-15"
   },
   "hold": {
     "active": false
@@ -96,7 +97,7 @@
         }
       ],
       "final_status": "undelivered",
-      "note": "Merchant's webhook endpoint returned 522 (connection timed out) on every attempt across the 24-hour retry window. The refund itself was fully processed on the platform side regardless of delivery status; a manual replay is available from the dashboard webhook log."
+      "_derivation": "refunds[0].status is 'processed' with a processed_date, independent of webhook delivery. webhook_log shows every attempt returned HTTP 522 (the merchant's own endpoint timing out) across the full 24h retry window, matching corpus/policy/webhooks.md's retry schedule and its note that a failed webhook never affects the underlying record. The fix is a manual replay from the dashboard, not a platform-side refund problem."
     }
   ],
   "disputes": [],
@@ -341,6 +342,22 @@
       "amount": 6519,
       "currency": "INR",
       "method": "netbanking",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_031",
+      "date": "2026-09-15",
+      "amount": 5900,
+      "currency": "INR",
+      "method": "card",
+      "status": "captured"
+    },
+    {
+      "id": "txn_7_032",
+      "date": "2026-09-15",
+      "amount": 4100,
+      "currency": "INR",
+      "method": "upi",
       "status": "captured"
     }
   ]

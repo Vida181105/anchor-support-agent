@@ -1,0 +1,9 @@
+{
+  "id": "ticket_010",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-09-14T19:22:00+05:30",
+  "channel": "dashboard_chat",
+  "subject": "international orders keep getting blocked",
+  "body": "ever since you guys turned on international payments for us like 2 weeks back, almost every third international order is getting a RISK_BLOCK error. our domestic payments are totally fine, no issues there. is international broken? we are losing sales because of this and it started right after approval which seems like a big coincidence",
+  "true_root_cause": "risk_block_spike_after_international_approval"
+}

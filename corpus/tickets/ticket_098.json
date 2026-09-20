@@ -1,0 +1,9 @@
+{
+  "id": "ticket_098",
+  "merchant_id": "merchant_9",
+  "timestamp": "2026-07-25T09:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "hello good morning team, hope you are doing well. i wanted to check something small - when a RISK_BLOCK happens is it possible for us to see exactly which rule triggered it, or is that internal only",
+  "true_root_cause": "risk_block_appealable_generic"
+}

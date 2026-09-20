@@ -1,0 +1,9 @@
+{
+  "id": "ticket_072",
+  "merchant_id": "merchant_8",
+  "timestamp": "2026-09-01T12:45:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "does the platform ever retry a failed payment automatically or does the customer have to manually try again each time",
+  "true_root_cause": "no_automatic_payment_retry_generic"
+}

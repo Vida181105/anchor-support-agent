@@ -1,0 +1,9 @@
+{
+  "id": "ticket_117",
+  "merchant_id": "merchant_11",
+  "timestamp": "2026-09-17T07:15:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "status update please",
+  "true_root_cause": "t1_request_within_approval_sla"
+}

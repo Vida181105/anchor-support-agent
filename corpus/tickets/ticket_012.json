@@ -1,0 +1,9 @@
+{
+  "id": "ticket_012",
+  "merchant_id": "merchant_12",
+  "timestamp": "2026-08-21T13:15:00+05:30",
+  "channel": "email",
+  "subject": "KYC REJECTED AGAIN - VERY DISAPPOINTED",
+  "body": "This is the SECOND time my document has been rejected for being \"illegible\" and I don't understand HOW because it's the same photo I already sent and nothing about it changed on my phone. I run a small tiffin service, I don't have fancy scanning equipment, this is just a photo of my electricity bill taken with my phone camera like anyone would do. If the first one was bad quality then obviously resending the exact same photo again is going to have the exact same problem, isn't that obvious to your team?? I am honestly considering just closing this account and going to a different payment provider because every time I try to fix this nothing changes and my payouts are stuck at this low limit. Please someone actually look at this properly this time and tell me what specifically I need to do differently, not just \"resubmit\" again.",
+  "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged"
+}

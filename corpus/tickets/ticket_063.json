@@ -1,0 +1,9 @@
+{
+  "id": "ticket_063",
+  "merchant_id": "merchant_4",
+  "timestamp": "2026-08-30T09:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "does settling a refund on a transaction automatically close out the dispute thats open on it or do we need to do something separately",
+  "true_root_cause": "refund_does_not_auto_close_dispute_generic"
+}

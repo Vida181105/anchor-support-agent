@@ -1,0 +1,9 @@
+{
+  "id": "ticket_073",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-08-15T09:05:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "for high ticket items is there a different review process before international payments get approved or is it the same for everyone",
+  "true_root_cause": "international_approval_process_generic"
+}

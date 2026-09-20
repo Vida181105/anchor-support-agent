@@ -1,0 +1,9 @@
+{
+  "id": "ticket_026",
+  "merchant_id": "merchant_2",
+  "timestamp": "2026-09-02T10:05:00+05:30",
+  "channel": "email",
+  "subject": "international fee question",
+  "body": "we take international bookings too - is there a currency conversion fee on top of the normal processing fee for those, and does it show up as a separate line on our settlement report? trying to reconcile our books",
+  "true_root_cause": "international_conversion_fee_not_a_separate_line_item"
+}

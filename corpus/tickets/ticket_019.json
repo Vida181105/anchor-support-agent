@@ -1,0 +1,9 @@
+{
+  "id": "ticket_019",
+  "merchant_id": "merchant_10",
+  "timestamp": "2026-09-16T17:05:00+05:30",
+  "channel": "email",
+  "subject": "risk block issue + also a question about faster settlement",
+  "body": "Following up again on the international RISK_BLOCK problem I raised earlier this week - still happening, still losing sales, please look into it.\n\nSeparate question while I have you - we've been on the platform well over a year now with no disputes that I'm aware of. Are we eligible for T+1 settlement? Nobody's ever mentioned it to us and I'd like to apply if we qualify.",
+  "true_root_cause": ["risk_block_spike_after_international_approval", "t1_eligible_but_not_requested"]
+}

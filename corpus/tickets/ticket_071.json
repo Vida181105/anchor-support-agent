@@ -1,0 +1,9 @@
+{
+  "id": "ticket_071",
+  "merchant_id": "merchant_3",
+  "timestamp": "2026-08-28T08:20:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "if we get a reserve applied someday (hope not) is there a way to check the exact release dates ourselves or do we have to keep asking support",
+  "true_root_cause": "reserve_balance_visible_on_dashboard_generic"
+}

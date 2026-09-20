@@ -1,0 +1,9 @@
+{
+  "id": "ticket_007",
+  "merchant_id": "merchant_7",
+  "timestamp": "2026-09-11T16:47:00+05:30",
+  "channel": "email",
+  "subject": "refund webhook never came + also getting a lot of declined payments",
+  "body": "Two things -\n\n1) We processed a refund for a customer almost a week ago and our system never received the webhook notification for it (refund.processed), so our order management still shows it as pending and the customer is emailing us asking where their money is. Can someone check why the webhook didn't fire?\n\n2) Separately, we've noticed a higher than usual number of card payments failing this past week, mostly DO_NOT_HONOR. Is something going on on your end or should we be telling customers to just try a different card?\n\nThanks,\nBloomfield Décor Studio team",
+  "true_root_cause": ["webhook_undelivered_refund_already_processed", "unrelated_generic_bank_side_declines_not_platform_issue"]
+}

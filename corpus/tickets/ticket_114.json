@@ -1,0 +1,9 @@
+{
+  "id": "ticket_114",
+  "merchant_id": "merchant_5",
+  "timestamp": "2026-07-05T09:00:00+05:30",
+  "channel": "email",
+  "subject": "",
+  "body": "we're planning to add an OTC supplements line alongside our prescription pharmacy - would that be treated differently for international eligibility or is it the whole account that's categorized",
+  "true_root_cause": "international_payments_ineligible_business_category"
+}
