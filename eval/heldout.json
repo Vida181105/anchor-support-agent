@@ -1,0 +1,431 @@
+[
+  {
+    "id": "heldout_001",
+    "merchant_id": "merchant_8",
+    "timestamp": "2026-09-01T11:20:00+05:30",
+    "channel": "email",
+    "subject": "dispute on an already-refunded order",
+    "body": "A customer just filed a dispute on an order we had ALREADY fully refunded three weeks ago (refund_8_01, well before any dispute existed). Do we still need to respond with evidence, or does the existing refund automatically settle it in our favor? Not sure how this even works when it's the refund that came first.",
+    "true_root_cause": "dispute_on_already_refunded_transaction",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "corpus/policy/refund-timelines.md's 'Refunds and dispute status' section only covers the forward case (a refund issued while a dispute is already open); neither it nor corpus/policy/chargebacks-disputes.md addresses the reverse sequence (a dispute opened on a transaction already refunded beforehand). merchant_8's fixture has no dispute record to consult either — disputes is empty."
+  },
+  {
+    "id": "heldout_002",
+    "merchant_id": "merchant_1",
+    "timestamp": "2026-08-22T10:00:00+05:30",
+    "channel": "email",
+    "subject": "changing settlement bank account",
+    "body": "We're switching our current account to a different bank next month. How do I update the bank account linked for settlement payouts on my account, and roughly how long does the change take to go live?",
+    "true_root_cause": "settlement_bank_account_change_procedure",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "No policy document describes a procedure or timeline for changing the bank account linked to settlement. corpus/policy/settlement-cycles.md only states that funds are 'settled to the merchant's linked bank account' as a given, never how to change it. merchant_1's fixture has no bank-account field at all."
+  },
+  {
+    "id": "heldout_003",
+    "merchant_id": "merchant_13",
+    "timestamp": "2026-09-08T14:15:00+05:30",
+    "channel": "email",
+    "subject": "GST on platform fees",
+    "body": "Noticed an extra GST line on our platform fee invoice this month that wasn't there before - did the tax rate on processing fees change recently, or is this specific to us somehow?",
+    "true_root_cause": "platform_fee_taxation_generic",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "No policy document mentions taxation, GST, or any fee/invoicing schedule for platform processing fees. The only 'GST' mention anywhere in the KB is in corpus/policy/kyc-documents.md, referring to a GST registration certificate as a KYC document — unrelated to tax on fees. No merchant fixture has a fees or tax field."
+  },
+  {
+    "id": "heldout_004",
+    "merchant_id": "merchant_9",
+    "timestamp": "2026-08-30T09:45:00+05:30",
+    "channel": "email",
+    "subject": "PCI compliance certificate needed",
+    "body": "Our new logistics partner is asking us for proof of PCI-DSS compliance from our payment processor before they'll integrate with us. Can someone send over a compliance certificate or point me to where I can get one?",
+    "true_root_cause": "pci_dss_certificate_request",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "No policy document mentions PCI-DSS, security compliance certification, or any process for issuing compliance documentation to a merchant. Not covered anywhere in the KB or in merchant_9's fixture."
+  },
+  {
+    "id": "heldout_005",
+    "merchant_id": "merchant_11",
+    "timestamp": "2026-08-05T12:30:00+05:30",
+    "channel": "email",
+    "subject": "in-store card machine error",
+    "body": "We just opened a small physical counter alongside our online store. Our card machine for in-person payments is showing an error at checkout - is this something you all handle too or is that a completely different system?",
+    "true_root_cause": "physical_pos_terminal_support",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "The entire policy KB and every merchant fixture describe only online gateway transactions (card/UPI/netbanking/wallet at checkout); there is no mention anywhere of physical POS terminals, offline card machines, or an offline-acceptance process."
+  },
+  {
+    "id": "heldout_006",
+    "merchant_id": "merchant_2",
+    "timestamp": "2026-09-09T16:00:00+05:30",
+    "channel": "email",
+    "subject": "reserve if we close the account",
+    "body": "Hypothetically - if we ever decided to shut Trailblazer down entirely, what happens to the amount currently sitting in our reserve? Does it just get forfeited, or does it still get released to us on the original schedule even after the account is closed?",
+    "true_root_cause": "reserve_balance_on_account_closure",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "No policy document describes an account-closure or deactivation procedure at all. corpus/policy/rolling-reserves.md's 'Reserve removal' section covers only early removal via a risk-team review after the trigger resolves - it says nothing about what happens to a held balance on account closure."
+  },
+  {
+    "id": "heldout_007",
+    "merchant_id": "merchant_15",
+    "timestamp": "2026-08-13T10:50:00+05:30",
+    "channel": "email",
+    "subject": "combining two subscriptions",
+    "body": "One of our customers has two separate subscriptions with us (a course plan and an exam-prep add-on, each its own mandate). She wants us to combine them into a single monthly mandate/charge instead of two separate ones. Is that something we can do on our end, or does the platform not support merging mandates like that?",
+    "true_root_cause": "mandate_merge_not_addressed",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "corpus/policy/subscription-mandates.md describes only a single mandate's lifecycle (registration, retries, cancellation, amount changes via a new mandate); it never addresses combining or merging two separate active mandates for the same customer."
+  },
+  {
+    "id": "heldout_008",
+    "merchant_id": "merchant_4",
+    "timestamp": "2026-08-17T13:20:00+05:30",
+    "channel": "email",
+    "subject": "evidence for unauthorized transaction disputes",
+    "body": "Before it comes up for real - if a customer ever disputes a transaction as 'unauthorized', is there anything specific we should have on file beyond the usual delivery proof and order confirmation? Wondering if something like an OTP/authentication record matters more for that particular kind of claim.",
+    "true_root_cause": "unauthorized_transaction_evidence_requirements",
+    "correct_routing": "escalate",
+    "refusal_type": "EVIDENCE_GAP",
+    "evidence_gap_fact": "corpus/policy/chargebacks-disputes.md's 'What counts as sufficient evidence' section only special-cases the 'product not as described' reason code; it never specifies additional or different evidence requirements for an 'unauthorized_transaction' claim specifically."
+  },
+  {
+    "id": "heldout_009",
+    "merchant_id": null,
+    "timestamp": "2026-08-06T09:10:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "no update since last time please check and revert",
+    "true_root_cause": "insufficient_information_missing_merchant_id",
+    "correct_routing": "draft_for_human",
+    "refusal_type": "UNIDENTIFIABLE"
+  },
+  {
+    "id": "heldout_010",
+    "merchant_id": null,
+    "timestamp": "2026-09-02T15:40:00+05:30",
+    "channel": "email",
+    "subject": "payout issue",
+    "body": "Hi, we're an online clothing and accessories store and something seems off with this week's payout, can someone take a look?",
+    "true_root_cause": "insufficient_information_missing_merchant_id",
+    "correct_routing": "draft_for_human",
+    "refusal_type": "UNIDENTIFIABLE",
+    "identity_note": "No merchant_id and no uniquely identifying detail - 'online clothing/accessories store' matches the general shape of several ecommerce merchants in the corpus (merchant_1, merchant_7, merchant_8, merchant_10, merchant_11, merchant_13), none of which is a clothing store specifically, and nothing narrows it to one. Genuinely ambiguous among multiple candidates, not just blank."
+  },
+  {
+    "id": "heldout_011",
+    "merchant_id": "merchant_9",
+    "timestamp": "2026-09-11T11:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "hi this is regarding our tiffin service account - sorry, wrong template, I mean the electronics store account. anyway same issue as before, please check",
+    "true_root_cause": "insufficient_information_missing_merchant_id",
+    "correct_routing": "draft_for_human",
+    "refusal_type": "UNIDENTIFIABLE",
+    "identity_note": "The submitted merchant_id (merchant_9, an electronics business) partially matches the corrected self-description ('electronics store'), but the ticket also names an unrelated business type ('tiffin service') and references 'the issue as before' without saying what that issue is. The self-contradiction and missing context make this unresolvable with confidence, not a simple wrong-id case with a clean correction available."
+  },
+  {
+    "id": "heldout_012",
+    "merchant_id": null,
+    "timestamp": "2026-08-24T17:00:00+05:30",
+    "channel": "email",
+    "subject": "following up for a client",
+    "body": "Hi, I handle accounts/bookkeeping for a few different small businesses and one of them asked me to follow up on a pending payout - I don't have the merchant id on hand, can you look it up if I give you the business owner's name instead?",
+    "true_root_cause": "insufficient_information_missing_merchant_id",
+    "correct_routing": "draft_for_human",
+    "refusal_type": "UNIDENTIFIABLE",
+    "identity_note": "Third-party relay message (an accountant managing multiple clients) with no merchant id and no business name given yet - genuinely unresolvable until the sender provides identifying details, and even then identity should be verified before disclosing account information to a third party."
+  },
+  {
+    "id": "heldout_013",
+    "merchant_id": "merchant_5",
+    "timestamp": "2026-08-04T10:00:00+05:30",
+    "channel": "email",
+    "subject": "international still not approved",
+    "body": "Still waiting on international approval. Genuinely confused because a business we know on the same platform, similar size, got theirs enabled within two days of asking. What's different about our case?",
+    "true_root_cause": "international_payments_ineligible_business_category",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_014",
+    "merchant_id": "merchant_10",
+    "timestamp": "2026-09-05T13:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "international transaction phir se fail RISK_BLOCK, ye roz ho raha hai",
+    "true_root_cause": "risk_block_spike_after_international_approval",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_015",
+    "merchant_id": "merchant_3",
+    "timestamp": "2026-08-09T09:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "kal call pe bola tha galat document hai, ye batao konsa sahi document lagega finally",
+    "true_root_cause": "kyc_rejected_doc_mismatch_bank_account_name",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_016",
+    "merchant_id": "merchant_12",
+    "timestamp": "2026-08-31T08:30:00+05:30",
+    "channel": "email",
+    "subject": "can someone call me",
+    "body": "Is it possible for someone to just call me and walk me through exactly what to upload? I keep getting it wrong on my own and I think a call would sort this out faster than more emails.",
+    "true_root_cause": "kyc_rejected_doc_illegible_resubmission_unchanged",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_017",
+    "merchant_id": "merchant_9",
+    "timestamp": "2026-09-14T10:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "just checking in on disp_9_01, no rush, just want to know if there's been any movement at all",
+    "true_root_cause": "dispute_within_normal_bank_review_window",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_018",
+    "merchant_id": "merchant_2",
+    "timestamp": "2026-08-19T09:30:00+05:30",
+    "channel": "email",
+    "subject": "reserve schedule for our records",
+    "body": "Could you send the exact reserve release schedule in writing (dates and amounts), I want to share it with our accountant for cash flow planning.",
+    "true_root_cause": "rolling_reserve_after_chargeback_spike",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_019",
+    "merchant_id": "merchant_2",
+    "timestamp": "2026-09-10T11:15:00+05:30",
+    "channel": "email",
+    "subject": "requesting early reserve review",
+    "body": "Our chargeback rate has been back under 0.5% for a little over two months now. I'd like to formally request an early review of the reserve given that - please have someone from the risk team actually look at this rather than sending the standard policy explanation again.",
+    "true_root_cause": "rolling_reserve_after_chargeback_spike",
+    "correct_routing": "escalate"
+  },
+  {
+    "id": "heldout_020",
+    "merchant_id": "merchant_4",
+    "timestamp": "2026-09-14T09:00:00+05:30",
+    "channel": "email",
+    "subject": "hold status",
+    "body": "Any update on when the hold gets lifted? Just want to plan around it.",
+    "true_root_cause": "partial_account_hold_flagged_batch",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_021",
+    "merchant_id": "merchant_4",
+    "timestamp": "2026-09-15T18:00:00+05:30",
+    "channel": "email",
+    "subject": "urgent - need this expedited",
+    "body": "Two things - please expedite this hold review if at all possible, I have payroll due this week and that held amount is a big chunk of it. Also, separately, does a partial hold like this also block us from issuing refunds to other customers this week, or is that unaffected?",
+    "true_root_cause": [
+      "partial_account_hold_flagged_batch",
+      "refund_does_not_auto_close_dispute_generic"
+    ],
+    "correct_routing": "escalate"
+  },
+  {
+    "id": "heldout_022",
+    "merchant_id": "merchant_6",
+    "timestamp": "2026-09-02T10:20:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "customer ka payment retry bhi fail ho gaya teesri baar, ab kya karu main",
+    "true_root_cause": "subscription_mandate_paused_after_retries",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_023",
+    "merchant_id": "merchant_15",
+    "timestamp": "2026-07-30T14:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "Getting more of these upgrade-charge failures than I'd like, customer is asking for a refund of their current plan since the upgrade won't go through. Can you confirm this is the amount-mismatch thing again before I process anything?",
+    "true_root_cause": "mandate_amount_change_requires_new_mandate",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_024",
+    "merchant_id": "merchant_7",
+    "timestamp": "2026-08-27T16:45:00+05:30",
+    "channel": "email",
+    "subject": "customer doesn't believe refund happened",
+    "body": "customer is threatening a chargeback because they think we never refunded them, even though our dashboard clearly shows it processed. how do I convince them without it turning into a dispute",
+    "true_root_cause": "webhook_undelivered_refund_already_processed",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_025",
+    "merchant_id": "merchant_8",
+    "timestamp": "2026-09-06T11:30:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "Second time this month a batch amount doesn't match my order sheet by a few thousand. Assuming it's the refund-timing thing again but want it confirmed before I tell my accountant to stop worrying about it.",
+    "true_root_cause": "refund_deducted_from_later_settlement_batch",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_026",
+    "merchant_id": "merchant_13",
+    "timestamp": "2026-09-16T09:20:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "it's been 2 days since dashboard said settled and still nothing in the account, starting to really worry now",
+    "true_root_cause": "bank_side_settlement_delay",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_027",
+    "merchant_id": "merchant_14",
+    "timestamp": "2026-08-22T13:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "so just to be totally clear - winning the dispute got us the transaction amount back but not the fee, is that really final, no exceptions ever?",
+    "true_root_cause": "chargeback_fee_nonrefundable_despite_winning_dispute",
+    "correct_routing": "draft_for_human"
+  },
+  {
+    "id": "heldout_028",
+    "merchant_id": "merchant_1",
+    "timestamp": "2026-08-11T09:15:00+05:30",
+    "channel": "email",
+    "subject": "faster settlement eligibility",
+    "body": "just found out from a friend's business that faster settlement is a thing - are we eligible for it, and if so what do we actually need to do to get it",
+    "true_root_cause": "t1_eligible_but_not_requested",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_029",
+    "merchant_id": "merchant_11",
+    "timestamp": "2026-09-16T08:40:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "any news on the t1 request or should I just keep waiting a bit more",
+    "true_root_cause": "t1_request_within_approval_sla",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_030",
+    "merchant_id": "merchant_1",
+    "timestamp": "2026-09-16T21:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "payout still pending, dashboard says friday, is that actually right or just an estimate that could slip",
+    "true_root_cause": "settlement_mid_cycle_t3_not_delayed",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_031",
+    "merchant_id": "merchant_9",
+    "timestamp": "2026-08-08T10:30:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "if a RISK_BLOCK decline turns out to be wrong is there an actual process to appeal it or is raising a ticket basically it",
+    "true_root_cause": "risk_block_appealable_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_032",
+    "merchant_id": "merchant_10",
+    "timestamp": "2026-08-29T12:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "does international approval get reviewed more carefully for merchants expecting bigger ticket sizes or is it a flat process for everyone",
+    "true_root_cause": "international_approval_process_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_033",
+    "merchant_id": "merchant_13",
+    "timestamp": "2026-07-25T09:40:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "how often do these bank-side clearance delays actually happen, trying to gauge if this is a one-off or something we should plan around going forward",
+    "true_root_cause": "bank_side_settlement_delay_frequency_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_034",
+    "merchant_id": "merchant_14",
+    "timestamp": "2026-07-29T15:20:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "is the chargeback fee always the same number regardless of what the dispute is about",
+    "true_root_cause": "chargeback_fee_flat_amount_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_035",
+    "merchant_id": "merchant_6",
+    "timestamp": "2026-08-04T11:00:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "how many times does a failed subscription charge get retried before it gives up",
+    "true_root_cause": "mandate_retry_cap_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_036",
+    "merchant_id": "merchant_15",
+    "timestamp": "2026-08-01T09:50:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "can a subscriber cancel directly from their banking app without going through us at all",
+    "true_root_cause": "mandate_customer_revocation_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_037",
+    "merchant_id": "merchant_3",
+    "timestamp": "2026-07-30T10:10:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "if we ever convert from our current setup to a private limited company later, does our existing KYC carry over or does it need to be redone completely",
+    "true_root_cause": "kyc_requirements_generic_business_type_change",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_038",
+    "merchant_id": "merchant_8",
+    "timestamp": "2026-08-14T13:15:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "is there a cap on how many partial refunds we can issue against one order as long as we don't go over the total",
+    "true_root_cause": "partial_refunds_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_039",
+    "merchant_id": "merchant_11",
+    "timestamp": "2026-08-21T14:30:00+05:30",
+    "channel": "email",
+    "subject": "",
+    "body": "quick clarification - does the money actually move when the order is confirmed or only later at capture, want to make sure I'm explaining this correctly to my co-founder",
+    "true_root_cause": "capture_vs_authorization_generic",
+    "correct_routing": "auto_resolve"
+  },
+  {
+    "id": "heldout_040",
+    "merchant_id": "merchant_10",
+    "timestamp": "2026-09-03T10:00:00+05:30",
+    "channel": "email",
+    "subject": "two quick questions",
+    "body": "Two quick ones - are we eligible for T+1 at this point given how long we've been on the platform, and separately, still seeing more RISK_BLOCK than usual on the international side, is that expected to calm down eventually?",
+    "true_root_cause": [
+      "t1_eligible_but_not_requested",
+      "risk_block_spike_after_international_approval"
+    ],
+    "correct_routing": "draft_for_human"
+  }
+]
