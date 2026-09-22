@@ -1,0 +1,185 @@
+[
+  {
+    "id": 1,
+    "category": "date arithmetic (self-contained in the evidence)",
+    "claim": {
+      "text": "The merchant had a 10-day window to respond to this dispute and submitted their evidence 5 days before the deadline.",
+      "evidence": [
+        "state:merchant_9.disputes[0]"
+      ]
+    },
+    "why_wrong": "opened_date 2026-08-10 to response_deadline 2026-08-17 is 7 days, not 10. evidence_submitted_date 2026-08-15 is 2 days before the deadline, not 5. Both numbers are computable purely from this one evidence item's own dates.",
+    "verdict_result": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "While the evidence shows the merchant submitted their evidence 2 days before the deadline rather than 5, the total response window between opened_date and response_deadline is actually 7 days instead of 10."
+    }
+  },
+  {
+    "id": 2,
+    "category": "threshold value misstated",
+    "claim": {
+      "text": "The reserve was triggered because merchant_2's trailing 30-day chargeback rate reached 2.1%, well above the 1% policy threshold.",
+      "evidence": [
+        "state:merchant_2"
+      ]
+    },
+    "why_wrong": "trigger_metric.value_pct is 1.4, not 2.1. The qualitative conclusion (above threshold) happens to still be true, but the specific number is fabricated.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence shows a chargeback rate of 1.4% rather than 2.1%, and does not mention a 1% policy threshold."
+    }
+  },
+  {
+    "id": 3,
+    "category": "policy rule generalized beyond its stated scope",
+    "claim": {
+      "text": "Per policy, any document rejected with the DOC_MISMATCH reason code can be resolved by submitting a GST registration certificate instead.",
+      "evidence": [
+        "doc:kyc-documents#c6"
+      ]
+    },
+    "why_wrong": "The policy scopes this fix specifically to the case where a bank account is held in a director's name rather than the company's - not to every DOC_MISMATCH rejection, which can have other causes (e.g. submitting a personal document when a business one was required) that a GST certificate wouldn't fix.",
+    "verdict_result": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence states that a GST registration certificate fixes DOC_MISMATCH specifically caused by bank accounts in a director's name, not necessarily any document rejected with that code."
+    }
+  },
+  {
+    "id": 4,
+    "category": "numeric range distortion",
+    "claim": {
+      "text": "Card refunds settle on the customer's statement within 2-3 business days per policy.",
+      "evidence": [
+        "doc:refund-timelines#c2"
+      ]
+    },
+    "why_wrong": "Policy states 5-7 business days for card refunds, not 2-3.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states that card refunds typically take 5-7 business days, whereas the claim states 2-3 business days."
+    }
+  },
+  {
+    "id": 5,
+    "category": "date off-by-one, contradicted by the same evidence item",
+    "claim": {
+      "text": "The batch captured on 2026-09-15 is scheduled to settle on 2026-09-17, three business days later.",
+      "evidence": [
+        "state:merchant_1.settlement_schedule"
+      ]
+    },
+    "why_wrong": "next_payout.date in the SAME evidence item is 2026-09-18, not 2026-09-17. This is the most self-contained case: the contradiction is entirely within one field of the one cited evidence item.",
+    "verdict_result": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "While the oldest unsettled batch date is 2026-09-15 and the cycle is T+3, the claim states the settlement date is 2026-09-17 which is not stated in the evidence."
+    }
+  },
+  {
+    "id": 6,
+    "category": "direct contradiction of a stated rule, softened in phrasing",
+    "claim": {
+      "text": "Since merchant_14 won this dispute, they are entitled to a partial refund of the chargeback fee, prorated for the successful outcome.",
+      "evidence": [
+        "state:merchant_14.disputes[0]",
+        "doc:chargebacks-disputes#c7"
+      ]
+    },
+    "why_wrong": "Policy states the fee does not vary by outcome and is flatly non-refundable. 'Partial, prorated refund' is a softer-sounding invention with no support in either the policy or the dispute record.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states that the chargeback fee does not vary by outcome, contradicting the claim of a partial refund."
+    }
+  },
+  {
+    "id": 7,
+    "category": "count miscounted",
+    "claim": {
+      "text": "The mandate was paused after only 2 failed retry attempts, one short of the standard 3-retry policy.",
+      "evidence": [
+        "state:merchant_6"
+      ]
+    },
+    "why_wrong": "retry_attempts has exactly 3 entries (2026-08-28, 2026-08-30, 2026-09-01), not 2.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence shows 3 failed retry attempts rather than only 2."
+    }
+  },
+  {
+    "id": 8,
+    "category": "causal misattribution contradicted by the same evidence",
+    "claim": {
+      "text": "Merchant_5's international payments approval is delayed because their KYC has not yet cleared, and per policy this must complete before the 3-5 day approval clock even starts.",
+      "evidence": [
+        "state:merchant_5",
+        "doc:international-payments#c2"
+      ]
+    },
+    "why_wrong": "state:merchant_5 shows kyc.status='verified' (already cleared) and ineligibility_reason='business_category_excluded' - KYC timing is not the cause at all, contradicting the claim directly.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states that KYC is verified and international payments are ineligible due to business category exclusion, contradicting the claim that KYC has not cleared."
+    }
+  },
+  {
+    "id": 9,
+    "category": "duration overstatement (conclusion right, process wrong)",
+    "claim": {
+      "text": "The platform retried delivery for the full 24-hour window specified by policy before marking the event undelivered.",
+      "evidence": [
+        "state:merchant_7",
+        "doc:webhooks#c2"
+      ]
+    },
+    "why_wrong": "The 6 logged attempts span roughly 8.6 hours (14:02 to 22:38 on 2026-09-05), not the full 24-hour policy window, even though the final_status ('undelivered') the claim leads to is correct either way.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence shows delivery attempts spanning less than 9 hours rather than the full 24-hour window."
+    }
+  },
+  {
+    "id": 10,
+    "category": "premature-completion implication from partial data",
+    "claim": {
+      "text": "Merchant_2's full reserve balance will be released back to them by early October 2026.",
+      "evidence": [
+        "state:merchant_2"
+      ]
+    },
+    "why_wrong": "release_schedule shows only 18,500 + 21,300 = 40,300 releasing by 2026-10-02, out of a held_balance of 412,000 - the bulk (372,200) doesn't release until 2026-12-22. 'Full balance by early October' is false.",
+    "verdict_result": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence shows multiple release dates spanning across September and December 2026, and the full reserve balance is not released by early October 2026."
+    }
+  },
+  {
+    "id": 11,
+    "category": "BONUS (stress test): small numeric drift, plausible as rounding",
+    "claim": {
+      "text": "The chargeback rate that triggered the reserve was approximately 1.5%.",
+      "evidence": [
+        "state:merchant_2"
+      ]
+    },
+    "why_wrong": "trigger_metric.value_pct is 1.4, not 1.5 - a small enough drift that it could plausibly be waved through as 'approximately' correct rather than flagged.",
+    "verdict_result": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence shows a chargeback rate of 1.4% rather than approximately 1.5%."
+    }
+  },
+  {
+    "id": 12,
+    "category": "BONUS (stress test): inferential overreach, not a bare factual error",
+    "claim": {
+      "text": "Since two of the three retry attempts failed with INSUFFICIENT_FUNDS, the customer's card was likely permanently closed.",
+      "evidence": [
+        "state:merchant_6"
+      ]
+    },
+    "why_wrong": "INSUFFICIENT_FUNDS means exactly what it says (not enough balance at the time of the charge) and has no logical connection to a card being closed - the evidence doesn't state or imply anything about the card's status at all. This is an unsupported inferential leap, not a misstated number, which is a different kind of error for the verifier to catch than the first 10 cases.",
+    "verdict_result": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "Only two out of the three retry attempts failed with INSUFFICIENT_FUNDS, while the third failed with DO_NOT_HONOR, and the evidence does not state the card was permanently closed."
+    }
+  }
+]
