@@ -30,6 +30,39 @@ def _env_bool(name: str, default: bool) -> bool:
     return val.strip().lower() not in ("0", "false", "no", "")
 
 
+# --------------------------------------------------------------------------
+# Gate thresholds (src/gate.py). Every tunable number the routing gate uses
+# lives here, so "what would change the routing behaviour" is one file to
+# read rather than a hunt through conditionals.
+#
+# These are set from TRAINING tickets only (corpus/tickets/) and frozen
+# before any held-out run. The frozen values and the timestamp are recorded
+# in eval/README.md.
+# --------------------------------------------------------------------------
+
+# Fraction of verified claims that must come back SUPPORTED (as opposed to
+# PARTIALLY_SUPPORTED) before a diagnosis may AUTO_RESOLVE. money_movement
+# gets the stricter bar: an incorrect settlement/refund/reserve/hold answer
+# sent without a human costs more than an incorrect policy explanation.
+#
+# Only consulted when verification actually ran. When the verifier is off
+# (the ablation), the gate has no verdicts and this rule is skipped rather
+# than treated as failed - see src/gate.py for why that distinction
+# decides whether the ablation measures anything real.
+AUTO_RESOLVE_MIN_SUPPORTED_RATIO = {
+    "money_movement": 1.0,
+    "informational": 1.0,
+}
+
+# A diagnosis with fewer than this many surviving claims may not
+# AUTO_RESOLVE, regardless of verdicts: an answer resting on almost nothing
+# is not a confident answer, it is a thin one.
+AUTO_RESOLVE_MIN_CLAIMS = {
+    "money_movement": 1,
+    "informational": 1,
+}
+
+
 # The ablation switch: whether src.agent.diagnose_ticket runs the grounding
 # verifier (src/verifier.py) by default. This exists so measuring grounding
 # precision with and without the verifier - the headline number of the
