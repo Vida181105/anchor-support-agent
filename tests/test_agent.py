@@ -260,6 +260,62 @@ def test_evidence_pool_accumulates_ids_from_every_tool_call():
     assert "state:merchant_2.disputes[1]" in result["evidence_pool"]
 
 
+# --- derived facts are available as a tool, bound like the others -------
+
+def test_get_derived_facts_is_offered_as_a_tool():
+    from src.agent import _TOOL_DECLARATIONS
+
+    names = {t["name"] for t in _TOOL_DECLARATIONS}
+    assert "get_derived_facts" in names
+
+
+def test_derived_facts_tool_returns_bound_merchants_facts_into_the_evidence_pool():
+    script = [
+        {"function_call": {"name": "get_derived_facts", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("derived:merchant_1.expected_settlement_date"),
+    ]
+    llm = ScriptedLLM(script)
+    policy_index = FakePolicyIndex()
+    ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+
+    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+
+    assert "derived:merchant_1.expected_settlement_date" in result["evidence_pool"]
+    # and the computed value is the real one, not the model's arithmetic
+    facts = {e["evidence_id"]: e["content"] for e in result["tool_call_log"][0]["result"]}
+    assert facts["derived:merchant_1.expected_settlement_date"]["value"] == "2026-09-18"
+
+
+def test_derived_facts_tool_is_bound_to_the_identified_merchant():
+    # same closure-binding guarantee as the state tools: a stray
+    # merchant_id in args must be ignored.
+    script = [
+        {"function_call": {"name": "get_derived_facts", "args": {"merchant_id": "merchant_99"}}},
+        {"text": "done"},
+        _valid_final_response("derived:merchant_1.expected_settlement_date"),
+    ]
+    llm = ScriptedLLM(script)
+    ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=False)
+
+    ids = [e["evidence_id"] for e in result["tool_call_log"][0]["result"]]
+    assert all(i.startswith("derived:merchant_1.") for i in ids)
+
+
+def test_instructions_forbid_the_model_doing_its_own_date_arithmetic():
+    from src.agent import _FINAL_PROMPT, _INSTRUCTIONS
+
+    assert "never do date arithmetic yourself" in _INSTRUCTIONS.lower()
+    assert "derived" in _INSTRUCTIONS
+    # and the composer prompt must carry the atomic-claim rules
+    final = _FINAL_PROMPT.lower()
+    assert "atomic" in final
+    assert "one fact per claim" in final
+    assert "no business or merchant names" in final
+
+
 # --- the ablation switch: verify=True/False/None -----------------------
 
 def _verdict_response(verdict, reason="because"):

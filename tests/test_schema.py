@@ -89,6 +89,39 @@ def test_render_prose_with_no_claims_still_includes_root_cause():
     assert render_prose(diagnosis) == "Only the root cause."
 
 
+def test_render_prose_adds_the_merchant_name_claims_are_forbidden_to_carry():
+    # the name is unverifiable inside a claim (a bare reserve percentage
+    # can't establish whose reserve it is) but belongs in the customer-
+    # facing message - so it goes in here, after verification.
+    diagnosis = {
+        "root_cause": {"text": "The reserve is 15%.", "evidence": ["state:merchant_2.reserve.percentage"]},
+        "claims": [],
+    }
+    prose = render_prose(diagnosis, merchant_name="Trailblazer Holiday Co.")
+    assert prose.startswith("For Trailblazer Holiday Co.: The reserve is 15%.")
+
+
+def test_render_prose_without_a_merchant_name_is_unchanged():
+    diagnosis = {"root_cause": {"text": "The reserve is 15%.", "evidence": []}, "claims": []}
+    assert render_prose(diagnosis) == "The reserve is 15%."
+
+
+def test_render_prose_does_not_prepend_a_name_to_an_empty_body():
+    diagnosis = {"root_cause": {"text": "", "evidence": []}, "claims": []}
+    assert render_prose(diagnosis, merchant_name="Some Merchant") == ""
+
+
+def test_claim_schema_tells_the_model_claims_are_atomic():
+    # the atomic-claim rule has to reach the model through the schema the
+    # composer is given, not only through prose in a docstring.
+    claims_schema = DIAGNOSIS_JSON_SCHEMA["properties"]["claims"]
+    assert "EXACTLY ONE" in claims_schema["description"]
+    text_desc = claims_schema["items"]["properties"]["text"]["description"].lower()
+    assert "business name" in text_desc
+    evidence_desc = claims_schema["items"]["properties"]["evidence"]["description"].lower()
+    assert "derived:" in evidence_desc
+
+
 def test_root_cause_evidence_is_grounding_checked_same_as_a_claim():
     diagnosis = {**VALID, "root_cause": {"text": "x", "evidence": ["state:merchant_1.hallucinated"]}}
     with pytest.raises(UngroundedClaimError):

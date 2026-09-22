@@ -5,6 +5,20 @@ evidence_ids that back it, decided *before* any sentence is written.
 `render_prose()` turns claims into a message at the very end - prose is
 never generated first and cited after, because that ordering is exactly
 how ungrounded text gets in.
+
+Claims are ATOMIC. Each one asserts exactly one checkable fact and cites
+only the evidence for that fact. This came out of the blind adversarial
+check, where every *correct* claim still came back PARTIALLY_SUPPORTED:
+the composer had bundled a business name, explanatory framing and several
+facts into a single claim citing one narrow field, so the verifier - which
+by design sees only the claim and its cited evidence - was right to say
+the evidence didn't cover all of it. The fix is to stop asking one claim
+to carry more than one fact, not to teach the verifier to wave framing
+through.
+
+Everything that isn't a checkable fact - the merchant's name, connective
+tissue, tone - belongs in `render_prose`, which runs after verification
+and can be handed context the verifier deliberately never sees.
 """
 
 from __future__ import annotations
@@ -37,11 +51,34 @@ DIAGNOSIS_JSON_SCHEMA = {
         },
         "claims": {
             "type": "array",
+            "description": (
+                "Atomic claims. Each entry asserts EXACTLY ONE checkable fact and cites "
+                "only the evidence for that one fact. Split anything compound into "
+                "separate claims."
+            ),
             "items": {
                 "type": "object",
                 "properties": {
-                    "text": {"type": "string"},
-                    "evidence": {"type": "array", "items": {"type": "string"}},
+                    "text": {
+                        "type": "string",
+                        "description": (
+                            "One checkable fact, stated plainly. No merchant or business "
+                            "name, no dates or amounts that aren't in the cited evidence, "
+                            "no explanatory framing, no 'and'-joined second fact. Write "
+                            "'The settlement cycle is T+3.' - not 'Kavya Handloom Exports "
+                            "is on a T+3 cycle, so their payout is on track.'"
+                        ),
+                    },
+                    "evidence": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": (
+                            "The evidence_id(s) that establish this one fact, and nothing "
+                            "else. Any claim about elapsed time, a due date, or whether a "
+                            "window has passed must cite a derived:... fact - never "
+                            "compute dates yourself."
+                        ),
+                    },
                 },
                 "required": ["text", "evidence"],
             },
@@ -53,6 +90,10 @@ DIAGNOSIS_JSON_SCHEMA = {
         # other claim. A bare string had nothing to verify against.
         "root_cause": {
             "type": "object",
+            "description": (
+                "The single underlying cause, held to the same atomic standard as a claim: "
+                "one checkable assertion, citing only the evidence that establishes it."
+            ),
             "properties": {
                 "text": {"type": "string"},
                 "evidence": {"type": "array", "items": {"type": "string"}},
@@ -92,13 +133,26 @@ def validate_diagnosis(diagnosis: dict, known_evidence_ids: set[str]) -> None:
                 )
 
 
-def render_prose(diagnosis: dict) -> str:
-    """Render claims into a message. Called after the diagnosis exists,
-    never before - prose is a view of the claims, not their source.
+def render_prose(diagnosis: dict, merchant_name: str | None = None) -> str:
+    """Render verified claims into a message. Called after the diagnosis
+    exists, never before - prose is a view of the claims, not their source.
+
+    This is where the framing that claims are forbidden from carrying goes
+    back in. `merchant_name` is the clearest example: naming the business
+    is right in a customer-facing message and wrong inside a claim, because
+    the verifier sees only a claim and its cited evidence - a bare
+    `reserve.percentage` of 15 can never establish *whose* reserve it is,
+    so a claim asserting the name is unverifiable by construction. Adding
+    it here costs nothing, because prose is rendered after verification has
+    already passed on the facts.
     """
     all_claims = [diagnosis["root_cause"], *diagnosis["claims"]]
     lines = [claim["text"] for claim in all_claims if claim["text"]]
     body = " ".join(lines)
+
+    if merchant_name and body:
+        body = f"For {merchant_name}: {body}"
+
     citations = sorted({eid for claim in all_claims for eid in claim["evidence"]})
     if citations:
         body += "\n\nSources: " + ", ".join(citations)

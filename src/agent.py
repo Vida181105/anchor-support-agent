@@ -35,6 +35,7 @@ import json
 from typing import Any
 
 from src.config import VERIFIER_ENABLED_DEFAULT
+from src.derived_facts import get_derived_facts
 from src.identity import identify_merchant
 from src.llm import LLMClient
 from src.retrieval import PolicyIndex
@@ -128,17 +129,44 @@ status pending" may actually be facing an undelivered webhook, which \
 policy search on that phrase will never find. Gather state FIRST, then \
 search policy with a query informed by what you found.
 
+CRITICAL: never do date arithmetic yourself. Do not count business days, \
+do not work out how many days have passed, do not decide whether a \
+deadline or window has been reached. Call get_derived_facts, which \
+computes all of that in code against a fixed current date, and cite the \
+derived:... evidence id it returns. Any statement about a due date, \
+elapsed time, or whether something is overdue or still inside a window \
+must rest on a derived fact - never on your own counting.
+
 Call whatever tools you need, in any order. Stop calling tools once you \
 have enough evidence to answer; you do not need to call every tool.\
 """
 
 _FINAL_PROMPT = """\
-Produce the final diagnosis now as the structured JSON object described. \
-root_cause is claim-shaped too: give it its own "evidence" list, exactly \
-like an entry in "claims". Every "evidence" list, on root_cause and on \
-every claim, must contain only evidence_id values that appear verbatim in \
-a tool result above - never invent one, never cite the ticket text \
-itself, never leave one empty.\
+Produce the final diagnosis now as the structured JSON object described.
+
+Every claim must be ATOMIC - exactly one checkable fact, citing only the \
+evidence for that one fact:
+
+- One fact per claim. If a sentence contains "and", or states two numbers, \
+or gives a fact plus what it means, split it into separate claims.
+- No business or merchant names in claim text. The evidence for a \
+settlement cycle establishes the cycle, not whose cycle it is, so a claim \
+naming the merchant can never be fully supported. Names belong in the \
+customer-facing message, which is written later.
+- No dates, amounts, codes or figures that do not appear in the evidence \
+you cite for that claim.
+- No explanatory framing, reassurance, or next steps inside a claim. State \
+the fact only.
+- Anything time-relative - a due date, days elapsed, whether a window has \
+passed or a payout is overdue - must cite a derived:... evidence id. Never \
+assert a computed date or duration from your own reasoning.
+
+root_cause is claim-shaped and held to the same standard: one checkable \
+assertion with its own "evidence" list.
+
+Every "evidence" list, on root_cause and on every claim, must contain only \
+evidence_id values that appear verbatim in a tool result above - never \
+invent one, never cite the ticket text itself, never leave one empty.\
 """
 
 _CORRECTIVE_SUFFIX = """\
@@ -178,6 +206,16 @@ _TOOL_DECLARATIONS = [
     {
         "name": "get_disputes",
         "description": "All disputes/chargebacks on the merchant's account.",
+        "parameters": {"type": "object", "properties": {}},
+    },
+    {
+        "name": "get_derived_facts",
+        "description": "Date arithmetic computed in code against a fixed current date: the "
+        "expected settlement date for the oldest unsettled batch (business days, weekends "
+        "excluded), business days elapsed since it was captured, whether settlement is "
+        "overdue, days since the last payout, and for each dispute how many days have passed "
+        "since evidence was submitted and whether that is still inside the bank's review "
+        "window. Use this for ANY time-relative statement instead of counting yourself.",
         "parameters": {"type": "object", "properties": {}},
     },
     {
@@ -234,6 +272,8 @@ def _build_tool_executor(merchant_id: str, llm: LLMClient, policy_index: PolicyI
             return get_transactions(merchant_id, filters=filters or None)
         if name == "get_disputes":
             return get_disputes(merchant_id)
+        if name == "get_derived_facts":
+            return get_derived_facts(merchant_id)
         if name == "search_policy":
             query = args["query"]
             retrieval_log.append({"constructed_query": query})

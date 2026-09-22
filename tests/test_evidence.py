@@ -90,3 +90,42 @@ def test_accepts_valid_state_evidence_id(evidence_id):
 def test_rejects_malformed_state_evidence_id(evidence_id):
     with pytest.raises(InvalidEvidenceId):
         make_evidence(evidence_id, "x", "state")
+
+
+# --- derived facts (src/derived_facts.py) --------------------------------
+
+@pytest.mark.parametrize(
+    "evidence_id",
+    [
+        "derived:merchant_1.expected_settlement_date",
+        "derived:merchant_9.disputes[0].within_bank_review_window",
+        "derived:merchant_13.calendar_days_since_last_payout",
+    ],
+)
+def test_accepts_valid_derived_evidence_id(evidence_id):
+    e = make_evidence(evidence_id, {"value": 1}, "derived")
+    assert e["evidence_id"] == evidence_id
+    assert e["source_type"] == "derived"
+
+
+@pytest.mark.parametrize(
+    "evidence_id",
+    [
+        "derived:merchant_1",  # bare merchant: no such thing as a whole derived record
+        "merchant_1.expected_settlement_date",  # missing derived: prefix
+        "derived:merchant_x.expected_settlement_date",  # bad merchant id form
+        "state:merchant_1.expected_settlement_date",  # right shape, wrong prefix for this type
+    ],
+)
+def test_rejects_malformed_derived_evidence_id(evidence_id):
+    with pytest.raises(InvalidEvidenceId):
+        make_evidence(evidence_id, {"value": 1}, "derived")
+
+
+def test_derived_content_is_hidden_key_stripped_like_any_other_source():
+    e = make_evidence(
+        "derived:merchant_1.expected_settlement_date",
+        {"value": "2026-09-18", "_derivation": "leak"},
+        "derived",
+    )
+    assert "_derivation" not in e["content"]
