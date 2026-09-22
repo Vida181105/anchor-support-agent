@@ -1,0 +1,350 @@
+{
+  "note": "NOT BLIND - fixes were designed after seeing these cases fail.",
+  "first_attempt_notes": {
+    "adv_5": "First rewrite was 'The rejection reason code on the second address-proof submission was DOC_ILLEGIBLE' -> PARTIALLY_SUPPORTED, reason: 'does not explicitly verify that this was the second submission'. That was a correct catch: the rewrite still bundled two facts while citing evidence for one. Fixed by making the claim genuinely atomic, which is applying the stated rule, not loosening it.",
+    "adv_8": "Second claim initially returned UNSUPPORTED with reason 'verifier error, failing closed: Exceeded 5 retries on 429s' - a free-tier rate-limit artifact, not a verdict. Re-run once quota recovered: SUPPORTED."
+  },
+  "flawed": {
+    "adv_1": {
+      "flaw": "Off-by-one business-day arithmetic. 2026-09-15 is a Tuesday; counting three business days forward (Wed 16 = day 1, Thu 17 = day 2, Fri 18 = day 3) lands the settlement on 2026-09-18, matching the merchant's own next_payout.date and the fixture's _derivation note that this is expected, not a delay. The claim stops the count one business day early and misreports the batch as already overdue on 2026-09-17.",
+      "before": {
+        "verdict": "UNSUPPORTED",
+        "reason": "The evidence does not provide the current date or state whether the batch has settled, making the claim about being a day behind schedule unverified."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence states the expected settlement date is 2026-09-18, not 2026-09-17."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The expected settlement date for the oldest unsettled batch is 2026-09-17.",
+          "evidence": [
+            "derived:merchant_1.expected_settlement_date"
+          ]
+        }
+      ]
+    },
+    "adv_2": {
+      "flaw": "Numeric substitution. The cited field's actual value is 15, not 10 \u2014 merchant_2 is in the 'travel' category, which rolling-reserves.md #c3 places in the higher-risk tier (15% / 120-day rolling window), not the 10% default tier for standard-risk merchants. 10% is a real figure from the same policy document, just for the wrong tier, which makes the substitution easy to miss without checking the merchant's category against the reserve terms table.",
+      "before": {
+        "verdict": "UNSUPPORTED",
+        "reason": "The evidence states the reserve percentage is 15, which contradicts the claim that it is 10%."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence states the reserve percentage is 15, not 10 as claimed."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The rolling reserve percentage is 10.",
+          "evidence": [
+            "state:merchant_2.reserve.percentage"
+          ]
+        }
+      ]
+    },
+    "adv_3": {
+      "flaw": "Conflated threshold. doc:rolling-reserves#c5 ('Reserve removal') actually states the removal bar is the chargeback rate falling 'under 0.5% for 60 consecutive days.' The 1% figure quoted in the claim is real, but it belongs to a different section of the same document (#c2, the trigger threshold for applying a reserve in the first place), not the removal threshold being cited. A reader who recalls '1%' from earlier in the same policy doc could easily accept this without checking which section it actually came from.",
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence states a chargeback rate under 0.5% for 60 days, whereas the claim specifies 1%."
+      },
+      "after": [
+        {
+          "verdict": "PARTIALLY_SUPPORTED",
+          "reason": "The evidence states a chargeback rate under 0.5% rather than 1% for early reserve removal."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The threshold for early reserve removal is a chargeback rate under 1% for 60 consecutive days.",
+          "evidence": [
+            "doc:rolling-reserves#c5"
+          ]
+        }
+      ]
+    },
+    "adv_4": {
+      "flaw": "Inverted outcome. doc:account-review-holds#c5 ('Partial holds') states the opposite: a partial hold displays as a reduced 'next payout' amount 'rather than a payout of zero.' The claim flips which display is correct, framing the merchant's actual (policy-correct) reduced payout of \u20b934,000 as if it were the error and a \u20b90 payout were expected instead.",
+      "before": {
+        "verdict": "UNSUPPORTED",
+        "reason": "The evidence states that a partial hold displays as a reduced payout rather than zero, contradicting the claim that it should show as \u20b90."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence explicitly states that a partial hold displays as a reduced payout amount rather than a payout of zero."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "A partial hold displays on the dashboard as a payout of zero.",
+          "evidence": [
+            "doc:account-review-holds#c5"
+          ]
+        }
+      ]
+    },
+    "adv_5": {
+      "flaw": "Field-value substitution. The cited field's actual value is DOC_ILLEGIBLE, not DOC_MISMATCH \u2014 both rejections share the same content_hash, meaning the merchant resubmitted the identical unreadable scan, which kyc-documents.md #c3 ('Resubmission') says will be rejected again for the same reason. DOC_MISMATCH is swapped in as a plausible-sounding substitute (it's described elsewhere in the same policy doc as the single most common rejection reason), along with an explanation that doesn't match this merchant's actual record.",
+      "before": {
+        "verdict": "UNSUPPORTED",
+        "reason": "The evidence states the rejection reason was DOC_ILLEGIBLE, which contradicts the claim of a DOC_MISMATCH code and name mismatch."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence shows the rejection reason was DOC_ILLEGIBLE, not DOC_MISMATCH."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The rejection reason code on the second address-proof submission was DOC_MISMATCH.",
+          "evidence": [
+            "state:merchant_12.kyc.documents[2].rejection_reason"
+          ]
+        }
+      ]
+    },
+    "adv_6": {
+      "flaw": "Cross-document number swap. doc:settlement-cycles#c6 ('Delayed settlement due to bank-side issues') actually states these delays 'typically resolve within 1-2 additional business days.' The '3-5 business days' figure in the claim is a real number, but it's the approval timeline for international payment requests from a different policy document (international-payments.md), not the bank-side settlement delay window being cited.",
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence states that bank-side delays typically resolve within 1-2 additional business days, whereas the claim states 3-5 business days."
+      },
+      "after": [
+        {
+          "verdict": "PARTIALLY_SUPPORTED",
+          "reason": "The evidence states that bank-side delays typically resolve within 1-2 additional business days, which contradicts the claim's figure of 3-5 days."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "Bank-side settlement delays typically resolve within 3-5 additional business days.",
+          "evidence": [
+            "doc:settlement-cycles#c6"
+          ]
+        }
+      ]
+    },
+    "adv_7": {
+      "flaw": "Reversed policy outcome, framed as a forward-looking prediction rather than a flat contradiction. doc:chargebacks-disputes#c5 ('Chargeback fees') states the fee is charged 'regardless of the final outcome' and is 'non-refundable' even when the merchant wins \u2014 only the disputed transaction amount itself is returned. The claim asserts the fee itself will eventually be refunded, which the cited section directly rules out; the fixture's own _derivation note confirms the -500 line item is correct and permanent, not a pending reversal.",
+      "before": {
+        "verdict": "UNSUPPORTED",
+        "reason": "The evidence states that the chargeback fee is non-refundable even if the merchant wins the dispute."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence explicitly states that the chargeback fee is non-refundable even if the merchant wins the dispute."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "A chargeback fee is credited back to the merchant when the merchant wins the dispute.",
+          "evidence": [
+            "doc:chargebacks-disputes#c5"
+          ]
+        }
+      ]
+    },
+    "adv_8": {
+      "flaw": "Correct evidence, wrong causal story. doc:subscription-mandates#c5 genuinely describes a 24-hour confirmation-delay window that can produce a generic decline after a customer-initiated revocation \u2014 that mechanism is real and accurately quoted. But nothing in merchant_15's record indicates a revocation (no mandate.revoked event; mandate.status is 'charge_failed'). The fixture's own _derivation note and doc:subscription-mandates#c6 ('Mandate amount changes') identify the actual cause: the attempted charge (1299) deviated from the mandate's registered amount (799), an unexempted change that requires a new mandate rather than being covered by the recurring-charge authentication exemption. The claim borrows a real, plausible policy mechanism from elsewhere in the same document to explain a failure it doesn't actually explain.",
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence does not specifically mention StudyStream Learning or their September 3 mandate charge."
+      },
+      "after": [
+        {
+          "verdict": "UNSUPPORTED",
+          "reason": "The evidence shows a failure code of DO_NOT_HONOR, which is a generic decline rather than a specific mandate revocation."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The mandate charge was declined because the customer had revoked the mandate.",
+          "evidence": [
+            "state:merchant_15.mandates[0].attempted_charges[0].failure_code",
+            "doc:subscription-mandates#c5"
+          ]
+        }
+      ]
+    }
+  },
+  "corrected": {
+    "adv_1": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence shows the capture date and defines the T+3 rule, but does not explicitly state the specific settlement date of 2026-09-18."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence directly states that the expected settlement date is 2026-09-18, computed from the oldest unsettled batch."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The expected settlement date for the oldest unsettled batch is 2026-09-18.",
+          "evidence": [
+            "derived:merchant_1.expected_settlement_date"
+          ]
+        }
+      ]
+    },
+    "adv_2": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence shows a reserve percentage of 15, but does not mention Trailblazer Holiday Co. or daily settlements."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence directly states that the merchant rolling reserve percentage is 15."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The rolling reserve percentage is 15.",
+          "evidence": [
+            "state:merchant_2.reserve.percentage"
+          ]
+        }
+      ]
+    },
+    "adv_3": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence states that a manual review by the risk team is required for early removal, which the claim omits."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence explicitly states that the chargeback rate must be under 0.5% for 60 consecutive days as an example of a resolved trigger for early reserve removal."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The threshold for early reserve removal is a chargeback rate under 0.5% for 60 consecutive days.",
+          "evidence": [
+            "doc:rolling-reserves#c5"
+          ]
+        }
+      ]
+    },
+    "adv_4": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence confirms partial holds show a reduced payout amount on the dashboard, but does not mention Suraksha Home Appliances, the specific date September 18, or the \u20b90 figure."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence explicitly states that a partial hold displays on the dashboard as a reduced next payout amount rather than zero."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "A partial hold displays on the dashboard as a reduced next payout amount rather than a payout of zero.",
+          "evidence": [
+            "doc:account-review-holds#c5"
+          ]
+        }
+      ]
+    },
+    "adv_5": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence confirms the rejection reason code DOC_ILLEGIBLE, but does not explicitly state that this was the second submission or for Anjali Tiffin Services."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence directly states that the rejection reason code was DOC_ILLEGIBLE."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The rejection reason code was DOC_ILLEGIBLE.",
+          "evidence": [
+            "state:merchant_12.kyc.documents[2].rejection_reason"
+          ]
+        }
+      ]
+    },
+    "adv_6": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence supports the bank-side delay mechanics and 1-2 day resolution window, but does not mention Coastal Spice Traders or a September 14 settlement."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence explicitly states that bank-side delays typically resolve within 1-2 additional business days."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "Bank-side settlement delays typically resolve within 1-2 additional business days.",
+          "evidence": [
+            "doc:settlement-cycles#c6"
+          ]
+        }
+      ]
+    },
+    "adv_7": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence confirms that chargeback fees are non-refundable when a merchant wins, but it does not mention Zenith Fitness Equipment, dispute disp_14_01, the specific \u20b9500 amount, or the September 16 payout."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence explicitly states that the chargeback fee is non-refundable even if the merchant wins the dispute."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "A chargeback fee is non-refundable even when the merchant wins the dispute.",
+          "evidence": [
+            "doc:chargebacks-disputes#c5"
+          ]
+        }
+      ]
+    },
+    "adv_8": {
+      "before": {
+        "verdict": "PARTIALLY_SUPPORTED",
+        "reason": "The evidence supports the failed DO_NOT_HONOR charge and the 24-hour delay, but does not mention StudyStream Learning's account or mandate revocation specifically."
+      },
+      "after": [
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence directly states the failure code DO_NOT_HONOR for the attempted mandate charge."
+        },
+        {
+          "verdict": "SUPPORTED",
+          "reason": "The evidence directly states that a revoked mandate can cause a generic decline for up to 24 hours while awaiting bank confirmation."
+        }
+      ],
+      "atomic_claims": [
+        {
+          "text": "The attempted mandate charge failed with failure code DO_NOT_HONOR.",
+          "evidence": [
+            "state:merchant_15.mandates[0].attempted_charges[0].failure_code"
+          ]
+        },
+        {
+          "text": "A revoked mandate can produce a generic decline for up to 24 hours before the platform receives confirmation from the bank.",
+          "evidence": [
+            "doc:subscription-mandates#c5"
+          ]
+        }
+      ]
+    }
+  }
+}

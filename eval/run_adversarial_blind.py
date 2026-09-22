@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.chunker import load_policy_chunks  # noqa: E402
+from src.derived_facts import get_derived_facts  # noqa: E402
 from src.llm import LLMClient  # noqa: E402
 from src.state_tools import get_merchant_state  # noqa: E402
 from src.verifier import verify_claim  # noqa: E402
@@ -60,13 +61,19 @@ def _navigate(obj, path: str):
 
 def resolve_evidence_content(evidence_id: str):
     """Fetch the REAL content for one evidence_id, live from the corpus -
-    handles both whole-tool-shaped ids (state:merchant_N, doc:slug#cN) and
+    handles whole-tool-shaped ids (state:merchant_N, doc:slug#cN),
     finer-grained dotted-path ids that no single existing state tool
     returns directly (state_tools.py only exposes whole sub-objects; the
-    blind set cites individual fields within them).
+    blind set cites individual fields within them), and derived:... facts
+    computed by src/derived_facts.py.
     """
     if evidence_id.startswith("doc:"):
         return POLICY_CHUNKS[evidence_id]
+
+    if evidence_id.startswith("derived:"):
+        merchant_id = evidence_id[len("derived:") :].split(".", 1)[0]
+        facts = {f["evidence_id"]: f["content"] for f in get_derived_facts(merchant_id)}
+        return facts[evidence_id]
 
     assert evidence_id.startswith("state:")
     rest = evidence_id[len("state:") :]
