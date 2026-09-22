@@ -54,6 +54,24 @@ corpus.
   path instead, since that is what the Phase 3 verifier checks a claim
   against — prefer the most specific id a tool actually has.
 
+### Derived facts: `derived:<merchant-id>.<dotted.path>`
+
+- Computed in Python (`src/derived_facts.py`) from `CORPUS_NOW` plus a
+  merchant's state — expected settlement dates in business days, elapsed
+  time since an event, and window checks like whether a dispute is still
+  inside the issuing bank's review period.
+- Example: `derived:merchant_1.expected_settlement_date`, or
+  `derived:merchant_9.disputes[0].within_bank_review_window`.
+- Unlike `state:`, the path is required: there is no "whole derived
+  record", only individually named computations.
+- These exist because the grounding verifier cannot check date arithmetic
+  — it has no notion of "now" and its prompt forbids the outside knowledge
+  (a calendar) that business-day counting needs. Moving the arithmetic
+  into deterministic, tested code and citing its output keeps time-relative
+  claims checkable. The agent is instructed never to compute dates itself.
+- Derived facts are computed, not authored: nothing under `corpus/` needs
+  to change when one is added.
+
 ## Regenerating the policy KB
 
 Chunk ids are derived purely from each doc's existing `##` section order, so

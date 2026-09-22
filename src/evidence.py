@@ -1,14 +1,22 @@
-"""The evidence envelope every tool - policy or state - returns through.
+"""The evidence envelope every tool - policy, state, or derived - returns
+through.
 
 The Phase 3 verifier checks a claim against an evidence_id without caring
-whether it came from a retrieved policy chunk or a state-tool lookup, so
-both sources are wrapped identically:
+which tool produced it, so every source is wrapped identically:
 
-    {"evidence_id": "...", "content": ..., "source_type": "policy"|"state"}
+    {"evidence_id": "...", "content": ..., "source_type": "policy"|"state"|"derived"}
 
 evidence_id follows the scheme in corpus/README.md:
   - policy chunk:  doc:<slug>#c<n>
   - state field:   state:<merchant_id>.<dotted.path>
+  - derived fact:  derived:<merchant_id>.<dotted.path>
+
+"derived" exists because the blind adversarial check showed the verifier
+cannot check date arithmetic: it has no notion of "now" and its own prompt
+forbids the outside knowledge (a calendar) that business-day counting
+needs. Rather than loosen the verifier, the arithmetic moved into Python
+(src/derived_facts.py), where it is deterministic and testable, and its
+results became citable evidence like anything else.
 
 This module is also the single enforcement point for the `_derivation`
 convention (see corpus/README.md and Phase 0's fixture fixes): merchant
@@ -25,9 +33,9 @@ from __future__ import annotations
 import re
 from typing import Any, Literal
 
-SourceType = Literal["policy", "state"]
+SourceType = Literal["policy", "state", "derived"]
 
-_VALID_SOURCE_TYPES = ("policy", "state")
+_VALID_SOURCE_TYPES = ("policy", "state", "derived")
 
 # doc:<slug>#c<n> - slug is a policy filename stem, n is a 1-indexed chunk
 # number assigned in document order (see corpus/README.md).
@@ -47,6 +55,20 @@ _STATE_ID_RE = re.compile(
     r"^state:merchant_\d+(\.[a-zA-Z_][a-zA-Z0-9_]*(\[\d+\])?)*$"
 )
 
+# derived:<merchant_id>.<dotted.path> - same path grammar as state, but a
+# required path (there is no "whole derived record" to cite; every derived
+# fact is one named computation, e.g.
+# derived:merchant_1.expected_settlement_date).
+_DERIVED_ID_RE = re.compile(
+    r"^derived:merchant_\d+(\.[a-zA-Z_][a-zA-Z0-9_]*(\[\d+\])?)+$"
+)
+
+_ID_PATTERNS = {
+    "policy": _POLICY_ID_RE,
+    "state": _STATE_ID_RE,
+    "derived": _DERIVED_ID_RE,
+}
+
 
 class InvalidEvidenceId(ValueError):
     pass
@@ -62,7 +84,7 @@ def _strip_hidden(obj: Any) -> Any:
 
 
 def _validate_evidence_id(evidence_id: str, source_type: SourceType) -> None:
-    pattern = _POLICY_ID_RE if source_type == "policy" else _STATE_ID_RE
+    pattern = _ID_PATTERNS[source_type]
     if not pattern.match(evidence_id):
         raise InvalidEvidenceId(
             f"evidence_id {evidence_id!r} does not match the {source_type} "
