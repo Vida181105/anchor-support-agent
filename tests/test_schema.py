@@ -15,7 +15,7 @@ VALID = {
     "category": "settlement_timing",
     "risk_class": "money_movement",
     "claims": [{"text": "Settlement is on schedule.", "evidence": ["state:merchant_1.settlement_schedule"]}],
-    "root_cause": "T+3 cycle, within window.",
+    "root_cause": {"text": "T+3 cycle, within window.", "evidence": ["state:merchant_1.settlement_schedule"]},
     "recommended_action": "auto_resolve",
 }
 
@@ -49,7 +49,10 @@ def test_accepts_multiple_claims_each_grounded():
             {"text": "Claim two.", "evidence": ["doc:settlement-cycles#c1"]},
         ],
     }
-    validate_diagnosis(diagnosis, {"state:merchant_1.a", "doc:settlement-cycles#c1"})
+    validate_diagnosis(
+        diagnosis,
+        {"state:merchant_1.a", "doc:settlement-cycles#c1", "state:merchant_1.settlement_schedule"},
+    )
 
 
 def test_one_ungrounded_claim_among_several_still_fails():
@@ -64,19 +67,29 @@ def test_one_ungrounded_claim_among_several_still_fails():
         validate_diagnosis(diagnosis, {"state:merchant_1.a"})
 
 
-def test_render_prose_joins_claim_text_and_lists_citations():
+def test_render_prose_joins_root_cause_and_claim_text_and_lists_citations():
     diagnosis = {
+        "root_cause": {"text": "Root cause fact.", "evidence": ["state:merchant_1.root"]},
         "claims": [
             {"text": "First fact.", "evidence": ["state:merchant_1.a"]},
             {"text": "Second fact.", "evidence": ["doc:settlement-cycles#c1"]},
-        ]
+        ],
     }
     prose = render_prose(diagnosis)
+    assert "Root cause fact." in prose
     assert "First fact." in prose
     assert "Second fact." in prose
+    assert "state:merchant_1.root" in prose
     assert "state:merchant_1.a" in prose
     assert "doc:settlement-cycles#c1" in prose
 
 
-def test_render_prose_with_no_claims_produces_empty_body_no_crash():
-    assert render_prose({"claims": []}) == ""
+def test_render_prose_with_no_claims_still_includes_root_cause():
+    diagnosis = {"root_cause": {"text": "Only the root cause.", "evidence": []}, "claims": []}
+    assert render_prose(diagnosis) == "Only the root cause."
+
+
+def test_root_cause_evidence_is_grounding_checked_same_as_a_claim():
+    diagnosis = {**VALID, "root_cause": {"text": "x", "evidence": ["state:merchant_1.hallucinated"]}}
+    with pytest.raises(UngroundedClaimError):
+        validate_diagnosis(diagnosis, {"state:merchant_1.settlement_schedule"})
