@@ -1,0 +1,126 @@
+[
+  {
+    "id": "adv_1",
+    "merchant_id": "merchant_1",
+    "claim_text": "Kavya Handloom Exports' oldest unsettled batch was captured on 2026-09-15, and under the standard T+3 business-day cycle, that batch should already have settled by 2026-09-17 \u2014 the current payout is running a day behind schedule.",
+    "evidence": [
+      "state:merchant_1.settlement_schedule.oldest_unsettled_batch_captured_date",
+      "doc:settlement-cycles#c1"
+    ],
+    "evidence_content": {
+      "state:merchant_1.settlement_schedule.oldest_unsettled_batch_captured_date": "2026-09-15",
+      "doc:settlement-cycles#c1": "Standard settlement cycle\n\nBy default, a merchant's settlement cycle is T+3: funds collected on a given\nbusiness day (T) are settled to the merchant's linked bank account three\nbusiness days later. \"Business day\" excludes weekends and bank holidays in\nthe merchant's settlement region, so a payment collected on a Thursday\ntypically settles the following Tuesday, not Sunday."
+    },
+    "verdict": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence does not provide the current date or state whether the batch has settled, making the claim about being a day behind schedule unverified."
+    }
+  },
+  {
+    "id": "adv_2",
+    "merchant_id": "merchant_2",
+    "claim_text": "Trailblazer Holiday Co. currently has 10% of each day's settlement withheld under its active rolling reserve, per the standard reserve terms.",
+    "evidence": [
+      "state:merchant_2.reserve.percentage"
+    ],
+    "evidence_content": {
+      "state:merchant_2.reserve.percentage": 15
+    },
+    "verdict": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states the reserve percentage is 15, which contradicts the claim that it is 10%."
+    }
+  },
+  {
+    "id": "adv_3",
+    "merchant_id": "merchant_2",
+    "claim_text": "Per policy, Trailblazer Holiday Co.'s reserve is eligible for early removal once its trailing chargeback rate has stayed below 1% for 60 consecutive days.",
+    "evidence": [
+      "doc:rolling-reserves#c5"
+    ],
+    "evidence_content": {
+      "doc:rolling-reserves#c5": "Reserve removal\n\nA reserve is removed early only if the risk team completes a manual review\nand finds the underlying trigger has resolved (e.g., chargeback rate back\nunder 0.5% for 60 consecutive days). There is no self-serve option to\nremove a reserve from the merchant dashboard. Merchants can request a\nreview, but a request alone does not pause or reduce the reserve while\npending."
+    },
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence states a chargeback rate under 0.5% for 60 days, whereas the claim specifies 1%."
+    }
+  },
+  {
+    "id": "adv_4",
+    "merchant_id": "merchant_4",
+    "claim_text": "Because Suraksha Home Appliances' hold is scoped to only six flagged transactions, policy says the dashboard should show the September 18 payout as \u20b90 until the review clears, rather than the reduced amount they're currently seeing.",
+    "evidence": [
+      "doc:account-review-holds#c5"
+    ],
+    "evidence_content": {
+      "doc:account-review-holds#c5": "Partial holds\n\nIn some cases only a subset of an account's settlement is held \u2014 for\nexample, when a review is scoped to a specific product line or a specific\nbatch of transactions flagged as suspicious, rather than the whole account.\nA partial hold displays on the dashboard as a reduced \"next payout\" amount\nrather than a payout of zero, which is easy to mistake for a reserve\ndeduction rather than a hold."
+    },
+    "verdict": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states that a partial hold displays as a reduced payout rather than zero, contradicting the claim that it should show as \u20b90."
+    }
+  },
+  {
+    "id": "adv_5",
+    "merchant_id": "merchant_12",
+    "claim_text": "Anjali Tiffin Services' second address-proof submission was rejected again with a DOC_MISMATCH code, meaning the name on the document still didn't match the business name on file.",
+    "evidence": [
+      "state:merchant_12.kyc.documents[2].rejection_reason"
+    ],
+    "evidence_content": {
+      "state:merchant_12.kyc.documents[2].rejection_reason": "DOC_ILLEGIBLE"
+    },
+    "verdict": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states the rejection reason was DOC_ILLEGIBLE, which contradicts the claim of a DOC_MISMATCH code and name mismatch."
+    }
+  },
+  {
+    "id": "adv_6",
+    "merchant_id": "merchant_13",
+    "claim_text": "Coastal Spice Traders' September 14 settlement is showing as settled-but-not-cleared on the bank side; per policy this typically resolves within 3-5 business days.",
+    "evidence": [
+      "doc:settlement-cycles#c6"
+    ],
+    "evidence_content": {
+      "doc:settlement-cycles#c6": "Delayed settlement due to bank-side issues\n\nIn rare cases, a settlement batch is released on schedule but delayed by\nthe receiving bank before it lands in the merchant's account. This shows as\n\"settled\" on the merchant dashboard even though funds have not yet cleared\nthe bank. Bank-side delays typically resolve within 1-2 additional business\ndays and are outside the platform's settlement SLA."
+    },
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence states that bank-side delays typically resolve within 1-2 additional business days, whereas the claim states 3-5 business days."
+    }
+  },
+  {
+    "id": "adv_7",
+    "merchant_id": "merchant_14",
+    "claim_text": "Since Zenith Fitness Equipment won dispute disp_14_01, the \u20b9500 chargeback fee already deducted on the September 16 payout should be credited back on a subsequent settlement.",
+    "evidence": [
+      "doc:chargebacks-disputes#c5"
+    ],
+    "evidence_content": {
+      "doc:chargebacks-disputes#c5": "Chargeback fees\n\nA chargeback fee is charged to the merchant's account regardless of the\nfinal outcome of the dispute, to cover network processing costs. If the\nmerchant later wins the dispute, the disputed transaction amount is\nreturned, but the chargeback fee itself is non-refundable."
+    },
+    "verdict": {
+      "verdict": "UNSUPPORTED",
+      "reason": "The evidence states that the chargeback fee is non-refundable even if the merchant wins the dispute."
+    }
+  },
+  {
+    "id": "adv_8",
+    "merchant_id": "merchant_15",
+    "claim_text": "The DO_NOT_HONOR decline on StudyStream Learning's September 3 mandate charge happened because the customer revoked their mandate shortly before the attempt; per policy, a revoked mandate can still show a generic decline for up to 24 hours before the platform receives confirmation from the bank.",
+    "evidence": [
+      "state:merchant_15.mandates[0].attempted_charges[0].failure_code",
+      "doc:subscription-mandates#c5"
+    ],
+    "evidence_content": {
+      "state:merchant_15.mandates[0].attempted_charges[0].failure_code": "DO_NOT_HONOR",
+      "doc:subscription-mandates#c5": "Customer-initiated mandate cancellation\n\nA customer can revoke a mandate directly through their bank or UPI app\nwithout notifying the merchant first. The platform receives a\n`mandate.revoked` webhook when this happens, but there is often a delay of\nup to 24 hours between the customer's revocation and the platform\nreceiving confirmation from the bank, during which a scheduled charge\nattempt may still fail with a generic decline rather than a clear\n\"mandate revoked\" reason."
+    },
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence does not specifically mention StudyStream Learning or their September 3 mandate charge."
+    }
+  }
+]

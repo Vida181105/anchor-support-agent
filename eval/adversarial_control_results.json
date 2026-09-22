@@ -1,0 +1,66 @@
+[
+  {
+    "id": "adv_1",
+    "corrected_text": "Kavya Handloom Exports' oldest unsettled batch was captured on 2026-09-15, and under the standard T+3 business-day cycle, that batch is scheduled to settle on 2026-09-18 \u2014 the payout is proceeding on the normal schedule, not running behind.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence shows the capture date and defines the T+3 rule, but does not explicitly state the specific settlement date of 2026-09-18."
+    }
+  },
+  {
+    "id": "adv_2",
+    "corrected_text": "Trailblazer Holiday Co. currently has 15% of each day's settlement withheld under its active rolling reserve, per the standard reserve terms.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence shows a reserve percentage of 15, but does not mention Trailblazer Holiday Co. or daily settlements."
+    }
+  },
+  {
+    "id": "adv_3",
+    "corrected_text": "Per policy, Trailblazer Holiday Co.'s reserve is eligible for early removal once its trailing chargeback rate has stayed below 0.5% for 60 consecutive days.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence states that a manual review by the risk team is required for early removal, which the claim omits."
+    }
+  },
+  {
+    "id": "adv_4",
+    "corrected_text": "Because Suraksha Home Appliances' hold is scoped to only six flagged transactions, policy says the dashboard should show the September 18 payout as a reduced amount rather than \u20b90 until the review clears.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence confirms partial holds show a reduced payout amount on the dashboard, but does not mention Suraksha Home Appliances, the specific date September 18, or the \u20b90 figure."
+    }
+  },
+  {
+    "id": "adv_5",
+    "corrected_text": "Anjali Tiffin Services' second address-proof submission was rejected again with a DOC_ILLEGIBLE code, meaning the resubmitted scan was still unreadable.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence confirms the rejection reason code DOC_ILLEGIBLE, but does not explicitly state that this was the second submission or for Anjali Tiffin Services."
+    }
+  },
+  {
+    "id": "adv_6",
+    "corrected_text": "Coastal Spice Traders' September 14 settlement is showing as settled-but-not-cleared on the bank side; per policy this typically resolves within 1-2 additional business days.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence supports the bank-side delay mechanics and 1-2 day resolution window, but does not mention Coastal Spice Traders or a September 14 settlement."
+    }
+  },
+  {
+    "id": "adv_7",
+    "corrected_text": "Since Zenith Fitness Equipment won dispute disp_14_01, the \u20b9500 chargeback fee already deducted on the September 16 payout is non-refundable and will not be credited back, even though the disputed transaction amount itself was returned.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence confirms that chargeback fees are non-refundable when a merchant wins, but it does not mention Zenith Fitness Equipment, dispute disp_14_01, the specific \u20b9500 amount, or the September 16 payout."
+    }
+  },
+  {
+    "id": "adv_8",
+    "corrected_text": "The mandate charge attempt on StudyStream Learning's account failed with a DO_NOT_HONOR decline. Separately, per policy, a DO_NOT_HONOR-style generic decline can occur for up to 24 hours after a mandate revocation, before the platform receives confirmation from the bank.",
+    "verdict": {
+      "verdict": "PARTIALLY_SUPPORTED",
+      "reason": "The evidence supports the failed DO_NOT_HONOR charge and the 24-hour delay, but does not mention StudyStream Learning's account or mandate revocation specifically."
+    }
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "adv_1",
+    "merchant_id": "merchant_1",
+    "claim": {
+      "text": "Kavya Handloom Exports' oldest unsettled batch was captured on 2026-09-15, and under the standard T+3 business-day cycle, that batch should already have settled by 2026-09-17 — the current payout is running a day behind schedule.",
+      "evidence": [
+        "state:merchant_1.settlement_schedule.oldest_unsettled_batch_captured_date",
+        "doc:settlement-cycles#c1"
+      ]
+    },
+    "flaw": "Off-by-one business-day arithmetic. 2026-09-15 is a Tuesday; counting three business days forward (Wed 16 = day 1, Thu 17 = day 2, Fri 18 = day 3) lands the settlement on 2026-09-18, matching the merchant's own next_payout.date and the fixture's _derivation note that this is expected, not a delay. The claim stops the count one business day early and misreports the batch as already overdue on 2026-09-17."
+  },
+  {
+    "id": "adv_2",
+    "merchant_id": "merchant_2",
+    "claim": {
+      "text": "Trailblazer Holiday Co. currently has 10% of each day's settlement withheld under its active rolling reserve, per the standard reserve terms.",
+      "evidence": [
+        "state:merchant_2.reserve.percentage"
+      ]
+    },
+    "flaw": "Numeric substitution. The cited field's actual value is 15, not 10 — merchant_2 is in the 'travel' category, which rolling-reserves.md #c3 places in the higher-risk tier (15% / 120-day rolling window), not the 10% default tier for standard-risk merchants. 10% is a real figure from the same policy document, just for the wrong tier, which makes the substitution easy to miss without checking the merchant's category against the reserve terms table."
+  },
+  {
+    "id": "adv_3",
+    "merchant_id": "merchant_2",
+    "claim": {
+      "text": "Per policy, Trailblazer Holiday Co.'s reserve is eligible for early removal once its trailing chargeback rate has stayed below 1% for 60 consecutive days.",
+      "evidence": [
+        "doc:rolling-reserves#c5"
+      ]
+    },
+    "flaw": "Conflated threshold. doc:rolling-reserves#c5 ('Reserve removal') actually states the removal bar is the chargeback rate falling 'under 0.5% for 60 consecutive days.' The 1% figure quoted in the claim is real, but it belongs to a different section of the same document (#c2, the trigger threshold for applying a reserve in the first place), not the removal threshold being cited. A reader who recalls '1%' from earlier in the same policy doc could easily accept this without checking which section it actually came from."
+  },
+  {
+    "id": "adv_4",
+    "merchant_id": "merchant_4",
+    "claim": {
+      "text": "Because Suraksha Home Appliances' hold is scoped to only six flagged transactions, policy says the dashboard should show the September 18 payout as ₹0 until the review clears, rather than the reduced amount they're currently seeing.",
+      "evidence": [
+        "doc:account-review-holds#c5"
+      ]
+    },
+    "flaw": "Inverted outcome. doc:account-review-holds#c5 ('Partial holds') states the opposite: a partial hold displays as a reduced 'next payout' amount 'rather than a payout of zero.' The claim flips which display is correct, framing the merchant's actual (policy-correct) reduced payout of ₹34,000 as if it were the error and a ₹0 payout were expected instead."
+  },
+  {
+    "id": "adv_5",
+    "merchant_id": "merchant_12",
+    "claim": {
+      "text": "Anjali Tiffin Services' second address-proof submission was rejected again with a DOC_MISMATCH code, meaning the name on the document still didn't match the business name on file.",
+      "evidence": [
+        "state:merchant_12.kyc.documents[2].rejection_reason"
+      ]
+    },
+    "flaw": "Field-value substitution. The cited field's actual value is DOC_ILLEGIBLE, not DOC_MISMATCH — both rejections share the same content_hash, meaning the merchant resubmitted the identical unreadable scan, which kyc-documents.md #c3 ('Resubmission') says will be rejected again for the same reason. DOC_MISMATCH is swapped in as a plausible-sounding substitute (it's described elsewhere in the same policy doc as the single most common rejection reason), along with an explanation that doesn't match this merchant's actual record."
+  },
+  {
+    "id": "adv_6",
+    "merchant_id": "merchant_13",
+    "claim": {
+      "text": "Coastal Spice Traders' September 14 settlement is showing as settled-but-not-cleared on the bank side; per policy this typically resolves within 3-5 business days.",
+      "evidence": [
+        "doc:settlement-cycles#c6"
+      ]
+    },
+    "flaw": "Cross-document number swap. doc:settlement-cycles#c6 ('Delayed settlement due to bank-side issues') actually states these delays 'typically resolve within 1-2 additional business days.' The '3-5 business days' figure in the claim is a real number, but it's the approval timeline for international payment requests from a different policy document (international-payments.md), not the bank-side settlement delay window being cited."
+  },
+  {
+    "id": "adv_7",
+    "merchant_id": "merchant_14",
+    "claim": {
+      "text": "Since Zenith Fitness Equipment won dispute disp_14_01, the ₹500 chargeback fee already deducted on the September 16 payout should be credited back on a subsequent settlement.",
+      "evidence": [
+        "doc:chargebacks-disputes#c5"
+      ]
+    },
+    "flaw": "Reversed policy outcome, framed as a forward-looking prediction rather than a flat contradiction. doc:chargebacks-disputes#c5 ('Chargeback fees') states the fee is charged 'regardless of the final outcome' and is 'non-refundable' even when the merchant wins — only the disputed transaction amount itself is returned. The claim asserts the fee itself will eventually be refunded, which the cited section directly rules out; the fixture's own _derivation note confirms the -500 line item is correct and permanent, not a pending reversal."
+  },
+  {
+    "id": "adv_8",
+    "merchant_id": "merchant_15",
+    "claim": {
+      "text": "The DO_NOT_HONOR decline on StudyStream Learning's September 3 mandate charge happened because the customer revoked their mandate shortly before the attempt; per policy, a revoked mandate can still show a generic decline for up to 24 hours before the platform receives confirmation from the bank.",
+      "evidence": [
+        "state:merchant_15.mandates[0].attempted_charges[0].failure_code",
+        "doc:subscription-mandates#c5"
+      ]
+    },
+    "flaw": "Correct evidence, wrong causal story. doc:subscription-mandates#c5 genuinely describes a 24-hour confirmation-delay window that can produce a generic decline after a customer-initiated revocation — that mechanism is real and accurately quoted. But nothing in merchant_15's record indicates a revocation (no mandate.revoked event; mandate.status is 'charge_failed'). The fixture's own _derivation note and doc:subscription-mandates#c6 ('Mandate amount changes') identify the actual cause: the attempted charge (1299) deviated from the mandate's registered amount (799), an unexempted change that requires a new mandate rather than being covered by the recurring-charge authentication exemption. The claim borrows a real, plausible policy mechanism from elsewhere in the same document to explain a failure it doesn't actually explain."
+  }
+]
