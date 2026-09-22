@@ -46,7 +46,19 @@ DIAGNOSIS_JSON_SCHEMA = {
                 "required": ["text", "evidence"],
             },
         },
-        "root_cause": {"type": "string"},
+        # root_cause is claim-shaped, not a bare string: the Phase 3
+        # verifier's rule is "if the root_cause claim is unsupported,
+        # reject the whole diagnosis," which is only checkable if
+        # root_cause actually cites the evidence it rests on, same as any
+        # other claim. A bare string had nothing to verify against.
+        "root_cause": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string"},
+                "evidence": {"type": "array", "items": {"type": "string"}},
+            },
+            "required": ["text", "evidence"],
+        },
         "recommended_action": {"type": "string", "enum": list(ROUTING_LANES)},
     },
     "required": ["category", "risk_class", "claims", "root_cause", "recommended_action"],
@@ -71,7 +83,7 @@ def validate_diagnosis(diagnosis: dict, known_evidence_ids: set[str]) -> None:
     if diagnosis["recommended_action"] not in ROUTING_LANES:
         raise ValueError(f"invalid recommended_action: {diagnosis['recommended_action']!r}")
 
-    for claim in diagnosis["claims"]:
+    for claim in [*diagnosis["claims"], diagnosis["root_cause"]]:
         for evidence_id in claim["evidence"]:
             if evidence_id not in known_evidence_ids:
                 raise UngroundedClaimError(
@@ -84,9 +96,10 @@ def render_prose(diagnosis: dict) -> str:
     """Render claims into a message. Called after the diagnosis exists,
     never before - prose is a view of the claims, not their source.
     """
-    lines = [claim["text"] for claim in diagnosis["claims"]]
+    all_claims = [diagnosis["root_cause"], *diagnosis["claims"]]
+    lines = [claim["text"] for claim in all_claims if claim["text"]]
     body = " ".join(lines)
-    citations = sorted({eid for claim in diagnosis["claims"] for eid in claim["evidence"]})
+    citations = sorted({eid for claim in all_claims for eid in claim["evidence"]})
     if citations:
         body += "\n\nSources: " + ", ".join(citations)
     return body

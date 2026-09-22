@@ -1,5 +1,6 @@
 """Shared corpus-wide constants."""
 
+import os
 from datetime import datetime
 
 # The single "now" against which every elapsed-time calculation in the
@@ -20,3 +21,24 @@ EMBEDDING_MODEL = "gemini-embedding-001"
 # microseconds either way, so this is picked for a stable, documented
 # choice rather than because it matters at this scale.
 EMBEDDING_DIMENSIONALITY = 768
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    val = os.environ.get(name)
+    if val is None:
+        return default
+    return val.strip().lower() not in ("0", "false", "no", "")
+
+
+# The ablation switch: whether src.agent.diagnose_ticket runs the grounding
+# verifier (src/verifier.py) by default. This exists so measuring grounding
+# precision with and without the verifier - the headline number of the
+# project - is a config change, not a code change.
+#
+# diagnose_ticket's own `verify` parameter always takes precedence when
+# passed explicitly (the primary mechanism: an eval script runs the same
+# batch twice, verify=True then verify=False, in one process). This
+# environment variable only sets what `verify=None` resolves to - for
+# flipping the default without writing a loop, e.g.
+# `ANCHOR_VERIFIER_ENABLED=0 python eval/run_something.py`.
+VERIFIER_ENABLED_DEFAULT = _env_bool("ANCHOR_VERIFIER_ENABLED", True)
