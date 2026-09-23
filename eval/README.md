@@ -1,3 +1,42 @@
+# Evaluation
+
+## Frozen gate thresholds
+
+**Frozen 2026-09-23 10:58:05 IST, before any held-out ticket had been run.**
+
+| Threshold | money_movement | informational |
+|---|---|---|
+| `AUTO_RESOLVE_MIN_SUPPORTED_RATIO` | 1.0 | 1.0 |
+| `AUTO_RESOLVE_MIN_CLAIMS` | 2 | 1 |
+
+Set in `src/config.py` from a 21-ticket stratified sample of **training**
+tickets only (`eval/run_training_sample.py` →
+`eval/training_sample_results.json`), model `gemini-3.5-flash-lite`, zero
+fail-closed artifacts. `eval/heldout.json` was not read or run at any point
+before this freeze.
+
+**How they were set, including what the data did not support.** The
+training sample did not discriminate on the supported-ratio dimension: 20
+of 21 tickets scored exactly 1.0, leaving one sub-threshold case
+(`ticket_002`, 11/12 = 0.92). With a single relevant data point there is
+nothing to fit, so 1.0 is chosen on the cost asymmetry rather than a
+measured optimum — `PARTIALLY_SUPPORTED` means, by the verifier's own
+rubric, that a claim overstates or goes beyond its evidence, and blocking
+costs a human review while a wrong auto-resolve costs a merchant. Stating
+this plainly because "tuned from data" would overclaim what 21 tickets
+showed.
+
+The claim-count bar is where "money_movement is stricter" is actually
+implemented — with both ratios pinned at 1.0 there is nowhere else for the
+asymmetry to live. Both money_movement tickets that auto-resolved in the
+sample carried ≥2 claims (`ticket_014`: 4, `ticket_051`: 2), so requiring 2
+costs nothing observed while ruling out a settlement or refund answer
+resting on one fact. The only single-claim auto-resolve
+(`ticket_059`) was informational, where one fact genuinely is the whole
+answer.
+
+These values are not to be changed after any held-out result is seen.
+
 # Held-out evaluation set
 
 `heldout.json` is a JSON array of 40 tickets, disjoint from

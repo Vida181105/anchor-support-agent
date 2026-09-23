@@ -40,10 +40,22 @@ def _env_bool(name: str, default: bool) -> bool:
 # in eval/README.md.
 # --------------------------------------------------------------------------
 
+# FROZEN 2026-09-23. Set from a 21-ticket stratified sample of TRAINING
+# tickets only (eval/training_sample_results.json); no held-out ticket had
+# been run at the time these were fixed. Provenance in eval/README.md.
+#
 # Fraction of verified claims that must come back SUPPORTED (as opposed to
-# PARTIALLY_SUPPORTED) before a diagnosis may AUTO_RESOLVE. money_movement
-# gets the stricter bar: an incorrect settlement/refund/reserve/hold answer
-# sent without a human costs more than an incorrect policy explanation.
+# PARTIALLY_SUPPORTED) before a diagnosis may AUTO_RESOLVE.
+#
+# Set at the conservative end, and honestly: the training data did not
+# discriminate. 20 of 21 sampled tickets scored exactly 1.0, leaving a
+# single sub-threshold case (ticket_002, 11/12 = 0.92) - no basis to fit a
+# looser bar to. The argument for 1.0 is therefore from the cost
+# asymmetry, not from a measured optimum: PARTIALLY_SUPPORTED means, by
+# the verifier's own rubric, that a claim overstates or goes beyond its
+# evidence, and letting that into an unreviewed answer is precisely the
+# failure this project exists to prevent. Blocking costs a human review;
+# a confidently wrong answer costs a merchant.
 #
 # Only consulted when verification actually ran. When the verifier is off
 # (the ablation), the gate has no verdicts and this rule is skipped rather
@@ -57,8 +69,18 @@ AUTO_RESOLVE_MIN_SUPPORTED_RATIO = {
 # A diagnosis with fewer than this many surviving claims may not
 # AUTO_RESOLVE, regardless of verdicts: an answer resting on almost nothing
 # is not a confident answer, it is a thin one.
+#
+# This is where "money_movement gets a stricter bar" is actually
+# implemented - with both ratios pinned at 1.0 there is nowhere else for
+# the asymmetry to live. Both money_movement tickets that auto-resolved in
+# the training sample carried >= 2 claims (ticket_014: 4, ticket_051: 2),
+# so requiring 2 costs nothing observed while ruling out a settlement or
+# refund answer resting on a single fact. The one-claim auto-resolve in
+# the sample (ticket_059, "is the dispute window business or calendar
+# days") was informational, where a single fact genuinely is the whole
+# answer.
 AUTO_RESOLVE_MIN_CLAIMS = {
-    "money_movement": 1,
+    "money_movement": 2,
     "informational": 1,
 }
 

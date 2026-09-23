@@ -50,3 +50,76 @@ def test_rejects_non_free_tier_model():
         client = LLMClient(cache_dir=tmp, api_key="fake-key")
         with pytest.raises(ValueError):
             client.generate("hi", model="gemini-3.5-pro")
+
+
+# --- transient API errors: retry 429 AND 503 -----------------------------
+
+def test_retries_503_unavailable_not_just_429():
+    """A 503 "model is experiencing high demand" is explicitly temporary.
+    It was not being retried, and one such error killed a 19-ticket batch
+    partway through - the whole run lost to a transient overload.
+    """
+    from src.llm import TransientAPIError, _is_retryable_error
+
+    class Err503(Exception):
+        status_code = 503
+
+    assert _is_retryable_error(Err503()) is True
+
+    client = LLMClient(cache_dir=tempfile.mkdtemp(), api_key="fake-key")
+    client.base_delay = 0  # no real sleeping in tests
+    attempts = {"n": 0}
+
+    def flaky():
+        attempts["n"] += 1
+        if attempts["n"] < 3:
+            raise Err503("503 UNAVAILABLE. high demand")
+        return "recovered"
+
+    assert client._retry_on_rate_limit(flaky) == "recovered"
+    assert attempts["n"] == 3
+
+
+def test_429_still_retried():
+    from src.llm import _is_retryable_error
+
+    class Err429(Exception):
+        status_code = 429
+
+    assert _is_retryable_error(Err429()) is True
+    assert _is_retryable_error(Exception("429 RESOURCE_EXHAUSTED")) is True
+
+
+def test_non_transient_errors_are_not_retried():
+    """A 400 will never succeed on retry; retrying would waste quota and
+    hide the bug."""
+    from src.llm import _is_retryable_error
+
+    class Err400(Exception):
+        status_code = 400
+
+    assert _is_retryable_error(Err400()) is False
+
+    client = LLMClient(cache_dir=tempfile.mkdtemp(), api_key="fake-key")
+    attempts = {"n": 0}
+
+    def bad_request():
+        attempts["n"] += 1
+        raise Err400("400 INVALID_ARGUMENT")
+
+    with pytest.raises(Err400):
+        client._retry_on_rate_limit(bad_request)
+    assert attempts["n"] == 1  # tried once, not retried
+
+
+def test_exhausted_transient_retries_raise_transient_api_error():
+    from src.llm import TransientAPIError
+
+    class Err503(Exception):
+        status_code = 503
+
+    client = LLMClient(cache_dir=tempfile.mkdtemp(), api_key="fake-key", max_retries=2)
+    client.base_delay = 0
+
+    with pytest.raises(TransientAPIError):
+        client._retry_on_rate_limit(lambda: (_ for _ in ()).throw(Err503("503")))
