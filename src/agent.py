@@ -34,10 +34,11 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from src.config import VERIFIER_ENABLED_DEFAULT
+from src.config import RESPONSIVENESS_ENABLED_DEFAULT, VERIFIER_ENABLED_DEFAULT
 from src.derived_facts import get_derived_facts
 from src.identity import identify_merchant
 from src.llm import LLMClient
+from src.responsiveness import check_responsiveness
 from src.retrieval import PolicyIndex
 from src.schema import DIAGNOSIS_JSON_SCHEMA, validate_diagnosis
 from src.state_tools import get_disputes, get_merchant_state, get_settlement_schedule, get_transactions
@@ -290,6 +291,7 @@ def diagnose_ticket(
     model: str = DEFAULT_AGENT_MODEL,
     max_tool_calls: int = DEFAULT_MAX_TOOL_CALLS,
     verify: bool | None = None,
+    check_responsive: bool | None = None,
 ) -> dict:
     """Run the full state-first diagnosis loop for one ticket.
 
@@ -303,8 +305,28 @@ def diagnose_ticket(
     claims and no real evidence to check content against, so running the
     verifier there would just reject a refusal that was already correct.
 
+    `check_responsive` is the second, independent ablation switch
+    (src.config.RESPONSIVENESS_ENABLED_DEFAULT): whether
+    src.responsiveness.check_responsiveness runs over the root cause. It
+    answers a different question than the verifier - not "is this claim
+    true" but "is this an answer to what was asked" - and is deliberately
+    blinded to the evidence, as the verifier is blinded to the ticket.
+
+    The responsiveness check is fed the root cause text as the COMPOSER
+    wrote it, captured before verify_diagnosis can rewrite it. That is
+    load-bearing: a rejected diagnosis has its root_cause replaced by a
+    rejection notice, so checking the post-verifier text would be judging
+    the verifier's output rather than the agent's, and the two checks
+    would no longer be independent. Neither check sees the other's verdict.
+
+    Nothing in the gate reads `_responsiveness` yet; it is recorded so it
+    can be measured before it is allowed to route anything.
+
     Returns {"diagnosis", "identity", "tool_call_log", "retrieval_log",
-    "evidence_pool", "verified"}. `retrieval_log` pairs the raw ticket
+    "evidence_pool", "evidence_content", "verified",
+    "responsiveness_checked"}. `evidence_content` maps every gathered
+    evidence_id to the content behind it, so a citation can be resolved
+    back to the policy chunk or state field it points at. `retrieval_log` pairs the raw ticket
     body with every query actually sent to search_policy, so the
     difference between the two is directly inspectable - not just
     asserted in a docstring. `verified` is True only when the content
@@ -312,6 +334,8 @@ def diagnose_ticket(
     """
     if verify is None:
         verify = VERIFIER_ENABLED_DEFAULT
+    if check_responsive is None:
+        check_responsive = RESPONSIVENESS_ENABLED_DEFAULT
 
     identity = identify_merchant(ticket)
     outcome = identity["outcome"]
@@ -327,7 +351,9 @@ def diagnose_ticket(
             "tool_call_log": [],
             "retrieval_log": retrieval_log,
             "evidence_pool": [],
+            "evidence_content": {},
             "verified": False,
+            "responsiveness_checked": False,
         }
 
     merchant_id = identity["identified_merchant_id"]
@@ -364,13 +390,24 @@ def diagnose_ticket(
         turns.append({"role": "function", "name": fc["name"], "response": {"result": tool_result}})
 
     verified = False
+    responsiveness_checked = False
     if failed_closed:
         diagnosis = dict(_FAIL_CLOSED_DIAGNOSIS)
     else:
         diagnosis, grounded = _run_final_diagnosis_call(llm, model, turns, set(evidence_pool))
+        composed_root_cause = (diagnosis.get("root_cause") or {}).get("text", "")
         if grounded and verify:
             diagnosis = verify_diagnosis(diagnosis, evidence_content, llm)
             verified = True
+        if grounded and check_responsive:
+            # Two strings in, one verdict out. The signature is the
+            # isolation: evidence_content is in scope here and never
+            # reaches it.
+            diagnosis["_responsiveness"] = {
+                **check_responsiveness(ticket.get("body", ""), composed_root_cause, llm),
+                "checked_root_cause": composed_root_cause,
+            }
+            responsiveness_checked = True
 
     diagnosis["identity_status"] = outcome
     return {
@@ -379,7 +416,9 @@ def diagnose_ticket(
         "tool_call_log": tool_call_log,
         "retrieval_log": retrieval_log,
         "evidence_pool": evidence_pool,
+        "evidence_content": evidence_content,
         "verified": verified,
+        "responsiveness_checked": responsiveness_checked,
     }
 
 

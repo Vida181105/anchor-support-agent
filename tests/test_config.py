@@ -59,3 +59,26 @@ def test_env_var_arbitrary_truthy_string_enables(monkeypatch):
     # on - explicit opt-out, not accidental opt-out via a typo.
     assert _reload_with_env(monkeypatch, "true") is True
     assert _reload_with_env(monkeypatch, "yes") is True
+
+
+def test_responsiveness_switch_is_separate_from_the_verifier_switch(monkeypatch):
+    """Two env vars, not one. Turning one off must leave the other alone,
+    or the 2x2 ablation cannot be run."""
+    import importlib
+
+    import src.config as config
+
+    monkeypatch.setenv("ANCHOR_VERIFIER_ENABLED", "0")
+    monkeypatch.delenv("ANCHOR_RESPONSIVENESS_ENABLED", raising=False)
+    reloaded = importlib.reload(config)
+    assert reloaded.VERIFIER_ENABLED_DEFAULT is False
+    assert reloaded.RESPONSIVENESS_ENABLED_DEFAULT is True
+
+    monkeypatch.delenv("ANCHOR_VERIFIER_ENABLED", raising=False)
+    monkeypatch.setenv("ANCHOR_RESPONSIVENESS_ENABLED", "0")
+    reloaded = importlib.reload(config)
+    assert reloaded.VERIFIER_ENABLED_DEFAULT is True
+    assert reloaded.RESPONSIVENESS_ENABLED_DEFAULT is False
+
+    monkeypatch.delenv("ANCHOR_RESPONSIVENESS_ENABLED", raising=False)
+    importlib.reload(config)

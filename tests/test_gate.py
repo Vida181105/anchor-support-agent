@@ -407,3 +407,102 @@ def test_no_diagnoses_at_all_escalates():
     d = evaluate_all([])
     assert d.outcome == ESCALATE
     assert d.rule == RULE_MALFORMED_FAIL_CLOSED
+
+
+# --- POST-HOC rule: non_responsive_root_cause -----------------------------
+# Added after the frozen-gate held-out run. Tested like any other rule;
+# labelled post-hoc everywhere it is reported.
+
+from src.gate import POST_HOC_RULES, RULE_NON_RESPONSIVE_ROOT_CAUSE  # noqa: E402
+
+
+def with_responsiveness(diagnosis, verdict):
+    diagnosis["_responsiveness"] = {"verdict": verdict, "reason": "r", "checked_root_cause": "root"}
+    return diagnosis
+
+
+def test_non_responsive_root_cause_blocks_auto_resolve():
+    d = with_responsiveness(make_diagnosis(), "NON_RESPONSIVE")
+    decision = evaluate(d)
+    assert decision.outcome == DRAFT_FOR_HUMAN
+    assert decision.rule == RULE_NON_RESPONSIVE_ROOT_CAUSE
+    assert "non_responsive_root_cause" in decision.risk_flags
+
+
+def test_partially_responsive_does_not_block():
+    """Correct but incomplete. Those already route to draft through other
+    rules when they need to; this rule is not the mechanism."""
+    d = with_responsiveness(make_diagnosis(), "PARTIALLY_RESPONSIVE")
+    decision = evaluate(d)
+    assert decision.outcome == AUTO_RESOLVE
+    assert decision.rule == RULE_CLEAN_AUTO_RESOLVE
+
+
+def test_responsive_does_not_block():
+    d = with_responsiveness(make_diagnosis(), "RESPONSIVE")
+    assert evaluate(d).outcome == AUTO_RESOLVE
+
+
+def test_absent_responsiveness_is_not_treated_as_non_responsive():
+    """The ablation-integrity property, same as the verifier's. If a
+    missing verdict blocked, the responsiveness-off arm would route to
+    draft everywhere and the measured delta would be the gate's doing."""
+    d = make_diagnosis()
+    assert "_responsiveness" not in d
+    decision = evaluate(d)
+    assert decision.outcome == AUTO_RESOLVE
+    assert decision.inputs["responsiveness"] == {"ran": False}
+
+
+def test_empty_responsiveness_record_is_also_not_a_block():
+    d = make_diagnosis()
+    d["_responsiveness"] = {}
+    assert evaluate(d).outcome == AUTO_RESOLVE
+
+
+def test_identity_rules_still_outrank_a_non_responsive_verdict():
+    """A MISMATCH is a data-access risk and must still ESCALATE, not be
+    downgraded to a draft by a rule that fires later."""
+    d = with_responsiveness(make_diagnosis(identity_status="MISMATCH"), "NON_RESPONSIVE")
+    decision = evaluate(d)
+    assert decision.outcome == ESCALATE
+    assert decision.rule == RULE_MISMATCH_DATA_ACCESS_RISK
+
+    d = with_responsiveness(make_diagnosis(identity_status="UNIDENTIFIABLE"), "NON_RESPONSIVE")
+    assert evaluate(d).outcome == REQUEST_IDENTIFICATION
+
+
+def test_rejected_root_cause_still_escalates_over_non_responsive():
+    d = with_responsiveness(
+        make_diagnosis(root_verdict="UNSUPPORTED"), "NON_RESPONSIVE"
+    )
+    decision = evaluate(d)
+    assert decision.outcome == ESCALATE
+    assert decision.rule == RULE_ROOT_CAUSE_REJECTED
+
+
+def test_non_responsive_never_produces_a_more_permissive_outcome():
+    """Adding the rule can only move a ticket toward more human review,
+    never away from it - the property that makes a post-hoc addition safe
+    to compare against the frozen run."""
+    for identity in ("CONFIRMED", "UNCORROBORATED", "MISMATCH", "UNIDENTIFIABLE"):
+        for risk in ("money_movement", "informational"):
+            for n_claims in (0, 1, 3):
+                base = make_diagnosis(identity_status=identity, risk_class=risk, n_claims=n_claims,
+                                      claim_verdicts=("SUPPORTED",) * n_claims)
+                after = with_responsiveness(
+                    make_diagnosis(identity_status=identity, risk_class=risk, n_claims=n_claims,
+                                   claim_verdicts=("SUPPORTED",) * n_claims),
+                    "NON_RESPONSIVE",
+                )
+                from src.gate import _CONSERVATISM
+                assert _CONSERVATISM[evaluate(after).outcome] >= _CONSERVATISM[evaluate(base).outcome]
+
+
+def test_the_new_rule_is_declared_post_hoc_and_the_frozen_ones_are_not():
+    assert RULE_NON_RESPONSIVE_ROOT_CAUSE in POST_HOC_RULES
+    for frozen in (RULE_CLEAN_AUTO_RESOLVE, RULE_CLAIM_STRIPPED, RULE_TOO_FEW_CLAIMS,
+                   RULE_INSUFFICIENT_SUPPORT_RATIO, RULE_ROOT_CAUSE_REJECTED,
+                   RULE_UNIDENTIFIABLE_ASK, RULE_MISMATCH_DATA_ACCESS_RISK,
+                   RULE_UNCORROBORATED_DISCLOSES_ACCOUNT_DATA, RULE_MALFORMED_FAIL_CLOSED):
+        assert frozen not in POST_HOC_RULES

@@ -65,7 +65,7 @@ def test_mismatch_short_circuits_before_any_llm_call():
     policy_index = FakePolicyIndex()
     ticket = json.load(open("corpus/tickets/ticket_017.json"))
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["identity"]["outcome"] == "MISMATCH"
     assert result["diagnosis"]["identity_status"] == "MISMATCH"
@@ -85,7 +85,7 @@ def test_unidentifiable_short_circuits_before_any_llm_call():
     policy_index = FakePolicyIndex()
     ticket = json.load(open("corpus/tickets/ticket_016.json"))
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["identity"]["outcome"] == "UNIDENTIFIABLE"
     assert result["diagnosis"]["recommended_action"] == "draft_for_human"
@@ -107,7 +107,7 @@ def test_tools_are_bound_to_identified_merchant_ignoring_any_model_supplied_id()
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     fetched = result["tool_call_log"][0]["result"]
     assert fetched["content"]["merchant_id"] == "merchant_1"  # not merchant_99
@@ -122,7 +122,7 @@ def test_exhausting_tool_call_budget_fails_closed_without_a_final_diagnosis_call
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, max_tool_calls=3, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, max_tool_calls=3, check_responsive=False, verify=False)
 
     assert result["diagnosis"]["category"] == "insufficient_evidence"
     assert result["diagnosis"]["recommended_action"] == "escalate"
@@ -148,7 +148,7 @@ def test_ungrounded_claim_triggers_one_corrective_retry_then_succeeds():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["diagnosis"]["claims"][0]["evidence"] == ["state:merchant_1.settlement_schedule"]
     # the corrective retry's prompt must reference the correction
@@ -167,7 +167,7 @@ def test_malformed_json_from_model_triggers_retry_then_succeeds():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["diagnosis"]["claims"][0]["evidence"] == ["state:merchant_1.settlement_schedule"]
 
@@ -189,7 +189,7 @@ def test_invalid_enum_value_from_model_triggers_retry_then_fails_closed_if_still
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["diagnosis"]["category"] == "insufficient_evidence"
     assert result["diagnosis"]["recommended_action"] == "escalate"
@@ -205,7 +205,7 @@ def test_persistently_ungrounded_claim_fails_closed_after_one_retry():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["diagnosis"]["category"] == "insufficient_evidence"
     assert result["diagnosis"]["recommended_action"] == "escalate"
@@ -230,7 +230,7 @@ def test_retrieval_log_captures_raw_ticket_and_constructed_query_separately():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come pls check urgent"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     raw_entry = result["retrieval_log"][0]
     query_entry = result["retrieval_log"][1]
@@ -253,7 +253,7 @@ def test_evidence_pool_accumulates_ids_from_every_tool_call():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_2", "body": "reserve question"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert "state:merchant_2.settlement_schedule" in result["evidence_pool"]
     assert "state:merchant_2.disputes[0]" in result["evidence_pool"]
@@ -279,7 +279,7 @@ def test_derived_facts_tool_returns_bound_merchants_facts_into_the_evidence_pool
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert "derived:merchant_1.expected_settlement_date" in result["evidence_pool"]
     # and the computed value is the real one, not the model's arithmetic
@@ -298,7 +298,7 @@ def test_derived_facts_tool_is_bound_to_the_identified_merchant():
     llm = ScriptedLLM(script)
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=False)
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), check_responsive=False, verify=False)
 
     ids = [e["evidence_id"] for e in result["tool_call_log"][0]["result"]]
     assert all(i.startswith("derived:merchant_1.") for i in ids)
@@ -334,7 +334,7 @@ def test_verify_true_runs_the_content_verifier_and_can_strip_a_claim():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=True)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=True)
 
     assert result["verified"] is True
     assert result["diagnosis"]["claims"] == []  # stripped by the content verifier
@@ -352,7 +352,7 @@ def test_verify_false_skips_the_content_verifier_entirely():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=False)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=False)
 
     assert result["verified"] is False
     assert len(result["diagnosis"]["claims"]) == 1  # untouched by any verifier
@@ -371,7 +371,7 @@ def test_verify_none_falls_back_to_config_default(monkeypatch):
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index)  # verify not passed at all
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False)  # verify not passed at all
 
     assert result["verified"] is False
     assert len(llm.calls) == 3  # config default (patched False) honored, no verifier calls
@@ -382,7 +382,7 @@ def test_short_circuit_diagnosis_never_runs_verifier_even_with_verify_true():
     policy_index = FakePolicyIndex()
     ticket = json.load(open("corpus/tickets/ticket_017.json"))  # MISMATCH
 
-    result = diagnose_ticket(ticket, llm, policy_index, verify=True)
+    result = diagnose_ticket(ticket, llm, policy_index, check_responsive=False, verify=True)
 
     assert result["verified"] is False
     assert llm.calls == []
@@ -395,8 +395,118 @@ def test_fail_closed_diagnosis_never_runs_verifier_even_with_verify_true():
     policy_index = FakePolicyIndex()
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
-    result = diagnose_ticket(ticket, llm, policy_index, max_tool_calls=3, verify=True)
+    result = diagnose_ticket(ticket, llm, policy_index, max_tool_calls=3, check_responsive=False, verify=True)
 
     assert result["verified"] is False
     assert result["diagnosis"]["category"] == "insufficient_evidence"
     assert len(llm.calls) == 4  # exactly the tool-loop calls, nothing more
+
+
+# --- the second, independent ablation switch: responsiveness --------------
+
+def test_check_responsive_true_records_a_verdict_and_sees_the_ticket_body():
+    script = [
+        {"function_call": {"name": "get_settlement_schedule", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("state:merchant_1.settlement_schedule"),
+        _verdict_response("NON_RESPONSIVE", "answers a different question"),
+    ]
+    llm = ScriptedLLM(script)
+    ticket = {"merchant_id": "merchant_1", "body": "how do i change my bank account"}
+
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=False, check_responsive=True)
+
+    assert result["responsiveness_checked"] is True
+    assert result["diagnosis"]["_responsiveness"]["verdict"] == "NON_RESPONSIVE"
+    assert len(llm.calls) == 4  # 2 tool-loop + 1 final diagnosis + 1 responsiveness
+    assert "how do i change my bank account" in llm.calls[-1]["turns"][0]["text"]
+
+
+def test_check_responsive_false_skips_it_entirely():
+    script = [
+        {"function_call": {"name": "get_settlement_schedule", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("state:merchant_1.settlement_schedule"),
+    ]
+    llm = ScriptedLLM(script)
+    ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=False, check_responsive=False)
+
+    assert result["responsiveness_checked"] is False
+    assert "_responsiveness" not in result["diagnosis"]
+    assert len(llm.calls) == 3
+
+
+def test_check_responsive_none_falls_back_to_its_own_config_default(monkeypatch):
+    monkeypatch.setattr("src.agent.RESPONSIVENESS_ENABLED_DEFAULT", False)
+    script = [
+        {"function_call": {"name": "get_settlement_schedule", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("state:merchant_1.settlement_schedule"),
+    ]
+    llm = ScriptedLLM(script)
+    ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=False)
+
+    assert result["responsiveness_checked"] is False
+    assert len(llm.calls) == 3
+
+
+def test_the_two_switches_are_independent():
+    """Turning the verifier off must not turn the responsiveness check off,
+    and vice versa - otherwise the 2x2 ablation is unreachable and neither
+    check's contribution can be attributed."""
+    def run(verify, check_responsive, script):
+        llm = ScriptedLLM(script)
+        ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+        return diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=verify,
+                               check_responsive=check_responsive)
+
+    base = [
+        {"function_call": {"name": "get_settlement_schedule", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("state:merchant_1.settlement_schedule"),
+    ]
+    two_verifier_verdicts = [_verdict_response("SUPPORTED"), _verdict_response("SUPPORTED")]
+    responsive = [_verdict_response("RESPONSIVE")]
+
+    off_off = run(False, False, base)
+    assert (off_off["verified"], off_off["responsiveness_checked"]) == (False, False)
+
+    on_off = run(True, False, base + two_verifier_verdicts)
+    assert (on_off["verified"], on_off["responsiveness_checked"]) == (True, False)
+
+    off_on = run(False, True, base + responsive)
+    assert (off_on["verified"], off_on["responsiveness_checked"]) == (False, True)
+
+    on_on = run(True, True, base + two_verifier_verdicts + responsive)
+    assert (on_on["verified"], on_on["responsiveness_checked"]) == (True, True)
+
+
+def test_responsiveness_judges_the_composers_text_not_the_verifiers_rejection_notice():
+    """When the verifier rejects a root cause it overwrites root_cause with
+    a rejection notice. Feeding that to the responsiveness check would make
+    it grade the verifier's output instead of the agent's, and the two
+    checks would stop being independent."""
+    script = [
+        {"function_call": {"name": "get_settlement_schedule", "args": {}}},
+        {"text": "done"},
+        _valid_final_response("state:merchant_1.settlement_schedule"),
+        _verdict_response("UNSUPPORTED", "not in the evidence"),  # root cause rejected
+        _verdict_response("RESPONSIVE", "on topic"),
+    ]
+    llm = ScriptedLLM(script)
+    ticket = {"merchant_id": "merchant_1", "body": "money not come"}
+
+    result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=True, check_responsive=True)
+
+    diagnosis = result["diagnosis"]
+    assert diagnosis["_verification"]["root_cause_verdict"]["verdict"] == "UNSUPPORTED"
+    # the composer's original text, not whatever the verifier substituted
+    assert diagnosis["_responsiveness"]["checked_root_cause"] == "T+3 cycle, within window."
+    assert diagnosis["_responsiveness"]["checked_root_cause"] != diagnosis["root_cause"]["text"]
+    assert "T+3 cycle, within window." in llm.calls[-1]["turns"][0]["text"]
+    # and the responsiveness prompt never saw the verifier's verdict
+    assert "UNSUPPORTED" not in llm.calls[-1]["turns"][0]["text"]
