@@ -23,7 +23,7 @@ SNAPSHOT = json.loads((ROOT / "demo" / "snapshot.json").read_text(encoding="utf-
 def client(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
-    demo_app._state.update(snapshot=None, index=None, llm=None, live_calls=0)
+    demo_app._state.update(snapshot=None, index=None, llm=None, live_calls=0, sessions={})
     return TestClient(demo_app.app)
 
 
@@ -80,11 +80,46 @@ def test_live_rejects_empty_and_oversized_input(client):
     assert out["ok"] is False and "too long" in out["reason"]
 
 
-def test_live_budget_is_enforced(client, monkeypatch):
+def test_live_budget_is_per_session_not_per_process(client, monkeypatch):
+    """One visitor spending their runs must not lock out the next one -
+    the whole reason the budget is keyed to a cookie."""
     monkeypatch.setenv("GEMINI_API_KEY", "fake")
-    demo_app._state["live_calls"] = demo_app.LIVE_CALL_BUDGET
+    demo_app._state["sessions"]["spent"] = demo_app.LIVE_BUDGET_PER_SESSION
+
+    client.cookies.set(demo_app.SESSION_COOKIE, "spent")
     out = client.post("/api/diagnose", json={"body": "hello"}).json()
-    assert out["ok"] is False and "budget" in out["reason"]
+    assert out["ok"] is False and "live runs for this session" in out["reason"]
+
+    client.cookies.set(demo_app.SESSION_COOKIE, "fresh")
+    ok, reason = demo_app.live_available("fresh")
+    assert ok is True and reason == ""
+
+
+def test_per_session_budget_is_three(client):
+    assert demo_app.LIVE_BUDGET_PER_SESSION == 3
+    assert demo_app.LIVE_BUDGET_PER_PROCESS > demo_app.LIVE_BUDGET_PER_SESSION
+
+
+def test_process_backstop_still_applies(client, monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "fake")
+    demo_app._state["live_calls"] = demo_app.LIVE_BUDGET_PER_PROCESS
+    out = client.post("/api/diagnose", json={"body": "hello"}).json()
+    assert out["ok"] is False and "total live budget" in out["reason"]
+
+
+def test_health_issues_a_session_cookie_and_reports_that_sessions_budget(client):
+    r = client.get("/api/health")
+    assert demo_app.SESSION_COOKIE in r.cookies
+    assert r.json()["live_budget"] == demo_app.LIVE_BUDGET_PER_SESSION
+
+
+def test_live_reason_is_not_duplicated_by_the_page_copy(client):
+    """The UI supplies its own framing sentence, so the server's reason
+    must not repeat 'live mode is off' back into it."""
+    _, reason = demo_app.live_available("x")
+    html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+    assert "live mode is off" not in reason.lower()
+    assert html.lower().count("live mode is off") <= 1
 
 
 def test_live_exception_is_caught_and_reported(client, monkeypatch):
@@ -186,3 +221,33 @@ def test_the_page_references_every_api_it_needs():
     html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
     for path in ("/api/snapshot", "/api/health", "/api/diagnose"):
         assert path in html
+
+
+# --- presentation invariants ----------------------------------------------
+
+def test_header_orients_a_cold_visitor_in_three_lines():
+    html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+    block = html[html.index('class="hlines"'):html.index('</header>')]
+    assert block.count("<div") == 3, "the orientation header is three lines, not a hero section"
+    assert "account state" in block and "not documentation" in block
+    assert "Click any ticket" in block
+
+
+def test_no_marketing_chrome_crept_in():
+    html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+    for banned in ("linear-gradient", "radial-gradient", "<img", "hero"):
+        assert banned not in html.lower(), banned
+
+
+def test_mobile_sidebar_is_collapsible_and_body_cannot_scroll_sideways():
+    html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+    assert "overflow-x:hidden" in html          # page body never scrolls sideways
+    assert ".scroll{overflow-x:auto" in html    # wide tables scroll inside their own box
+    assert "qtoggle" in html
+    assert "#queue.collapsed" in html
+
+
+def test_reading_column_is_capped():
+    html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+    assert "--read:" in html
+    assert "max-width:var(--read)" in html

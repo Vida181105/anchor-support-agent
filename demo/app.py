@@ -13,6 +13,10 @@ with {"ok": false, "reason": ...} that the UI renders as a notice. A
 quota-exhausted demo shows a disabled live box and a queue that still
 works, never a stack trace.
 
+The live budget is per visitor session (a cookie), not per process, so
+one visitor cannot spend the allowance for everyone who arrives after
+them. A generous process-wide backstop sits behind it.
+
     uvicorn demo.app:app --reload
 """
 
@@ -20,11 +24,12 @@ from __future__ import annotations
 
 import json
 import os
+import uuid
 from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -38,11 +43,35 @@ INDEX_HTML = ROOT / "demo" / "static" / "index.html"
 # spends someone's free-tier quota on arbitrary text is not something to
 # leave open.
 MAX_LIVE_CHARS = 1200
-LIVE_CALL_BUDGET = int(os.environ.get("ANCHOR_DEMO_LIVE_BUDGET", "25"))
+
+# Budgeted per visitor session, not per process. A process-wide counter
+# lets the first person through the door spend the allowance for everyone
+# who arrives after them, which is the opposite of what a shared demo
+# link needs. Each visitor gets their own small budget, keyed to a cookie.
+LIVE_BUDGET_PER_SESSION = int(os.environ.get("ANCHOR_DEMO_LIVE_BUDGET", "3"))
+
+# A backstop on top of the per-session budget, so a scripted caller
+# cycling cookies still cannot drain the key. Deliberately generous: it
+# should never be what an ordinary visitor hits.
+LIVE_BUDGET_PER_PROCESS = int(os.environ.get("ANCHOR_DEMO_LIVE_BUDGET_TOTAL", "120"))
+
+SESSION_COOKIE = "anchor_sid"
 
 app = FastAPI(title="Anchor ops console", docs_url=None, redoc_url=None)
 
-_state: dict[str, Any] = {"snapshot": None, "index": None, "llm": None, "live_calls": 0}
+_state: dict[str, Any] = {
+    "snapshot": None, "index": None, "llm": None,
+    "live_calls": 0,              # process-wide, for the backstop
+    "sessions": {},               # sid -> runs used by that visitor
+}
+
+
+def _session_id(request: Request) -> str:
+    return request.cookies.get(SESSION_COOKIE) or uuid.uuid4().hex
+
+
+def _session_used(sid: str) -> int:
+    return _state["sessions"].get(sid, 0)
 
 
 def snapshot() -> dict:
@@ -60,13 +89,20 @@ def snapshot() -> dict:
     return _state["snapshot"]
 
 
-def live_available() -> tuple[bool, str]:
+def live_available(sid: str = "") -> tuple[bool, str]:
+    """Whether this visitor may run one more live diagnosis, and why not.
+
+    The reason string is rendered verbatim in the UI, so it says what is
+    true without apologising for it: the traces on the page are real
+    output either way.
+    """
     if not os.environ.get("GEMINI_API_KEY") and not os.environ.get("GOOGLE_API_KEY"):
-        return False, "No API key configured on this deployment - live mode is off."
-    if _state["live_calls"] >= LIVE_CALL_BUDGET:
+        return False, "No API key is configured on this deployment."
+    if _state["live_calls"] >= LIVE_BUDGET_PER_PROCESS:
+        return False, "This deployment's total live budget is spent."
+    if sid and _session_used(sid) >= LIVE_BUDGET_PER_SESSION:
         return False, (
-            f"Live mode budget for this process is spent ({LIVE_CALL_BUDGET} runs). "
-            "The pre-computed queue below is unaffected."
+            f"You have used your {LIVE_BUDGET_PER_SESSION} live runs for this session."
         )
     return True, ""
 
@@ -82,21 +118,23 @@ def api_snapshot() -> JSONResponse:
 
 
 @app.get("/api/health")
-def api_health() -> dict:
-    ok, reason = live_available()
+def api_health(request: Request, response: Response) -> dict:
+    sid = _session_id(request)
+    response.set_cookie(SESSION_COOKIE, sid, max_age=86400, httponly=True, samesite="lax")
+    ok, reason = live_available(sid)
     snap = snapshot()
     return {
         "queue_size": len(snap.get("queue", [])),
         "snapshot_error": snap.get("error"),
         "live_enabled": ok,
         "live_reason": reason,
-        "live_calls_used": _state["live_calls"],
-        "live_budget": LIVE_CALL_BUDGET,
+        "live_calls_used": _session_used(sid),
+        "live_budget": LIVE_BUDGET_PER_SESSION,
     }
 
 
 @app.post("/api/diagnose")
-def api_diagnose(req: LiveRequest) -> dict:
+def api_diagnose(req: LiveRequest, request: Request, response: Response) -> dict:
     """Run one typed ticket through the real pipeline.
 
     Never raises to the client. Every failure - no key, spent budget,
@@ -109,7 +147,9 @@ def api_diagnose(req: LiveRequest) -> dict:
     if len(body) > MAX_LIVE_CHARS:
         return {"ok": False, "reason": f"Ticket too long ({len(body)} chars, max {MAX_LIVE_CHARS})."}
 
-    ok, reason = live_available()
+    sid = _session_id(request)
+    response.set_cookie(SESSION_COOKIE, sid, max_age=86400, httponly=True, samesite="lax")
+    ok, reason = live_available(sid)
     if not ok:
         return {"ok": False, "reason": reason}
 
@@ -128,6 +168,7 @@ def api_diagnose(req: LiveRequest) -> dict:
             _state["index"] = build_index(_state["llm"])
 
         _state["live_calls"] += 1
+        _state["sessions"][sid] = _session_used(sid) + 1
         ticket = {"id": "live", "merchant_id": req.merchant_id, "body": body,
                   "subject": "(live)", "channel": "demo"}
         result = diagnose_ticket(ticket, _state["llm"], _state["index"],

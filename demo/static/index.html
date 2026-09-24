@@ -6,138 +6,228 @@
 <title>Anchor — ops console</title>
 <style>
 :root{
-  --bg:#0b0d10; --panel:#111419; --panel2:#151a21; --line:#232a34;
+  --bg:#0b0d10; --panel:#111419; --panel2:#151a21; --line:#232a34; --line2:#2d3643;
   --fg:#d7dee8; --dim:#8794a5; --dimmer:#5d6875;
   --auto:#3fb950; --draft:#d29922; --ident:#58a6ff; --esc:#f85149;
   --ok:#3fb950; --warn:#d29922; --bad:#f85149;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --read:78ch;            /* reading column cap */
+  --gut:28px;             /* detail-pane gutter */
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:13px;line-height:1.5}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:13px;line-height:1.62}
 a{color:var(--ident)}
-header{border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
-header h1{font-size:13px;margin:0;font-weight:600;letter-spacing:.04em}
-header .sub{color:var(--dim);font-size:11px}
+
+/* ---------- header: three lines, always visible ---------- */
+header{border-bottom:1px solid var(--line);padding:14px var(--gut) 13px;background:var(--panel)}
+.hrow{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+header h1{font-size:13px;margin:0;font-weight:600;letter-spacing:.16em}
+header .tag{color:var(--dim);font-size:11.5px}
 header .spacer{flex:1}
+header .meta{color:var(--dimmer);font-size:11px}
+.hlines{margin-top:9px;display:grid;gap:3px;max-width:var(--read)}
+.hlines div{color:var(--dim);font-size:12px}
+.hlines .idea{color:var(--fg)}
+.hlines .idea b{color:var(--ident);font-weight:600}
+.hlines .cta{color:var(--dimmer)}
+nav{display:flex;gap:6px}
 nav button{background:none;border:1px solid var(--line);color:var(--dim);font-family:var(--mono);
-  font-size:11px;padding:4px 10px;cursor:pointer;border-radius:2px}
+  font-size:11px;padding:5px 13px;cursor:pointer;border-radius:2px;letter-spacing:.06em}
+nav button:hover{color:var(--fg)}
 nav button.on{color:var(--fg);border-color:var(--dim);background:var(--panel2)}
-main{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 42px)}
-@media(max-width:900px){main{grid-template-columns:1fr;height:auto}#detail{border-left:none;border-top:1px solid var(--line)}}
-#queue{border-right:1px solid var(--line);overflow-y:auto}
-#detail{overflow-y:auto;padding:0 18px 60px}
-.sec-label{font-size:10px;letter-spacing:.14em;color:var(--dimmer);text-transform:uppercase;
-  padding:12px 14px 6px;border-bottom:1px solid var(--line)}
-.pin{display:block;width:100%;text-align:left;background:var(--panel2);border:none;
-  border-bottom:1px solid var(--line);border-left:2px solid var(--ident);
-  color:var(--fg);font-family:var(--mono);font-size:12px;padding:9px 12px;cursor:pointer}
-.pin:hover{background:#1a1f27}
-.pin .pt{color:var(--ident);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- shell ---------- */
+main{display:grid;grid-template-columns:minmax(300px,360px) 1fr;
+     height:calc(100vh - 104px);min-height:0}
+#queue{border-right:1px solid var(--line);overflow-y:auto;padding-bottom:40px}
+#detail{overflow-y:auto;padding:0 var(--gut) 120px;min-width:0}
+#detail>*{max-width:var(--read)}
+#detail .wide{max-width:none}
+
+/* ---------- sidebar ---------- */
+.sec-label{font-size:10px;letter-spacing:.16em;color:var(--dimmer);text-transform:uppercase;
+  padding:20px 18px 9px;border-bottom:1px solid var(--line);background:var(--bg)}
+.sec-label .hint{display:block;text-transform:none;letter-spacing:0;font-size:11px;
+  color:var(--dimmer);margin-top:5px;line-height:1.5}
+#pins{padding:8px 12px 4px;display:grid;gap:8px}
+.pin{display:block;width:100%;text-align:left;background:var(--panel2);
+  border:1px solid var(--line);border-left:2px solid var(--ident);border-radius:3px;
+  color:var(--fg);font-family:var(--mono);font-size:12px;padding:12px 14px;cursor:pointer;line-height:1.5}
+.pin:hover{background:#1a1f27;border-color:var(--line2);border-left-color:var(--ident)}
+.pin .pt{color:var(--ident);font-size:10px;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:5px}
 .pin.fail{border-left-color:var(--bad)}
 .pin.fail .pt{color:var(--bad)}
-.row{display:block;width:100%;text-align:left;background:none;border:none;
-  border-bottom:1px solid var(--line);color:var(--fg);font-family:var(--mono);font-size:12px;
-  padding:9px 12px 9px 10px;cursor:pointer;border-left:2px solid transparent}
-.row:hover{background:var(--panel)}
-.row.on{background:var(--panel2);border-left-color:var(--fg)}
-.row .id{color:var(--dim)}
-.row .sj{display:block;margin-top:2px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lane{display:inline-block;font-size:9.5px;letter-spacing:.07em;padding:1px 5px;border-radius:2px;
-  border:1px solid;text-transform:uppercase}
+#rows{padding:6px 12px 4px;display:grid;gap:5px}
+.row{display:block;width:100%;text-align:left;background:none;
+  border:1px solid transparent;border-radius:3px;
+  color:var(--fg);font-family:var(--mono);font-size:12px;
+  padding:11px 13px;cursor:pointer;border-left:2px solid transparent;line-height:1.5}
+.row:hover{background:var(--panel);border-color:var(--line)}
+.row.on{background:var(--panel2);border-color:var(--line2);border-left-color:var(--fg)}
+.row .id{color:var(--dim);font-size:11px}
+.row .sj{display:block;margin-top:5px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lane{display:inline-block;font-size:9.5px;letter-spacing:.09em;padding:2px 7px;border-radius:2px;
+  border:1px solid;text-transform:uppercase;white-space:nowrap}
 .lane.AUTO_RESOLVE{color:var(--auto);border-color:#1d4429}
 .lane.DRAFT_FOR_HUMAN{color:var(--draft);border-color:#4a3a12}
 .lane.REQUEST_IDENTIFICATION{color:var(--ident);border-color:#173a5e}
 .lane.ESCALATE{color:var(--esc);border-color:#5a1e1c}
-.tagfail{font-size:9.5px;color:var(--bad);border:1px solid #5a1e1c;padding:1px 5px;border-radius:2px;letter-spacing:.07em}
-h2{font-size:10px;letter-spacing:.14em;color:var(--dimmer);text-transform:uppercase;
-  margin:26px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px;font-weight:600}
-.blurb{background:var(--panel);border-left:2px solid var(--line);padding:9px 12px;margin:14px 0 0;color:var(--dim)}
-.blurb.fail{border-left-color:var(--bad);color:#e8b0ac}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin-bottom:8px}
-.kv{display:grid;grid-template-columns:150px 1fr;gap:2px 12px}
+.tagfail{font-size:9.5px;color:var(--bad);border:1px solid #5a1e1c;padding:2px 7px;
+  border-radius:2px;letter-spacing:.09em;margin-left:4px}
+
+/* ---------- numbered trace sections ---------- */
+h2{font-size:10.5px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;
+  margin:0 0 16px;font-weight:600}
+.step{border-top:1px solid var(--line2);margin-top:44px;padding-top:24px}
+.step:first-of-type{margin-top:32px}
+.step>h2 .n{display:inline-block;min-width:22px;height:22px;line-height:21px;text-align:center;
+  border:1px solid var(--line2);border-radius:3px;color:var(--fg);margin-right:10px;
+  font-size:11px;letter-spacing:0;background:var(--panel2)}
+.blurb{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--line2);
+  border-radius:3px;padding:16px 18px;margin:26px 0 0;color:var(--dim);line-height:1.66}
+.blurb.fail{border-left-color:var(--bad);border-color:#3a2220;background:#140f0f;color:#e8b0ac}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  padding:16px 18px;margin-bottom:12px}
+.kv{display:grid;grid-template-columns:168px 1fr;gap:9px 18px;margin:0}
 .kv dt{color:var(--dimmer)}
 .kv dd{margin:0;word-break:break-word}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:760px){.two{grid-template-columns:1fr}}
-.two .card h3{margin:0 0 6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+@media(max-width:620px){.kv{grid-template-columns:1fr;gap:2px 0}.kv dd{margin-bottom:9px}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two .card{margin-bottom:0;height:100%}
+.two .card h3{margin:0 0 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
 .two .raw h3{color:var(--dimmer)}
 .two .built h3{color:var(--ident)}
-.two .built{border-color:#173a5e}
-pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px}
+.two .built{border-color:#1b3a5c;background:#0e1520}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.6}
 code.eid{color:var(--ident);background:#0f1722;border:1px solid #1b2c40;border-radius:2px;
-  padding:0 4px;cursor:pointer;font-size:11px;display:inline-block;margin:2px 3px 0 0}
-code.eid:hover{background:#16243a}
+  padding:2px 7px;cursor:pointer;font-size:11px;display:inline-block;margin:4px 5px 0 0}
+code.eid:hover{background:#16243a;border-color:#2b4a6b}
 code.eid.state{color:#d2a8ff;background:#170f22;border-color:#2e1d40}
 code.eid.derived{color:#7ee787;background:#0f1a12;border-color:#1d4429}
-.claim{border:1px solid var(--line);border-radius:3px;padding:9px 11px;margin-bottom:7px;background:var(--panel)}
-.claim.root{border-color:#2f3a49;background:var(--panel2)}
-.claim .ct{margin-bottom:5px}
-.rootlab{font-size:9.5px;letter-spacing:.1em;color:var(--dimmer);text-transform:uppercase;display:block;margin-bottom:4px}
-.v{font-size:10px;letter-spacing:.06em;padding:1px 6px;border-radius:2px;border:1px solid;margin-right:6px;white-space:nowrap}
+.claim{border:1px solid var(--line);border-radius:3px;padding:15px 17px;margin-bottom:10px;background:var(--panel)}
+.claim.root{border-color:var(--line2);background:var(--panel2)}
+.claim .ct{margin-bottom:9px;line-height:1.62}
+.rootlab{font-size:9.5px;letter-spacing:.12em;color:var(--dimmer);text-transform:uppercase;
+  display:block;margin-bottom:8px}
+.vline{margin-top:11px;display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap}
+.v{font-size:10px;letter-spacing:.07em;padding:2px 8px;border-radius:2px;border:1px solid;white-space:nowrap;flex:none}
 .v.SUPPORTED,.v.RESPONSIVE{color:var(--ok);border-color:#1d4429}
 .v.PARTIALLY_SUPPORTED,.v.PARTIALLY_RESPONSIVE{color:var(--warn);border-color:#4a3a12}
 .v.UNSUPPORTED,.v.NON_RESPONSIVE{color:var(--bad);border-color:#5a1e1c}
 .v.none{color:var(--dimmer);border-color:var(--line)}
-.vr{color:var(--dim);font-size:11.5px;margin-top:4px}
-.tool{border:1px solid var(--line);border-radius:3px;margin-bottom:6px;background:var(--panel)}
-.tool>summary{cursor:pointer;padding:7px 11px;color:var(--fg);list-style:none}
+.vr{color:var(--dim);font-size:11.5px;line-height:1.55;min-width:0}
+.foot{color:var(--dimmer);margin-top:16px;line-height:1.65;font-size:12px}
+.tool{border:1px solid var(--line);border-radius:3px;margin-bottom:8px;background:var(--panel)}
+.tool>summary{cursor:pointer;padding:12px 16px;color:var(--fg);list-style:none}
 .tool>summary::-webkit-details-marker{display:none}
 .tool>summary:before{content:"▸ ";color:var(--dimmer)}
 .tool[open]>summary:before{content:"▾ "}
-.tool .body{border-top:1px solid var(--line);padding:9px 11px;background:#0d1015;max-height:340px;overflow:auto}
-.tool .n{color:var(--dimmer);margin-right:8px}
-.gate{border-left:3px solid var(--line);padding:11px 13px;background:var(--panel2);border-radius:3px}
+.tool .body{border-top:1px solid var(--line);padding:14px 16px;background:#0d1015;
+  max-height:380px;overflow:auto}
+.tool .n{color:var(--dimmer);margin-right:10px}
+.gate{border:1px solid var(--line);border-left:3px solid var(--line2);padding:18px 20px;
+  background:var(--panel2);border-radius:3px}
 .gate.AUTO_RESOLVE{border-left-color:var(--auto)}
 .gate.DRAFT_FOR_HUMAN{border-left-color:var(--draft)}
 .gate.REQUEST_IDENTIFICATION{border-left-color:var(--ident)}
 .gate.ESCALATE{border-left-color:var(--esc)}
-.gate .rule{color:var(--fg);background:#0d1015;border:1px solid var(--line);padding:1px 6px;border-radius:2px}
-.posthoc{color:#d29922;border:1px solid #4a3a12;padding:1px 6px;border-radius:2px;font-size:10px;letter-spacing:.06em}
-table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{text-align:left;padding:5px 9px;border-bottom:1px solid var(--line)}
-th{color:var(--dimmer);font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.gate .gline{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.gate .rule{color:var(--fg);background:#0d1015;border:1px solid var(--line);padding:2px 8px;border-radius:2px}
+.gate .greason{margin-top:12px;line-height:1.66}
+.posthoc{color:#d29922;border:1px solid #4a3a12;padding:2px 8px;border-radius:2px;
+  font-size:10px;letter-spacing:.08em;white-space:nowrap}
+
+/* ---------- tables / metrics ---------- */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:460px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+th{color:var(--dimmer);font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--panel2)}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
-.big{font-size:22px;letter-spacing:-.02em}
+.big{font-size:24px;letter-spacing:-.02em;margin:6px 0 0}
 .bad{color:var(--bad)}.ok{color:var(--ok)}.warn{color:var(--warn)}.dim{color:var(--dim)}.dimmer{color:var(--dimmer)}
-#metrics{display:none;padding:0 18px 60px;overflow-y:auto;grid-column:1/-1}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:11px 13px}
-.stat .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dimmer)}
-.stat .sub{color:var(--dim);font-size:11px;margin-top:3px}
-.note{background:#12100b;border:1px solid #4a3a12;border-radius:3px;padding:10px 13px;color:#e3c778;margin:10px 0}
+#metrics{display:none;padding:0 var(--gut) 120px;overflow-y:auto;grid-column:1/-1;min-width:0}
+#metrics>*{max-width:var(--read)}
+#metrics .wide{max-width:none}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:16px 18px}
+.stat .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer)}
+.stat .sub{color:var(--dim);font-size:11.5px;margin-top:8px;line-height:1.55}
+.note{background:#12100b;border:1px solid #4a3a12;border-radius:3px;padding:14px 17px;
+  color:#e3c778;margin:16px 0;line-height:1.66}
 .note.red{background:#140e0e;border-color:#5a1e1c;color:#e8b0ac}
+#metrics ul{padding-left:20px;line-height:1.75}
+#metrics li{margin-bottom:12px}
+
+/* ---------- live panel ---------- */
+#livebox{padding:14px 18px 8px}
+.live{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:15px 16px}
+.live .why{color:var(--dim);line-height:1.62}
+.live .why b{color:var(--fg);font-weight:600}
+.live .st{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);color:var(--dimmer);font-size:11.5px}
 textarea{width:100%;background:#0d1015;color:var(--fg);border:1px solid var(--line);border-radius:3px;
-  font-family:var(--mono);font-size:12px;padding:8px;resize:vertical}
-.btn{background:var(--panel2);border:1px solid var(--line);color:var(--fg);font-family:var(--mono);
-  font-size:12px;padding:5px 12px;border-radius:2px;cursor:pointer}
-.btn:disabled{color:var(--dimmer);cursor:not-allowed}
-dialog{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:4px;
+  font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;line-height:1.55}
+input[type=text]{background:#0d1015;color:var(--fg);border:1px solid var(--line);border-radius:3px;
+  font-family:var(--mono);font-size:12px;padding:8px 10px}
+.btn{background:var(--panel2);border:1px solid var(--line2);color:var(--fg);font-family:var(--mono);
+  font-size:12px;padding:8px 16px;border-radius:2px;cursor:pointer}
+.btn:hover:not(:disabled){background:#1e242d}
+.btn:disabled{color:var(--dimmer);cursor:not-allowed;border-color:var(--line)}
+dialog{background:var(--panel);color:var(--fg);border:1px solid var(--line2);border-radius:4px;
   max-width:760px;width:92%;padding:0;font-family:var(--mono)}
-dialog::backdrop{background:#000a}
-dialog .dh{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
-dialog .db{padding:12px 14px;max-height:62vh;overflow:auto;font-size:12px}
+dialog::backdrop{background:#000c}
+dialog .dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center}
+dialog .db{padding:16px;max-height:62vh;overflow:auto;font-size:12px}
+
+/* ---------- mobile ---------- */
+@media(max-width:900px){
+  :root{--gut:16px}
+  main{grid-template-columns:1fr;height:auto;min-height:0}
+  #queue{border-right:none;border-bottom:1px solid var(--line);max-height:none;padding-bottom:8px}
+  #queue.collapsed #pins,#queue.collapsed #rows,
+  #queue.collapsed #livebox,#queue.collapsed .sec-label{display:none}
+  .qtoggle{display:block;width:100%;background:var(--panel2);border:none;border-bottom:1px solid var(--line);
+    color:var(--fg);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 16px;cursor:pointer;text-align:left}
+  #detail{padding-bottom:60px}
+  .two{grid-template-columns:1fr}
+  .hlines{max-width:none}
+}
+@media(min-width:901px){.qtoggle{display:none}}
 </style>
 </head>
 <body>
 <header>
-  <h1>ANCHOR</h1>
-  <span class="sub">merchant support root-cause agent · ops console</span>
-  <span class="spacer"></span>
-  <span class="sub" id="hmeta"></span>
-  <nav>
-    <button id="tab-queue" class="on" onclick="showTab('queue')">queue</button>
-    <button id="tab-metrics" onclick="showTab('metrics')">metrics</button>
-  </nav>
+  <div class="hrow">
+    <h1>ANCHOR</h1>
+    <span class="tag">merchant support root-cause agent · ops console</span>
+    <span class="spacer"></span>
+    <span class="meta" id="hmeta"></span>
+    <nav>
+      <button id="tab-queue" class="on" onclick="showTab('queue')">queue</button>
+      <button id="tab-metrics" onclick="showTab('metrics')">metrics</button>
+    </nav>
+  </div>
+  <div class="hlines">
+    <div>Diagnoses a merchant support ticket end to end, then routes it: answer, draft, ask who's asking, or escalate.</div>
+    <div class="idea">Most support root causes live in <b>account state</b>, not documentation — so the agent reads the account first, then finds the rule that explains it.</div>
+    <div class="cta">Click any ticket for the full trace.</div>
+  </div>
 </header>
 
 <main>
   <div id="queue">
-    <div class="sec-label">pinned scenarios</div>
+    <button class="qtoggle" onclick="document.getElementById('queue').classList.toggle('collapsed')">☰ tickets</button>
+    <div class="sec-label">pinned scenarios
+      <span class="hint">The three cases worth two minutes.</span></div>
     <div id="pins"></div>
-    <div class="sec-label">queue — pre-computed</div>
+    <div class="sec-label">queue — pre-computed
+      <span class="hint">All four routing lanes.</span></div>
     <div id="rows"></div>
     <div class="sec-label">live mode</div>
-    <div style="padding:10px 12px" id="livebox"></div>
+    <div id="livebox"></div>
   </div>
   <div id="detail"><div class="dim" style="padding:40px 0">Select a ticket.</div></div>
   <div id="metrics"></div>
@@ -204,6 +294,9 @@ function renderQueue(){
 
 function select(id){
   showTab("queue");
+  if(window.matchMedia("(max-width:900px)").matches){
+    $("#queue").classList.add("collapsed");
+  }
   ROW = SNAP.queue.find(r=>r.id===id);
   document.querySelectorAll(".row").forEach(e=>e.classList.remove("on"));
   const el = $("#row-"+id); if(el) el.classList.add("on");
@@ -222,21 +315,21 @@ function renderRow(r){
     const v = verdictFor(r,c.text,false);
     return `<div class="claim"><div class="ct">${esc(c.text)}</div>
       <div>${chips(c.evidence)}</div>
-      <div style="margin-top:6px">${vbadge(v)}${v&&v.reason?`<span class="vr">${esc(v.reason)}</span>`:""}</div></div>`;
+      <div class="vline">${vbadge(v)}${v&&v.reason?`<span class="vr">${esc(v.reason)}</span>`:""}</div></div>`;
   }).join("") || `<div class="dim">No claims survived. ${r.gate.outcome==="ESCALATE"?"This is the fail-closed path, not an empty answer.":""}</div>`;
 
   return `
   ${r.blurb?`<div class="blurb ${r.known_failure?"fail":""}">${esc(r.blurb)}</div>`:""}
 
-  <h2>Ticket — exactly what the agent saw</h2>
+  <div class="step"><h2>Ticket — exactly what the agent saw</h2>
   <div class="card"><dl class="kv">
     <dt>id</dt><dd>${esc(r.ticket.id)}</dd>
     <dt>claimed merchant_id</dt><dd>${esc(r.ticket.merchant_id||"(none submitted)")}</dd>
     <dt>channel</dt><dd>${esc(r.ticket.channel||"—")}</dd>
     <dt>subject</dt><dd>${esc(r.ticket.subject||"—")}</dd>
-  </dl><div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><pre>${esc(r.ticket.body)}</pre></div></div>
+  </dl><div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><pre>${esc(r.ticket.body)}</pre></div></div></div>
 
-  <h2>1 · Identity resolution — deterministic, outside the LLM loop</h2>
+  <div class="step"><h2><span class="n">1</span>Identity resolution — deterministic, outside the LLM loop</h2>
   <div class="card">
     <dl class="kv">
       <dt>outcome</dt><dd><strong class="${idn.outcome==="MISMATCH"||idn.outcome==="UNIDENTIFIABLE"?"bad":idn.outcome==="UNCORROBORATED"?"warn":"ok"}">${esc(idn.outcome)}</strong></dd>
@@ -250,52 +343,52 @@ function renderRow(r){
     ${idn.outcome==="UNCORROBORATED"?`<div class="note" style="margin-bottom:0">Nothing in the body corroborates the submitted id. The diagnosis may proceed, but the gate will not auto-send anything that discloses this account's own data.</div>`:""}
     <details class="tool" style="margin-top:8px;background:none"><summary>signals searched for</summary>
       <div class="body"><pre>${J(idn.signals||{})}</pre></div></details>
-  </div>
+  </div></div>
 
-  <h2>2 · Retrieval — raw ticket text vs the query the agent built</h2>
-  <div class="two">
+  <div class="step"><h2><span class="n">2</span>Retrieval — raw ticket text vs the query the agent built</h2>
+  <div class="two wide">
     <div class="card raw"><h3>raw ticket text</h3><pre>${esc(r.retrieval.raw_ticket)}</pre></div>
     <div class="card built"><h3>constructed query — after reading state</h3>
       ${r.retrieval.constructed_queries.length
         ? r.retrieval.constructed_queries.map(q=>`<pre>${esc(q)}</pre>`).join('<hr style="border:0;border-top:1px solid var(--line);margin:7px 0">')
         : '<span class="dim">No policy search ran — the agent refused before retrieval.</span>'}
     </div>
-  </div>
+  </div></div>
 
-  <h2>3 · Tool calls (${(r.tool_calls||[]).length})</h2>
+  <div class="step"><h2><span class="n">3</span>Tool calls (${(r.tool_calls||[]).length})</h2>
   ${(r.tool_calls||[]).map((t,i)=>`<details class="tool"><summary><span class="n">${i+1}</span>${esc(t.tool)}<span class="dim"> ${esc(JSON.stringify(t.args))}</span></summary>
      <div class="body"><pre>${J(t.result)}</pre></div></details>`).join("")
-    || '<div class="dim">None. Identity failed to resolve, so no state was ever read.</div>'}
+    || '<div class="dim">None. Identity failed to resolve, so no state was ever read.</div>'}</div>
 
-  <h2>4 · Diagnosis — atomic claims, one checkable fact each</h2>
+  <div class="step"><h2><span class="n">4</span>Diagnosis — atomic claims, one checkable fact each</h2>
   ${d.root_cause?`<div class="claim root"><span class="rootlab">root cause</span>
      <div class="ct">${esc(d.root_cause.text)}</div>
      <div>${chips(d.root_cause.evidence)}</div>
-     <div style="margin-top:6px">${vbadge(rootV)}${rootV&&rootV.reason?`<span class="vr">${esc(rootV.reason)}</span>`:""}</div>
-     <div style="margin-top:6px">
+     <div class="vline">${vbadge(rootV)}${rootV&&rootV.reason?`<span class="vr">${esc(rootV.reason)}</span>`:""}</div>
+     <div class="vline">
        <span class="v ${esc(resp.verdict||"none")}">${esc(resp.verdict||"NOT CHECKED")}</span>
        ${resp.reason?`<span class="vr">${esc(resp.reason)}</span>`:""}
      </div></div>`:""}
   ${claims}
-  <div class="dim" style="margin-top:8px">
+  <div class="foot">
     Verifier sees the evidence, never the ticket. Responsiveness sees the ticket, never the evidence.
     Neither can rubber-stamp the other's job.
-  </div>
+  </div></div>
 
-  <h2>5 · Gate decision — deterministic, no model</h2>
+  <div class="step"><h2><span class="n">5</span>Gate decision — deterministic, no model</h2>
   <div class="gate ${g.outcome}">
-    <div><span class="lane ${g.outcome}">${g.outcome.replace(/_/g," ")}</span>
+    <div class="gline"><span class="lane ${g.outcome}">${g.outcome.replace(/_/g," ")}</span>
       <span class="dim">via</span> <span class="rule">${esc(g.rule)}</span>
       ${postHoc?'<span class="posthoc">POST-HOC RULE</span>':''}</div>
-    <div style="margin-top:7px">${esc(g.reason)}</div>
+    <div class="greason">${esc(g.reason)}</div>
     ${postHoc?'<div class="note" style="margin-top:9px">This rule was added <em>after</em> the frozen held-out run was scored. Its effect is reported separately in the metrics tab and never merged into the frozen numbers.</div>':''}
     <details class="tool" style="margin-top:9px;background:none"><summary>inputs the gate read</summary>
       <div class="body"><pre>${J(g.inputs)}</pre></div></details>
-  </div>
+  </div></div>
 
-  ${r.rendered_prose?`<h2>6 · The message this produces</h2><div class="card"><pre>${esc(r.rendered_prose)}</pre></div>`:""}
+  ${r.rendered_prose?`<div class="step"><h2><span class="n">6</span>The message this produces</h2><div class="card"><pre>${esc(r.rendered_prose)}</pre></div></div>`:""}
 
-  ${L.true_root_cause?`<h2>Answer key — eval labels, never shown to the agent</h2>
+  ${L.true_root_cause?`<div class="step"><h2>Answer key — eval labels, never shown to the agent</h2>
   <div class="card"><dl class="kv">
     <dt>labelled root cause</dt><dd>${esc(Array.isArray(L.true_root_cause)?L.true_root_cause.join("  +  "):L.true_root_cause)}</dd>
     <dt>labelled routing</dt><dd>${esc(L.correct_routing||"—")}</dd>
@@ -303,7 +396,7 @@ function renderRow(r){
     ${L.evidence_gap_fact?`<dt>the missing fact</dt><dd>${esc(L.evidence_gap_fact)}</dd>`:""}
     ${L.adjudication?`<dt>adjudicated</dt><dd class="${L.adjudication==="WRONG"?"bad":L.adjudication==="CORRECT"?"ok":"warn"}">${esc(L.adjudication)}</dd>`:""}
     ${L.adjudication_note?`<dt>why</dt><dd class="dim">${esc(L.adjudication_note)}</dd>`:""}
-  </dl></div>`:""}
+  </dl></div></div>`:""}
   `;
 }
 
@@ -332,7 +425,7 @@ function renderMetrics(){
   </div>
 
   <h2>Frozen vs post-hoc — kept separate on purpose</h2>
-  <table>
+  <div class="scroll wide"><table>
     <tr><th>metric</th><th>frozen gate</th><th>+ post-hoc rule</th></tr>
     <tr><td>routing accuracy</td><td class="num">${frac(f.routing)}</td><td class="num">${frac(p.routing)}</td></tr>
     <tr><td>auto-resolved</td><td class="num">${frac(f.auto_resolved)}</td><td class="num">${frac(p.auto_resolved)}</td></tr>
@@ -343,27 +436,27 @@ function renderMetrics(){
     <tr><td>recall · escalate</td><td class="num">${frac(f.lanes.escalate)}</td><td class="num">${frac(p.lanes.escalate)}</td></tr>
     <tr><td>refusal · EVIDENCE_GAP → escalate</td><td class="num">${frac(f.refusal.EVIDENCE_GAP)}</td><td class="num">${frac(p.refusal.EVIDENCE_GAP)}</td></tr>
     <tr><td>refusal · UNIDENTIFIABLE → ask</td><td class="num">${frac(f.refusal.UNIDENTIFIABLE)}</td><td class="num">${frac(p.refusal.UNIDENTIFIABLE)}</td></tr>
-  </table>
+  </table></div>
   <div class="note">The post-hoc column had an advantage the frozen column did not: the rule was written knowing
     which tickets it would face. One ticket changed lane. Reporting them merged would hide that.</div>
 
   <h2>The verifier ablation — its honest result</h2>
-  <table>
+  <div class="scroll wide"><table>
     <tr><th>metric</th><th>verifier ON</th><th>verifier OFF</th></tr>
     <tr><td>false auto-resolve</td><td class="num">${frac(f.false_auto)}</td><td class="num">${frac(off.false_auto)}</td></tr>
     <tr><td>routing accuracy</td><td class="num">${frac(f.routing)}</td><td class="num">${frac(off.routing)}</td></tr>
-  </table>
+  </table></div>
   <div class="note red"><strong>Delta zero.</strong> The verifier moved the number that matters by nothing.
     Every false auto-resolve was a set of claims faithfully grounded in the evidence they cited that
     answered the wrong question — and the verifier never sees the question. That finding is what the
     responsiveness check was built for.</div>
 
   <h2>What each check catches, of the ${a.wrong} wrong root causes</h2>
-  <table>
+  <div class="scroll wide"><table>
     <tr><th>check</th><th>caught</th><th>false flags (of ${a.correct} correct)</th></tr>
     <tr><td>verifier — sees evidence, not the question</td><td class="num">${frac(c.verifier_caught)}</td><td class="num">${frac(c.verifier_false_reject)}</td></tr>
     <tr><td>responsiveness — sees the question, not evidence</td><td class="num">${frac(c.responsiveness_caught)}</td><td class="num">${frac(c.responsiveness_false_flag)}</td></tr>
-  </table>
+  </table></div>
   <div class="note">They overlap on ${c.overlap_ids.length} ticket${c.overlap_ids.length===1?"":"s"}
     (${esc(c.overlap_ids.join(", ")||"none")}) — near-disjoint, which is the design working.
     But most responsiveness flags were already being caught by a frozen identity rule firing earlier,
@@ -385,16 +478,20 @@ function renderMetrics(){
 }
 
 function renderLive(h){
+  const left = h.live_budget - h.live_calls_used;
+  const intent = `<div class="why">Every trace on this page is <b>real output from a real run</b>, \
+recorded to disk rather than generated on load. That is deliberate: the console works with no key \
+and no model reachable.</div>`;
   $("#livebox").innerHTML = h.live_enabled
-    ? `<div class="dim" style="margin-bottom:6px">Runs the real pipeline. ${h.live_budget-h.live_calls_used} runs left.</div>
-       <textarea id="lb" rows="4" placeholder="paste a merchant ticket…"></textarea>
-       <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
-         <input id="lm" placeholder="merchant_id (optional)" style="flex:1;background:#0d1015;color:var(--fg);
-           border:1px solid var(--line);border-radius:3px;font-family:var(--mono);font-size:12px;padding:5px 7px">
+    ? `<div class="live">${intent}
+       <div class="st">Run your own ticket through the same pipeline — ${left} of ${h.live_budget} left this session.</div>
+       <textarea id="lb" rows="4" placeholder="paste a merchant ticket…" style="margin-top:11px"></textarea>
+       <div style="display:flex;gap:8px;margin-top:9px;align-items:center">
+         <input type="text" id="lm" placeholder="merchant_id (optional)" style="flex:1;min-width:0">
          <button class="btn" id="lgo" onclick="runLive()">run</button>
-       </div><div id="lmsg" class="dim" style="margin-top:6px"></div>`
-    : `<div class="note" style="margin:0">Live mode is off. ${esc(h.live_reason)}<br>
-       <span class="dim">Everything above is pre-computed and fully explorable.</span></div>`;
+       </div><div id="lmsg" class="dim" style="margin-top:10px"></div></div>`
+    : `<div class="live">${intent}
+       <div class="st">Typing your own ticket is unavailable here — ${esc(h.live_reason)}</div></div>`;
 }
 
 async function runLive(){
@@ -423,6 +520,9 @@ async function runLive(){
     $("#hmeta").textContent = `${SNAP.queue.length} tickets pre-computed · ${SNAP.model||""}`;
     renderQueue(); renderMetrics();
     if(SNAP.queue.length) select(SNAP.queue[0].id);
+    if(window.matchMedia("(max-width:900px)").matches){
+      $("#queue").classList.add("collapsed");
+    }
     renderLive(await (await fetch("/api/health")).json());
   }catch(e){
     $("#detail").innerHTML = '<div class="note red" style="margin-top:20px">Could not load the snapshot.</div>';
