@@ -38,8 +38,13 @@ ALLOWED_MODELS = {
 }
 
 
-class RateLimitExceeded(RuntimeError):
-    """Raised when Gemini keeps returning 429 past the retry budget."""
+class TransientAPIError(RuntimeError):
+    """Raised when a retryable API failure outlasts the retry budget."""
+
+
+# The original name, kept so existing callers and tests keep working. The
+# class covers more than rate limits now (see _is_retryable_error).
+RateLimitExceeded = TransientAPIError
 
 
 def _cache_key(kind: str, model: str, text: str, params: dict[str, Any]) -> str:
@@ -55,13 +60,30 @@ def _cache_key(kind: str, model: str, text: str, params: dict[str, Any]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def _is_rate_limit_error(exc: Exception) -> bool:
-    # google-genai wraps HTTP errors; a 429 shows up either as a status code
-    # attribute or in the string form of the exception.
+def _is_retryable_error(exc: Exception) -> bool:
+    """True for transient API failures worth backing off and retrying.
+
+    429 RESOURCE_EXHAUSTED - rate limited or out of quota.
+    503 UNAVAILABLE - "this model is currently experiencing high demand",
+    which is explicitly temporary and is what killed a 19-ticket batch
+    partway through on the first attempt: it was not being retried, so one
+    transient overload took down the whole run.
+
+    Anything else propagates: a 400 for a malformed request will never
+    succeed on retry, and silently retrying it would just waste quota and
+    hide the bug.
+    """
     status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
-    if status == 429:
+    if status in (429, 503):
         return True
-    return "429" in str(exc) or "RESOURCE_EXHAUSTED" in str(exc)
+    text = str(exc)
+    return any(
+        marker in text for marker in ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE")
+    )
+
+
+# Kept as an alias so the old name still resolves at call sites.
+_is_rate_limit_error = _is_retryable_error
 
 
 class LLMClient:
@@ -145,16 +167,18 @@ class LLMClient:
         return text
 
     def _retry_on_rate_limit(self, call):
-        """Run `call()`, retrying with exponential backoff + jitter on 429s."""
+        """Run `call()`, retrying transient failures (429/503) with
+        exponential backoff + jitter. Non-retryable errors propagate
+        immediately."""
         attempt = 0
         while True:
             try:
                 return call()
             except Exception as exc:  # noqa: BLE001 - broad on purpose, retry logic below
-                if not _is_rate_limit_error(exc) or attempt >= self.max_retries:
-                    if _is_rate_limit_error(exc):
-                        raise RateLimitExceeded(
-                            f"Exceeded {self.max_retries} retries on 429s"
+                if not _is_retryable_error(exc) or attempt >= self.max_retries:
+                    if _is_retryable_error(exc):
+                        raise TransientAPIError(
+                            f"Exceeded {self.max_retries} retries on a transient API error: {exc}"
                         ) from exc
                     raise
                 delay = self.base_delay * (2**attempt) + random.uniform(0, 1)

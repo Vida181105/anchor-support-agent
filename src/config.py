@@ -97,3 +97,20 @@ AUTO_RESOLVE_MIN_CLAIMS = {
 # flipping the default without writing a loop, e.g.
 # `ANCHOR_VERIFIER_ENABLED=0 python eval/run_something.py`.
 VERIFIER_ENABLED_DEFAULT = _env_bool("ANCHOR_VERIFIER_ENABLED", True)
+
+
+# The second ablation switch, same contract as VERIFIER_ENABLED_DEFAULT
+# above: whether src.agent.diagnose_ticket runs the responsiveness check
+# (src/responsiveness.py) by default.
+#
+# Two independent switches rather than one "checks on/off" flag, because
+# the two checks answer different questions and can fail independently.
+# The held-out run showed the verifier moving the false auto-resolve rate
+# by exactly zero; that finding is only legible because the verifier could
+# be switched off on its own. The same has to be possible here, and the
+# 2x2 (verifier on/off x responsiveness on/off) has to be reachable.
+#
+# diagnose_ticket's `check_responsiveness` parameter takes precedence when
+# passed explicitly; this only sets what None resolves to, e.g.
+# `ANCHOR_RESPONSIVENESS_ENABLED=0 python eval/run_something.py`.
+RESPONSIVENESS_ENABLED_DEFAULT = _env_bool("ANCHOR_RESPONSIVENESS_ENABLED", True)
