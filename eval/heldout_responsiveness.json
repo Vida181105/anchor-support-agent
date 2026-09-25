@@ -1,0 +1,367 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "complete": true,
+  "rows": [
+    {
+      "id": "heldout_001",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Issuing a refund does not automatically withdraw an existing dispute on the transaction.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about whether a prior refund automatically settles the dispute.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_002",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "By default, a merchant's settlement cycle is T+3.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The answer discusses the settlement cycle rather than explaining how to update the linked bank account or how long that change takes.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_003",
+      "adjudication": "REFUSED",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The tool-call budget was exhausted before enough evidence was gathered to produce a grounded diagnosis.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause discusses an exhausted tool-call budget instead of addressing the user's question about a change in GST rates.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_004",
+      "adjudication": "REFUSED",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The tool-call budget was exhausted before enough evidence was gathered to produce a grounded diagnosis.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause discusses a tool-call budget exhaustion rather than addressing the request for a PCI-DSS compliance certificate.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_005",
+      "adjudication": "WRONG",
+      "gate_outcome": "ESCALATE",
+      "root_cause": "The platform does not provide hardware or point-of-sale card machines for physical counter in-person payments.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses whether the system handles in-person card machine payments.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_006",
+      "adjudication": "REFUSED",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The tool-call budget was exhausted before enough evidence was gathered to produce a grounded diagnosis.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause discusses a tool-call budget exhaustion rather than addressing what happens to the reserve funds if Trailblazer is shut down.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_007",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The platform does not support modifying an active mandate's amount in place, and combining separate mandates requires creating a new mandate and cancelling the old ones.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The answer directly addresses whether the platform supports merging separate mandates into a single charge.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_008",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Acceptable evidence varies by dispute reason code and generally includes proof of delivery, the order confirmation, and customer communication acknowledging receipt.",
+      "responsiveness": "PARTIALLY_RESPONSIVE",
+      "reason": "The proposed root cause addresses general dispute evidence but fails to specifically answer whether OTP or authentication records matter more for unauthorized claims.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_009",
+      "adjudication": "CORRECT",
+      "gate_outcome": "REQUEST_IDENTIFICATION",
+      "root_cause": "The merchant could not be identified from the ticket - no valid merchant_id, reference, or business name resolves to an account.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause discusses an unidentified merchant rather than addressing the request for a ticket status update.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_010",
+      "adjudication": "CORRECT",
+      "gate_outcome": "REQUEST_IDENTIFICATION",
+      "root_cause": "The merchant could not be identified from the ticket - no valid merchant_id, reference, or business name resolves to an account.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the merchant's inability to be identified from their payout inquiry.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_011",
+      "adjudication": "WRONG",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The settlement is not overdue and the next payout is scheduled for the expected settlement date.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause addresses payout schedules rather than the referenced ongoing account issue.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_012",
+      "adjudication": "CORRECT",
+      "gate_outcome": "REQUEST_IDENTIFICATION",
+      "root_cause": "The merchant could not be identified from the ticket - no valid merchant_id, reference, or business name resolves to an account.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause does not answer the user's question about whether a merchant ID can be looked up using the business owner's name.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_013",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "International payments cannot be enabled because the merchant's business category is excluded from international acceptance.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about why their international approval is delayed compared to a similar business.",
+      "fail_closed": false,
+      "rerun": true
+    },
+    {
+      "id": "heldout_014",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "International transactions failed with RISK_BLOCK due to automated risk screening during the calibration period for newly approved cross-border volume.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly explains why the user's international transactions are failing with a RISK_BLOCK.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_015",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The address proof document was rejected because of a name or address mismatch with the registered business name.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The user asked which correct document to upload, but the proposed root cause only explains why the previous document was rejected.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_016",
+      "adjudication": "WRONG",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The address proof document was rejected because its scan or photo quality was too low to read key fields.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause addresses why a document was rejected instead of answering whether someone can call the user for assistance.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_017",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The dispute is currently under review by the issuing bank within the typical 30-45 day decision window.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's inquiry regarding any movement on the dispute.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_018",
+      "adjudication": "WRONG",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The exact reserve release schedule dates and amounts are recorded on the merchant account state and are visible on the merchant dashboard.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed answer tells the user where to find the schedule rather than sending it in writing as requested.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_019",
+      "adjudication": "WRONG",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The merchant has requested an early review of the active reserve while the reserve is still subject to the rolling reserve duration and review requirements.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause describes the current reserve policy instead of addressing the merchant's request for an early review.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_020",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "A partial hold is active on the account due to transactions flagged for a known fraud signature, with an expected resolution date of 2026-09-22.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly answers when the hold will be lifted.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_021",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "An active partial hold is freezing outbound settlement due to a batch of transactions flagged for matching a known fraud signature.",
+      "responsiveness": "PARTIALLY_RESPONSIVE",
+      "reason": "It explains the cause of the hold and addresses the expedited review request indirectly, but fails to answer whether the hold blocks issuing refunds to other customers.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_022",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The subscription mandate was marked paused after three failed retry attempts.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause explains why the payment failed instead of advising the user on what to do next.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_023",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The upgrade charge failed because the platform does not support modifying an active mandate's amount in place and requires creating a new mandate for amount changes.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause explains why the upgrade failed, but it does not address whether this failure is due to the specific amount-mismatch issue asked about.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_024",
+      "adjudication": "WRONG",
+      "gate_outcome": "ESCALATE",
+      "root_cause": "The customer believes they were never refunded because the wallet refund timeline takes up to 2 business days after initiation.",
+      "responsiveness": "NON_RESPONSIVE",
+      "reason": "The proposed root cause explains why the refund is delayed, but it does not answer how to convince the customer to prevent a dispute.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_025",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The batch amount discrepancy is caused by a refund deduction applied to the settlement batch.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly confirms the user's suspicion that the batch discrepancy is due to refund timing.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_026",
+      "adjudication": "WRONG",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The settlement is within the standard T+3 business day window and is not overdue.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's worry about a delayed settlement by explaining the standard timeframe.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_027",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The chargeback fee is non-refundable despite the merchant winning the dispute.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about whether the non-refund of the fee is final.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_028",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Faster settlement requests require completing at least 90 days on the platform.",
+      "responsiveness": "PARTIALLY_RESPONSIVE",
+      "reason": "It addresses the eligibility part of the question but fails to explain what needs to be done to get faster settlement.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_029",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The T+1 settlement request is currently undergoing review within the 5 business day approval window.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The answer directly addresses the user's inquiry regarding the status of the t1 request.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_030",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "The payout is pending because the transaction batch is still within the T+3 settlement cycle window.",
+      "responsiveness": "PARTIALLY_RESPONSIVE",
+      "reason": "The root cause explains why the payout is pending, but it fails to address whether the Friday dashboard estimate is accurate or prone to slipping.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_031",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Raising a ticket with the transaction ID is the established process to appeal a RISK_BLOCK decline.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about whether raising a ticket is the actual appeal process.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_032",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The international payment approval review process is flat and identical for all merchants regardless of expected transaction ticket sizes.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly answers whether international approval is reviewed more carefully for larger ticket sizes or is flat for everyone.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_033",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "Bank-side clearance delays are rare and typically resolve within 1-2 additional business days.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about the frequency and future planning of bank-side clearance delays.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_034",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The chargeback fee is a flat fee per case set by the card network and does not vary based on the dispute reason.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly answers whether the chargeback fee is always the same regardless of the dispute reason.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_035",
+      "adjudication": "CORRECT",
+      "gate_outcome": "DRAFT_FOR_HUMAN",
+      "root_cause": "Failed subscription charges are retried up to 3 automatic times over 7 days before the mandate is paused.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly answers the question about the number of retry attempts for a failed subscription charge.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_036",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Subscribers are able to cancel mandates directly through their banking or UPI applications without merchant involvement.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the user's question about whether subscribers can cancel through their banking app.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_037",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Existing KYC does not carry over when a business converts its registered entity type and must be redone in full against the document set required for the new entity type.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses whether existing KYC carries over during a conversion to a private limited company.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_038",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "Multiple partial refunds are permitted on a single transaction up to the original captured amount.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses the question about whether multiple partial refunds can be issued against a single order up to the total limit.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_039",
+      "adjudication": "CORRECT",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The settlement date for a transaction is determined by the capture date rather than the order placement or authorization date.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause addresses whether money moves upon confirmation or at capture.",
+      "fail_closed": false
+    },
+    {
+      "id": "heldout_040",
+      "adjudication": "WRONG",
+      "gate_outcome": "AUTO_RESOLVE",
+      "root_cause": "The account is not yet eligible for T+1 settlement based on the required timeframe, and international payments are experiencing initial risk engine calibration failures.",
+      "responsiveness": "RESPONSIVE",
+      "reason": "The proposed root cause directly addresses both questions regarding T+1 eligibility and the international risk blocks.",
+      "fail_closed": false
+    }
+  ]
+}

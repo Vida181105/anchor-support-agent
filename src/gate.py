@@ -5,7 +5,8 @@ carries the name of the rule that produced it, so a routing call can be
 explained after the fact without re-running anything.
 
 Inputs it reads: risk_class, identity_status, the per-claim verifier
-verdicts, and the root-cause verification outcome. Nothing else - notably
+verdicts, the root-cause verification outcome, and the responsiveness
+verdict. Nothing else - notably
 not the model's own `recommended_action`, which is the composer's opinion
 and not evidence. The gate decides; the composer suggests.
 
@@ -20,6 +21,11 @@ merchant can't be identified there is nothing for a specialist to
 investigate yet - the missing thing is their identity, and the correct
 response is to ask for it. Collapsing the two would both overload the
 escalation queue and describe the situation wrongly.
+
+Every rule here was frozen before the held-out set was run, EXCEPT
+`non_responsive_root_cause`, which was added afterwards and is listed in
+POST_HOC_RULES. Its effect is reported separately from the frozen
+results, never merged into them.
 
 Everything the gate can tune lives in src/config.py. Anything unexpected -
 a missing field, an unknown enum, a malformed verification record -
@@ -67,6 +73,19 @@ RULE_CLAIM_STRIPPED = "claim_stripped_as_unsupported"
 RULE_INSUFFICIENT_SUPPORT_RATIO = "insufficient_supported_claim_ratio"
 RULE_TOO_FEW_CLAIMS = "too_few_surviving_claims"
 RULE_CLEAN_AUTO_RESOLVE = "clean_auto_resolve"
+
+# POST-HOC. Every rule above was defined before any held-out ticket ran.
+# This one was not: it was added after seeing the frozen-gate held-out
+# results, which showed the verifier moving the false auto-resolve rate by
+# exactly zero because all six failures answered the wrong question
+# faithfully. Its effect is therefore reported separately and never merged
+# into the frozen numbers - the frozen result stands as the honest
+# out-of-sample measurement, and this is a follow-up with a known
+# advantage. POST_HOC_RULES exists so a reader of an audit trail can tell
+# which is which without consulting the git history.
+RULE_NON_RESPONSIVE_ROOT_CAUSE = "non_responsive_root_cause"
+
+POST_HOC_RULES = frozenset({RULE_NON_RESPONSIVE_ROOT_CAUSE})
 
 # Risk classes flagged as involving money movement, for the stricter bar.
 _MONEY_MOVEMENT = "money_movement"
@@ -130,6 +149,22 @@ def _verification_summary(diagnosis: dict) -> dict:
     }
 
 
+def _responsiveness_summary(diagnosis: dict) -> dict:
+    """Pull the gate-relevant facts out of a diagnosis' `_responsiveness`
+    record, or report that the check did not run.
+
+    Same principle as _verification_summary, for the same reason: absent
+    is not NON_RESPONSIVE. Treating a missing verdict as a failure would
+    push every ticket in the responsiveness-off arm toward DRAFT_FOR_HUMAN
+    and make the measured delta a property of the gate rather than of the
+    check.
+    """
+    responsiveness = diagnosis.get("_responsiveness")
+    if not responsiveness:
+        return {"ran": False}
+    return {"ran": True, "verdict": responsiveness.get("verdict")}
+
+
 def _account_data_citations(diagnosis: dict) -> set[str]:
     """Evidence ids in the response that disclose this account's own data.
 
@@ -175,12 +210,14 @@ def _evaluate(diagnosis: dict) -> GateDecision:
         raise ValueError(f"unknown risk_class: {risk_class!r}")
 
     verification = _verification_summary(diagnosis)
+    responsiveness = _responsiveness_summary(diagnosis)
     surviving_claims = len(diagnosis.get("claims", []))
     inputs = {
         "identity_status": identity_status,
         "risk_class": risk_class,
         "surviving_claims": surviving_claims,
         "verification": verification,
+        "responsiveness": responsiveness,
     }
 
     # --- 1. identity gates, before anything about the diagnosis itself ---
@@ -250,6 +287,34 @@ def _evaluate(diagnosis: dict) -> GateDecision:
                 risk_flags=("uncorroborated_identity", "account_data_disclosure"),
                 inputs={**inputs, "disclosing_evidence": sorted(disclosing)},
             )
+
+    # POST-HOC RULE (see RULE_NON_RESPONSIVE_ROOT_CAUSE). Added after the
+    # frozen-gate held-out run, not before it.
+    #
+    # Only NON_RESPONSIVE blocks. PARTIALLY_RESPONSIVE deliberately does
+    # not: on the held-out set those were diagnoses that were correct but
+    # left the merchant's "so what do I do now" unanswered, and every one
+    # of them already routed to DRAFT_FOR_HUMAN through another rule. A
+    # partial answer is an incompleteness, which a human sending the reply
+    # fixes anyway; a non-answer is a different failure - the merchant
+    # asked one thing and would be told another.
+    #
+    # DRAFT_FOR_HUMAN rather than ESCALATE: the evidence-gathering was
+    # sound and a human has everything needed to redirect the reply. There
+    # is nothing here for a specialist to investigate.
+    if responsiveness["ran"] and responsiveness["verdict"] == "NON_RESPONSIVE":
+        return GateDecision(
+            outcome=DRAFT_FOR_HUMAN,
+            rule=RULE_NON_RESPONSIVE_ROOT_CAUSE,
+            reason=(
+                "The responsiveness check, which sees the ticket but not the evidence, found "
+                "the root cause does not answer what this merchant asked. The claims may be "
+                "perfectly grounded and still be a reply to a different question, so a human "
+                "reads the ticket before anything is sent."
+            ),
+            risk_flags=("non_responsive_root_cause",),
+            inputs=inputs,
+        )
 
     if verification["ran"] and verification["stripped_count"] > 0:
         return GateDecision(
