@@ -14,7 +14,9 @@ import base64
 import hashlib
 import json
 import os
+import os as _os
 import random
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -23,6 +25,11 @@ from src.config import EMBEDDING_DIMENSIONALITY, EMBEDDING_MODEL
 
 DEFAULT_CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
+
+# Per-request wall-clock cap, in milliseconds. Comfortably above the
+# slowest healthy call observed (45.6s on a tool-loop turn) so it never
+# cuts a working request, and far below "forever".
+DEFAULT_TIMEOUT_MS = 90_000
 
 # Free-tier Flash / Flash-Lite models only. Never point this client at a Pro
 # model. Verified live against the API on 2026-09-17; the Gemini model
@@ -47,6 +54,18 @@ class TransientAPIError(RuntimeError):
 RateLimitExceeded = TransientAPIError
 
 
+def _atomic_write(path: Path, text: str, encoding: str = "utf-8") -> None:
+    """Write via a temp file in the same directory, then rename.
+
+    Callers now fan out across threads. A plain write_text leaves a window
+    where another thread reads a truncated file and treats a corrupt cache
+    entry as a real result.
+    """
+    tmp = path.with_suffix(path.suffix + f".{_os.getpid()}.{threading.get_ident()}.tmp")
+    tmp.write_text(text, encoding=encoding)
+    _os.replace(tmp, path)
+
+
 def _cache_key(kind: str, model: str, text: str, params: dict[str, Any]) -> str:
     # `kind` ("generate" vs "embed") keeps the two call types from ever
     # colliding in the cache even though they share one directory - belt
@@ -60,6 +79,19 @@ def _cache_key(kind: str, model: str, text: str, params: dict[str, Any]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _is_timeout_error(exc: Exception) -> bool:
+    """A request cut off by our own timeout, or by the transport."""
+    name = type(exc).__name__.lower()
+    text = str(exc).lower()
+    return (
+        "timeout" in name
+        or "timeout" in text
+        or "timed out" in text
+        or "499" in text          # the SDK's code for a cancelled request
+        or "cancelled" in text
+    )
+
+
 def _is_retryable_error(exc: Exception) -> bool:
     """True for transient API failures worth backing off and retrying.
 
@@ -69,12 +101,19 @@ def _is_retryable_error(exc: Exception) -> bool:
     partway through on the first attempt: it was not being retried, so one
     transient overload took down the whole run.
 
+    A request cut off by our own timeout counts too: the overload that
+    makes a call hang is the same overload that returns 503 to the request
+    beside it, so it deserves the same backoff rather than failing the run
+    outright.
+
     Anything else propagates: a 400 for a malformed request will never
     succeed on retry, and silently retrying it would just waste quota and
     hide the bug.
     """
     status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
     if status in (429, 503):
+        return True
+    if _is_timeout_error(exc):
         return True
     text = str(exc)
     return any(
@@ -99,24 +138,41 @@ class LLMClient:
         api_key: str | None = None,
         max_retries: int = 5,
         base_delay: float = 1.0,
+        timeout_ms: int = DEFAULT_TIMEOUT_MS,
     ) -> None:
         self.cache_dir = Path(cache_dir) if cache_dir else DEFAULT_CACHE_DIR
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._api_key = api_key or os.environ.get("GEMINI_API_KEY")
         self.max_retries = max_retries
         self.base_delay = base_delay
+        self.timeout_ms = timeout_ms
         self._client = None  # lazy: built on first real API call
+        self._client_lock = threading.Lock()
 
     def _get_client(self):
-        if self._client is None:
-            if not self._api_key:
-                raise RuntimeError(
-                    "GEMINI_API_KEY is not set; cannot make a live call. "
-                    "Set it in .env or pass api_key= explicitly."
-                )
-            from google import genai
+        # Locked because callers now fan out across threads: two racing
+        # first-calls would otherwise each build a client, and one would be
+        # silently discarded.
+        with self._client_lock:
+            if self._client is None:
+                if not self._api_key:
+                    raise RuntimeError(
+                        "GEMINI_API_KEY is not set; cannot make a live call. "
+                        "Set it in .env or pass api_key= explicitly."
+                    )
+                from google import genai
+                from google.genai import types
 
-            self._client = genai.Client(api_key=self._api_key)
+                # Without an explicit timeout the SDK waits on the socket
+                # forever. Observed: a single call to a model that was
+                # returning 503s elsewhere hung for 18 minutes with no
+                # response and no error. A request that is never going to
+                # answer has to become a retryable exception, or a caller
+                # further up has nothing to fail on.
+                self._client = genai.Client(
+                    api_key=self._api_key,
+                    http_options=types.HttpOptions(timeout=self.timeout_ms),
+                )
         return self._client
 
     def _cache_path(self, key: str) -> Path:
@@ -151,7 +207,8 @@ class LLMClient:
 
         text = self._call_with_backoff(prompt, model, params)
 
-        cache_path.write_text(
+        _atomic_write(
+            cache_path,
             json.dumps(
                 {
                     "model": model,
@@ -229,7 +286,8 @@ class LLMClient:
 
         vector = self._embed_with_backoff(text, model, params)
 
-        cache_path.write_text(
+        _atomic_write(
+            cache_path,
             json.dumps(
                 {
                     "model": model,
@@ -306,7 +364,8 @@ class LLMClient:
 
         result = self._generate_turn_with_backoff(turns, model, tools, response_json_schema, temperature)
 
-        cache_path.write_text(
+        _atomic_write(
+            cache_path,
             json.dumps(
                 {"turns": turns, "model": model, "params": params, "result": result},
                 ensure_ascii=False,

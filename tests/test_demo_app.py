@@ -122,13 +122,75 @@ def test_live_reason_is_not_duplicated_by_the_page_copy(client):
     assert html.lower().count("live mode is off") <= 1
 
 
-def test_live_exception_is_caught_and_reported(client, monkeypatch):
+def test_live_exception_is_caught_and_classified(client, monkeypatch):
     monkeypatch.setenv("GEMINI_API_KEY", "fake")
     monkeypatch.setattr("src.retrieval.build_index",
                         lambda *a, **k: (_ for _ in ()).throw(RuntimeError("429 quota exhausted")))
     out = client.post("/api/diagnose", json={"body": "why is my settlement late"}).json()
     assert out["ok"] is False
-    assert "unaffected" in out["reason"]
+    assert "quota is exhausted" in out["reason"]
+    assert "recorded ahead of time" in out["reason"]   # says what still works
+
+
+@pytest.mark.parametrize("exc,expect", [
+    (RuntimeError("429 RESOURCE_EXHAUSTED"), "quota is exhausted"),
+    (RuntimeError("503 UNAVAILABLE"), "temporarily unavailable"),
+    (RuntimeError("deadline exceeded"), "timed out"),
+    (RuntimeError("401 invalid api_key"), "API key is missing or rejected"),
+    (ValueError("kaboom"), "Live run failed"),
+])
+def test_every_failure_surfaces_a_readable_reason(exc, expect):
+    """No failure path may return an empty or generic-to-the-point-of-
+    useless reason - an indefinite spinner is worse than an error."""
+    reason = demo_app.failure_reason(exc)
+    assert expect in reason
+    assert len(reason) > 20
+
+
+def test_deadline_exceeded_has_its_own_message():
+    reason = demo_app.failure_reason(demo_app.LiveDeadlineExceeded("x"))
+    assert str(demo_app.LIVE_DEADLINE_SECONDS) in reason
+    assert "pre-computed traces are unaffected" in reason
+
+
+def test_live_retry_budget_is_seconds_not_minutes():
+    """The batch runner waits ~17 minutes for an outage to clear. A visitor
+    watching a spinner must not."""
+    assert demo_app.LIVE_MAX_RETRIES == 2
+    worst = sum(demo_app.LIVE_BASE_DELAY * (2 ** i) for i in range(demo_app.LIVE_MAX_RETRIES))
+    assert worst <= 5, f"{worst}s of backoff per call is too long for a live request"
+
+
+def test_deadline_sits_above_a_measured_run():
+    """A real uncached run measured 168s over 12 model calls with no
+    retries. A 60s ceiling would abort almost every legitimate run."""
+    assert demo_app.LIVE_DEADLINE_SECONDS > 170
+
+
+def test_client_timeout_is_published_and_sits_above_the_server_deadline(client):
+    h = client.get("/api/health").json()
+    assert h["live_timeout_seconds"] > demo_app.LIVE_DEADLINE_SECONDS
+    assert h["live_typical_seconds"] > 0
+
+
+def test_a_failed_run_does_not_consume_the_visitors_budget(client, monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "fake")
+    monkeypatch.setattr("src.retrieval.build_index",
+                        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("503 UNAVAILABLE")))
+    client.get("/api/health")
+    before = client.get("/api/health").json()["live_calls_used"]
+    client.post("/api/diagnose", json={"body": "why is my settlement late"})
+    assert client.get("/api/health").json()["live_calls_used"] == before
+
+
+def test_live_uses_whichever_key_name_is_set(client, monkeypatch):
+    """app.py gating on GOOGLE_API_KEY while LLMClient reads only
+    GEMINI_API_KEY is how live mode advertises itself and then fails on
+    every submission."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setenv("GOOGLE_API_KEY", "from-google-var")
+    assert demo_app.api_key() == "from-google-var"
+    assert demo_app.live_available("x")[0] is True
 
 
 # --- the snapshot contains what the page claims to show -------------------
@@ -452,3 +514,28 @@ def test_layout_steps_up_on_large_monitors():
     for bp in ("@media(min-width:1400px)", "@media(min-width:1920px)", "@media(min-width:2400px)"):
         assert bp in css, bp
     assert "max-width:2200px" in css                 # the app centres, not stretches
+
+
+def test_client_aborts_instead_of_spinning_forever():
+    assert "AbortController" in HTML
+    assert "ctl.abort()" in HTML and "signal:ctl.signal" in HTML
+    assert 'e.name === "AbortError"' in HTML
+    assert "Gave up after" in HTML          # abort shows a sentence, not silence
+
+
+def test_client_shows_elapsed_time_while_running():
+    """A static spinner reads as frozen inside ten seconds; a real run is
+    ~170s."""
+    assert "setInterval" in HTML and "running… ${s}s" in HTML
+    assert "clearInterval(tick)" in HTML and "clearTimeout(killer)" in HTML
+
+
+def test_client_takes_its_ceiling_from_the_server():
+    assert "h.live_timeout_seconds" in HTML
+    assert "LIVE.timeout = h.live_timeout_seconds * 1000" in HTML
+
+
+def test_client_reports_a_non_200_and_a_network_failure_distinctly():
+    assert "res.status" in HTML
+    assert "Could not reach the server" in HTML
+    assert "The server returned" in HTML

@@ -822,13 +822,16 @@ function renderMetrics(){
 }
 
 function renderLive(h){
+  if(h.live_timeout_seconds) LIVE.timeout = h.live_timeout_seconds * 1000;
+  if(h.live_typical_seconds) LIVE.typical = h.live_typical_seconds;
   const left = h.live_budget - h.live_calls_used;
   const intent = `<div class="why">Every trace on this page is <b>real output from a real run</b>, \
 recorded to disk rather than generated on load. That is deliberate: the console works with no key \
 and no model reachable.</div>`;
   $("#livebox").innerHTML = h.live_enabled
     ? `<div class="live">${intent}
-       <div class="st">Run your own ticket through the same pipeline — ${left} of ${h.live_budget} left this session.</div>
+       <div class="st">Run your own ticket through the same pipeline — ${left} of ${h.live_budget} left this session.
+         Takes around ${h.live_typical_seconds||170}s: a real diagnosis is roughly a dozen model calls.</div>
        <textarea id="lb" rows="4" placeholder="paste a merchant ticket…" style="margin-top:16px"></textarea>
        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
          <input type="text" id="lm" placeholder="merchant_id (optional)" style="flex:1;min-width:0">
@@ -838,23 +841,54 @@ and no model reachable.</div>`;
        <div class="st">Typing your own ticket is unavailable here — ${esc(h.live_reason)}</div></div>`;
 }
 
+let LIVE = {timeout: 225000, typical: 170};
+
 async function runLive(){
   const btn = $("#lgo"), msg = $("#lmsg");
-  btn.disabled = true; msg.textContent = "running…";
+  btn.disabled = true;
+
+  /* A spinner with no elapsed time reads as "frozen" within about ten
+     seconds. A run is ~170s of model latency, so the count is the only
+     thing telling the visitor it is still working. */
+  const t0 = Date.now();
+  const tick = setInterval(()=>{
+    const s = Math.round((Date.now()-t0)/1000);
+    msg.textContent = `running… ${s}s — a full diagnosis is around a dozen model `
+      + `calls, usually ~${LIVE.typical}s`;
+  }, 250);
+
+  /* Hard client-side ceiling. Without this a stalled request leaves the
+     UI on "running" forever, which looks like the whole app is broken. */
+  const ctl = new AbortController();
+  const killer = setTimeout(()=>ctl.abort(), LIVE.timeout);
+
+  const done = m => { clearInterval(tick); clearTimeout(killer); btn.disabled = false;
+                      if(m!==undefined) msg.innerHTML = m; };
   try{
-    const res = await fetch("/api/diagnose",{method:"POST",headers:{"Content-Type":"application/json"},
+    const res = await fetch("/api/diagnose",{method:"POST",signal:ctl.signal,
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify({body:$("#lb").value, merchant_id:$("#lm").value||null})});
+    if(!res.ok){ done(`<span class="bad">The server returned ${res.status}. `
+      + `The pre-computed traces on this page are unaffected.</span>`); return; }
     const data = await res.json();
-    if(!data.ok){ msg.innerHTML = `<span class="bad">${esc(data.reason)}</span>`; }
-    else{
-      msg.textContent = "";
+    if(!data.ok){
+      const el = data.elapsed_seconds ? ` <span class="dimmer">(${data.elapsed_seconds}s)</span>` : "";
+      done(`<span class="bad">${esc(data.reason)}</span>${el}`);
+    } else {
+      done("");
       ROW = data.row; ROW.blurb = "Live run — not part of the evaluated set.";
       document.querySelectorAll(".row,.pin").forEach(e=>e.classList.remove("on"));
       $("#detail").innerHTML = renderRow(ROW); $("#detail").scrollTop = 0;
     }
-  }catch(e){ msg.innerHTML = '<span class="bad">Request failed. The pre-computed queue is unaffected.</span>'; }
-  btn.disabled = false;
-  fetch("/api/health").then(r=>r.json()).then(renderLive);
+  }catch(e){
+    done(e && e.name === "AbortError"
+      ? `<span class="bad">Gave up after ${Math.round(LIVE.timeout/1000)}s without a `
+        + `response. The model may be slow or unreachable right now — the `
+        + `pre-computed traces on this page are unaffected.</span>`
+      : '<span class="bad">Could not reach the server. The pre-computed traces '
+        + 'on this page are unaffected.</span>');
+  }
+  fetch("/api/health").then(r=>r.json()).then(renderLive).catch(()=>{});
 }
 
 /* ================= resizable dividers (desktop only) ================= */

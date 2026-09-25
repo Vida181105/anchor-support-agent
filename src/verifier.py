@@ -25,8 +25,10 @@ what text reaches the model, not just by trusting this paragraph.
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
+from src.config import CHECK_MAX_WORKERS
 from src.llm import LLMClient
 
 VERIFIER_MODEL = "gemini-3.5-flash-lite"
@@ -120,10 +122,19 @@ def verify_claim(
 
 
 def verify_diagnosis(
-    diagnosis: dict, evidence_content: dict[str, Any], llm: LLMClient, model: str = VERIFIER_MODEL
+    diagnosis: dict,
+    evidence_content: dict[str, Any],
+    llm: LLMClient,
+    model: str = VERIFIER_MODEL,
+    max_workers: int = CHECK_MAX_WORKERS,
 ) -> dict:
     """Run the grounding verifier over a full diagnosis: root_cause first,
     then every entry in claims.
+
+    Claim verdicts are computed concurrently (see CHECK_MAX_WORKERS). The
+    result is byte-identical to the sequential version - order is
+    preserved and the calls are independent - it simply stops waiting for
+    each one before starting the next.
 
     If root_cause comes back UNSUPPORTED, the entire diagnosis is
     rejected - this returns a fixed rejection diagnosis routed to
@@ -148,8 +159,32 @@ def verify_diagnosis(
 
     verdicts = [{"claim": root_cause["text"], "is_root_cause": True, **root_verdict}]
     kept_claims = []
-    for claim in diagnosis["claims"]:
-        verdict = verify_claim(claim, evidence_content, llm, model)
+
+    # Claims fan out. Each verify_claim sees exactly one claim and its own
+    # cited evidence - they share no state and cannot influence each
+    # other - so running them together changes when the answers arrive and
+    # nothing about what they are. executor.map yields in submission
+    # order, so `verdicts` and `kept_claims` come out in the same order a
+    # sequential loop produced, which is what keeps the recorded runs
+    # comparable.
+    #
+    # The root cause deliberately stays sequential and first. Folding it
+    # into the same pool would be marginally faster, but its UNSUPPORTED
+    # verdict discards every claim verdict anyway, so the extra calls
+    # would be spent only to be thrown away - and on a free tier, during
+    # the kind of overload that makes this slow in the first place, that
+    # is the wrong trade.
+    claims = list(diagnosis["claims"])
+    if claims:
+        workers = max(1, min(max_workers, len(claims)))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            claim_verdicts = list(
+                pool.map(lambda c: verify_claim(c, evidence_content, llm, model), claims)
+            )
+    else:
+        claim_verdicts = []
+
+    for claim, verdict in zip(claims, claim_verdicts):
         verdicts.append({"claim": claim["text"], "is_root_cause": False, **verdict})
         if verdict["verdict"] != "UNSUPPORTED":
             kept_claims.append(claim)

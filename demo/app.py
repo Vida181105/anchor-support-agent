@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -43,6 +44,88 @@ INDEX_HTML = ROOT / "demo" / "static" / "index.html"
 # spends someone's free-tier quota on arbitrary text is not something to
 # leave open.
 MAX_LIVE_CHARS = 1200
+
+# Measured: one uncached live run is ~170s over 12 model calls (median 16s,
+# slowest 46s), with no retries at all - that is just Gemini latency times
+# the length of the agent loop. So the deadline has to sit above it, and a
+# 60s ceiling would abort essentially every legitimate run. The client is
+# told this value by /api/health so both ends agree rather than one cutting
+# the other off mid-flight.
+LIVE_DEADLINE_SECONDS = int(os.environ.get("ANCHOR_DEMO_LIVE_DEADLINE", "210"))
+
+# Retry budget for LIVE requests only. The batch runner uses 8 retries at a
+# 4s base (~17 minutes) because an overnight eval should out-wait an outage.
+# Someone watching a spinner should not: two retries at a 1s base is ~4s of
+# backoff, then a readable failure.
+LIVE_MAX_RETRIES = 2
+LIVE_BASE_DELAY = 1.0
+
+
+def api_key() -> str | None:
+    """The key LLMClient will actually use.
+
+    LLMClient reads GEMINI_API_KEY only, but plenty of deployments set
+    GOOGLE_API_KEY instead. Accepting one and using the other is how live
+    mode ends up advertised as available and then failing on every
+    submission, so whatever is found here is passed to the client
+    explicitly rather than left to the environment.
+    """
+    return os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+
+
+class LiveDeadlineExceeded(RuntimeError):
+    """The run outlasted LIVE_DEADLINE_SECONDS."""
+
+
+def _deadline_client(deadline: float):
+    """An LLMClient that refuses to start another call past the deadline.
+
+    Without this the server keeps working - and keeps spending quota - long
+    after the browser has given up, which is how a visitor's abandoned
+    request turns into everyone else's exhausted budget.
+    """
+    from src.llm import LLMClient
+
+    class DeadlineLLMClient(LLMClient):
+        def generate_turn(self, *a, **k):
+            if time.monotonic() > deadline:
+                raise LiveDeadlineExceeded(
+                    f"the run passed its {LIVE_DEADLINE_SECONDS}s limit"
+                )
+            return super().generate_turn(*a, **k)
+
+    return DeadlineLLMClient(
+        api_key=api_key(), max_retries=LIVE_MAX_RETRIES, base_delay=LIVE_BASE_DELAY
+    )
+
+
+def failure_reason(exc: Exception) -> str:
+    """Turn an exception into something a visitor can act on.
+
+    Every branch returns a sentence. An unclassified error still reports
+    its type and message - a silent failure is the one outcome that makes
+    the whole page look broken.
+    """
+    text = f"{type(exc).__name__}: {exc}"
+    low = text.lower()
+    if isinstance(exc, LiveDeadlineExceeded):
+        return (f"That run passed the {LIVE_DEADLINE_SECONDS}s limit and was stopped. "
+                "A full diagnosis is around a dozen model calls, so a slow model "
+                "day can exceed it. The pre-computed traces are unaffected.")
+    if "resource_exhausted" in low or "quota" in low or "429" in low:
+        return ("The model's free-tier quota is exhausted for now, so live mode "
+                "cannot run. Everything else on this page still works - it was "
+                "recorded ahead of time for exactly this reason.")
+    if "503" in low or "unavailable" in low or "overloaded" in low:
+        return ("The model is temporarily unavailable and did not recover within "
+                "the retry budget. Worth trying again in a moment.")
+    if "deadline" in low or "timeout" in low or "timed out" in low:
+        return "The model call timed out before returning anything."
+    if "api_key" in low or "api key" in low or "permission" in low or "401" in low:
+        return "This deployment's API key is missing or rejected, so live mode cannot run."
+    if "400" in low or "invalid" in low:
+        return f"The model rejected the request. {text[:160]}"
+    return f"Live run failed. {text[:200]}"
 
 # Budgeted per visitor session, not per process. A process-wide counter
 # lets the first person through the door spend the allowance for everyone
@@ -96,7 +179,7 @@ def live_available(sid: str = "") -> tuple[bool, str]:
     true without apologising for it: the traces on the page are real
     output either way.
     """
-    if not os.environ.get("GEMINI_API_KEY") and not os.environ.get("GOOGLE_API_KEY"):
+    if not api_key():
         return False, "No API key is configured on this deployment."
     if _state["live_calls"] >= LIVE_BUDGET_PER_PROCESS:
         return False, "This deployment's total live budget is spent."
@@ -130,6 +213,10 @@ def api_health(request: Request, response: Response) -> dict:
         "live_reason": reason,
         "live_calls_used": _session_used(sid),
         "live_budget": LIVE_BUDGET_PER_SESSION,
+        # the browser aborts a little after the server does, so the server's
+        # own reason wins rather than both sides timing out independently
+        "live_timeout_seconds": LIVE_DEADLINE_SECONDS + 15,
+        "live_typical_seconds": 180,
     }
 
 
@@ -153,25 +240,27 @@ def api_diagnose(req: LiveRequest, request: Request, response: Response) -> dict
     if not ok:
         return {"ok": False, "reason": reason}
 
+    started = time.monotonic()
+    deadline = started + LIVE_DEADLINE_SECONDS
     try:
         from src.agent import diagnose_ticket
         from src.gate import evaluate
-        from src.llm import LLMClient
         from src.retrieval import build_index
         from src.schema import render_prose
 
-        if _state["llm"] is None:
-            _state["llm"] = LLMClient()
+        # A fresh client per request: the deadline is per-run, and the live
+        # retry budget must not leak into anything else.
+        llm = _deadline_client(deadline)
         if _state["index"] is None:
             # Lazy on purpose: building at startup would make a missing
             # key or an embedding hiccup break the page itself.
-            _state["index"] = build_index(_state["llm"])
+            _state["index"] = build_index(llm)
 
         _state["live_calls"] += 1
         _state["sessions"][sid] = _session_used(sid) + 1
         ticket = {"id": "live", "merchant_id": req.merchant_id, "body": body,
                   "subject": "(live)", "channel": "demo"}
-        result = diagnose_ticket(ticket, _state["llm"], _state["index"],
+        result = diagnose_ticket(ticket, llm, _state["index"],
                                  verify=True, check_responsive=True)
         diagnosis = result["diagnosis"]
         decision = evaluate(diagnosis)
@@ -181,6 +270,7 @@ def api_diagnose(req: LiveRequest, request: Request, response: Response) -> dict
 
         return {
             "ok": True,
+            "elapsed_seconds": round(time.monotonic() - started, 1),
             "row": {
                 "id": "live",
                 "ticket": ticket,
@@ -212,8 +302,17 @@ def api_diagnose(req: LiveRequest, request: Request, response: Response) -> dict
             },
         }
     except Exception as exc:  # noqa: BLE001 - a demo never shows a traceback
-        return {"ok": False, "reason": f"Live run failed ({type(exc).__name__}). "
-                                       f"The pre-computed queue is unaffected. {exc}"[:400]}
+        # The run was charged before it started, to stop a burst of parallel
+        # submissions slipping past the budget. It failed for a reason that
+        # was not the visitor's doing, so give the run back.
+        if _state["sessions"].get(sid):
+            _state["sessions"][sid] -= 1
+        _state["live_calls"] = max(0, _state["live_calls"] - 1)
+        return {
+            "ok": False,
+            "reason": failure_reason(exc),
+            "elapsed_seconds": round(time.monotonic() - started, 1),
+        }
 
 
 @app.get("/")

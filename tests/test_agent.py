@@ -4,6 +4,7 @@ retry/fail-closed path. No network calls - the model's turns are scripted.
 """
 
 import json
+import threading
 
 import pytest
 
@@ -11,21 +12,41 @@ from src.agent import diagnose_ticket
 from src.schema import DIAGNOSIS_JSON_SCHEMA
 
 
+# The responsiveness prompt's opening line, used to tell the two checks
+# apart. They now run concurrently, so a positional script would hand one
+# check the other's scripted response depending on thread scheduling.
+RESPONSIVENESS_MARKER = "whether an answer is RESPONSIVE"
+
+
 class ScriptedLLM:
     """Returns generate_turn results from a fixed script, in order.
     Records every call's (turns, tools, response_json_schema) for
     assertions on what the agent actually sent.
+
+    Thread-safe, and routes responsiveness calls to their own script when
+    one is given: the verifier and the responsiveness check overlap, so
+    which of them calls first is not deterministic.
     """
 
-    def __init__(self, script):
+    def __init__(self, script, responsiveness=None):
         self.script = list(script)
+        self.responsiveness = list(responsiveness or [])
         self.calls = []
+        self._lock = threading.Lock()
 
     def generate_turn(self, turns, model=None, tools=None, response_json_schema=None, temperature=0.0):
-        self.calls.append({"turns": turns, "tools": tools, "response_json_schema": response_json_schema})
-        if not self.script:
-            raise AssertionError("ScriptedLLM ran out of scripted responses")
-        return self.script.pop(0)
+        text = turns[0].get("text", "") if turns else ""
+        is_responsiveness = RESPONSIVENESS_MARKER in text
+        with self._lock:
+            self.calls.append({"turns": turns, "tools": tools,
+                               "response_json_schema": response_json_schema})
+            queue = self.responsiveness if (is_responsiveness and self.responsiveness) else self.script
+            if not queue:
+                raise AssertionError("ScriptedLLM ran out of scripted responses")
+            return queue.pop(0)
+
+    def responsiveness_calls(self):
+        return [c for c in self.calls if RESPONSIVENESS_MARKER in c["turns"][0].get("text", "")]
 
     def embed(self, text, task_type="RETRIEVAL_DOCUMENT", output_dimensionality=None):
         raise AssertionError("embed should not be called in these mocked tests")
@@ -419,7 +440,8 @@ def test_check_responsive_true_records_a_verdict_and_sees_the_ticket_body():
     assert result["responsiveness_checked"] is True
     assert result["diagnosis"]["_responsiveness"]["verdict"] == "NON_RESPONSIVE"
     assert len(llm.calls) == 4  # 2 tool-loop + 1 final diagnosis + 1 responsiveness
-    assert "how do i change my bank account" in llm.calls[-1]["turns"][0]["text"]
+    [resp] = llm.responsiveness_calls()
+    assert "how do i change my bank account" in resp["turns"][0]["text"]
 
 
 def test_check_responsive_false_skips_it_entirely():
@@ -495,9 +517,10 @@ def test_responsiveness_judges_the_composers_text_not_the_verifiers_rejection_no
         {"text": "done"},
         _valid_final_response("state:merchant_1.settlement_schedule"),
         _verdict_response("UNSUPPORTED", "not in the evidence"),  # root cause rejected
-        _verdict_response("RESPONSIVE", "on topic"),
     ]
-    llm = ScriptedLLM(script)
+    # scripted separately: the checks overlap, so whichever thread calls
+    # first must not be handed the other's verdict
+    llm = ScriptedLLM(script, responsiveness=[_verdict_response("RESPONSIVE", "on topic")])
     ticket = {"merchant_id": "merchant_1", "body": "money not come"}
 
     result = diagnose_ticket(ticket, llm, FakePolicyIndex(), verify=True, check_responsive=True)
@@ -507,6 +530,7 @@ def test_responsiveness_judges_the_composers_text_not_the_verifiers_rejection_no
     # the composer's original text, not whatever the verifier substituted
     assert diagnosis["_responsiveness"]["checked_root_cause"] == "T+3 cycle, within window."
     assert diagnosis["_responsiveness"]["checked_root_cause"] != diagnosis["root_cause"]["text"]
-    assert "T+3 cycle, within window." in llm.calls[-1]["turns"][0]["text"]
+    [resp] = llm.responsiveness_calls()
+    assert "T+3 cycle, within window." in resp["turns"][0]["text"]
     # and the responsiveness prompt never saw the verifier's verdict
-    assert "UNSUPPORTED" not in llm.calls[-1]["turns"][0]["text"]
+    assert "UNSUPPORTED" not in resp["turns"][0]["text"]

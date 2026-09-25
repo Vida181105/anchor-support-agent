@@ -32,6 +32,7 @@ see diagnose_ticket's docstring.
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from src.config import RESPONSIVENESS_ENABLED_DEFAULT, VERIFIER_ENABLED_DEFAULT
@@ -396,18 +397,36 @@ def diagnose_ticket(
     else:
         diagnosis, grounded = _run_final_diagnosis_call(llm, model, turns, set(evidence_pool))
         composed_root_cause = (diagnosis.get("root_cause") or {}).get("text", "")
-        if grounded and verify:
-            diagnosis = verify_diagnosis(diagnosis, evidence_content, llm)
-            verified = True
+
+        # The two checks are blinded to each other by design, which also
+        # means neither's input depends on the other's output - so they
+        # overlap. Responsiveness is one call and verification is several,
+        # so responsiveness finishes inside the verifier's window and
+        # costs nothing in wall time. Starting it first means its request
+        # is already open while the verifier's root-cause call runs.
+        responsiveness_future = None
+        pool = None
         if grounded and check_responsive:
+            pool = ThreadPoolExecutor(max_workers=1)
             # Two strings in, one verdict out. The signature is the
             # isolation: evidence_content is in scope here and never
             # reaches it.
-            diagnosis["_responsiveness"] = {
-                **check_responsiveness(ticket.get("body", ""), composed_root_cause, llm),
-                "checked_root_cause": composed_root_cause,
-            }
-            responsiveness_checked = True
+            responsiveness_future = pool.submit(
+                check_responsiveness, ticket.get("body", ""), composed_root_cause, llm
+            )
+        try:
+            if grounded and verify:
+                diagnosis = verify_diagnosis(diagnosis, evidence_content, llm)
+                verified = True
+            if responsiveness_future is not None:
+                diagnosis["_responsiveness"] = {
+                    **responsiveness_future.result(),
+                    "checked_root_cause": composed_root_cause,
+                }
+                responsiveness_checked = True
+        finally:
+            if pool is not None:
+                pool.shutdown(wait=True)
 
     diagnosis["identity_status"] = outcome
     return {

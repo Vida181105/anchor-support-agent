@@ -114,3 +114,24 @@ VERIFIER_ENABLED_DEFAULT = _env_bool("ANCHOR_VERIFIER_ENABLED", True)
 # passed explicitly; this only sets what None resolves to, e.g.
 # `ANCHOR_RESPONSIVENESS_ENABLED=0 python eval/run_something.py`.
 RESPONSIVENESS_ENABLED_DEFAULT = _env_bool("ANCHOR_RESPONSIVENESS_ENABLED", True)
+
+
+# How many verifier claim-checks may be in flight at once, and whether the
+# responsiveness check runs alongside them.
+#
+# A cold diagnosis was ~230s, of which ~88s was the checks running one
+# after another - six verifier calls plus responsiveness, all independent,
+# each waiting on the one before it for no reason. They are pure functions
+# of (claim, evidence) and (ticket, root cause) at temperature 0, so
+# overlapping them changes latency and nothing else.
+#
+# Sized against what the free tier actually tolerates rather than what
+# looks fast: see eval/README.md. Six concurrent calls produced no rate
+# limiting - the only failures observed were 503 "overloaded", which
+# appeared at pool 3 and pool 1 in the same window and so track the
+# outage rather than the concurrency.
+#
+# Set to 3 for a smaller blast radius while the model is unstable, or to
+# 1 to restore fully sequential behaviour. Neither changes the output:
+# all 40 held-out tickets are byte-identical at 1, 3 and 6.
+CHECK_MAX_WORKERS = int(os.environ.get("ANCHOR_CHECK_WORKERS", "6"))
