@@ -4,201 +4,376 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anchor — ops console</title>
+<script>
+/* Before first paint, so there is no flash of the wrong theme. */
+(function(){
+  try{
+    var s = localStorage.getItem("anchor-theme");
+    document.documentElement.dataset.theme =
+      s || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  }catch(e){ document.documentElement.dataset.theme = "dark"; }
+})();
+</script>
 <style>
+/* ============================================================
+   Mobile-first: the base stylesheet is the phone. The grid,
+   dividers and wider gutters are all additions at min-width.
+
+   One palette per theme, defined once. Colour carries meaning
+   only - four lane hues and one failure red, tuned to equal
+   weight so no lane shouts louder than another.
+   ============================================================ */
+:root,:root[data-theme="dark"]{
+  --bg:#0e1013;
+  --s1:#16191e;
+  --s2:#1c2027;
+  --hair:#252a32;
+  --hair-strong:#2f3742;
+
+  --fg:#c8d0da;          /* 12.2:1 */
+  --fg-strong:#e8eef5;   /* 16.3:1 */
+  --fg-quiet:#8b95a3;    /*  6.3:1 */
+
+  --auto:#4cc26a;        /*  8.4:1 */
+  --draft:#e0a336;       /*  8.6:1 */
+  --ident:#5fa8ff;       /*  7.7:1 */
+  --esc:#f0605a;         /*  5.9:1 */
+  --fail:#f0605a;
+
+  --built:#132033;       /* retrieval pane: 1.002:1 vs --s2, hue-separated */
+  --field:#0e1013;
+  --btn:#2a313b;
+  --btn-hover:#333b47;
+  --chip-hover:#242a33;
+  --card-line:transparent;   /* tone does the work on dark */
+  --shadow:none;
+}
+:root[data-theme="light"]{
+  --bg:#fbfbf9;          /* warm off-white, never pure white */
+  --s1:#f2f2ef;
+  --s2:#e8e8e4;
+  --hair:#dcdcd7;        /* 1.33:1 - a printed rule, not a box */
+  --hair-strong:#c9c9c3;
+
+  --fg:#16191d;          /* 17.0:1 */
+  --fg-strong:#05070a;   /* 19.5:1 */
+  --fg-quiet:#5b626c;    /*  5.95:1 */
+
+  --auto:#146c2e;        /*  6.31:1 */
+  --draft:#8a5300;       /*  6.11:1 */
+  --ident:#0b53c0;       /*  6.73:1 */
+  --esc:#b3261e;         /*  6.31:1 */
+  --fail:#b3261e;
+
+  --built:#dfe9f7;       /* 1.002:1 vs --s2 - same relationship as dark */
+  --field:#ffffff;
+  --btn:#e4e4df;
+  --btn-hover:#d9d9d3;
+  --chip-hover:#dedeD8;
+  --card-line:var(--hair);   /* 1.08:1 tone is haze on light - use a rule */
+  --shadow:0 1px 2px rgba(0,0,0,.06);
+}
+
 :root{
-  --bg:#0b0d10; --panel:#111419; --panel2:#151a21; --line:#232a34; --line2:#2d3643;
-  --fg:#d7dee8; --dim:#8794a5; --dimmer:#5d6875;
-  --auto:#3fb950; --draft:#d29922; --ident:#58a6ff; --esc:#f85149;
-  --ok:#3fb950; --warn:#d29922; --bad:#f85149;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --read:78ch;            /* reading column cap */
-  --gut:28px;             /* detail-pane gutter */
+
+  --r:6px;               /* one radius, everywhere */
+  --label:176px;         /* one label column: kv panels, stage rows, metrics */
+  --sn:24px;             /* stage numeral column, part of --label */
+  --read:none;           /* capped per breakpoint below; JS overrides on drag */
+  --pad:24px;
+  --qw:280px;            /* queue width, draggable */
+  --dw:440px;            /* drawer width, draggable */
+
+  --sp1:8px; --sp2:16px; --sp3:24px; --sp4:48px; --sp5:64px;
 }
 *{box-sizing:border-box}
 html,body{max-width:100%;overflow-x:hidden}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:13px;line-height:1.62}
-a{color:var(--ident)}
-
-/* ---------- header: three lines, always visible ---------- */
-header{border-bottom:1px solid var(--line);padding:14px var(--gut) 13px;background:var(--panel)}
-.hrow{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
-header h1{font-size:13px;margin:0;font-weight:600;letter-spacing:.16em}
-header .tag{color:var(--dim);font-size:11.5px}
-header .spacer{flex:1}
-header .meta{color:var(--dimmer);font-size:11px}
-.hlines{margin-top:9px;display:grid;gap:3px;max-width:var(--read)}
-.hlines div{color:var(--dim);font-size:12px}
-.hlines .idea{color:var(--fg)}
-.hlines .idea b{color:var(--ident);font-weight:600}
-.hlines .cta{color:var(--dimmer)}
-nav{display:flex;gap:6px}
-nav button{background:none;border:1px solid var(--line);color:var(--dim);font-family:var(--mono);
-  font-size:11px;padding:5px 13px;cursor:pointer;border-radius:2px;letter-spacing:.06em}
-nav button:hover{color:var(--fg)}
-nav button.on{color:var(--fg);border-color:var(--dim);background:var(--panel2)}
-
-/* ---------- shell ---------- */
-main{display:grid;grid-template-columns:minmax(300px,360px) 1fr;
-     height:calc(100vh - 104px);min-height:0}
-#queue{border-right:1px solid var(--line);overflow-y:auto;padding-bottom:40px}
-#detail{overflow-y:auto;padding:0 var(--gut) 120px;min-width:0}
-#detail>*{max-width:var(--read)}
-#detail .wide{max-width:none}
-
-/* ---------- sidebar ---------- */
-.sec-label{font-size:10px;letter-spacing:.16em;color:var(--dimmer);text-transform:uppercase;
-  padding:20px 18px 9px;border-bottom:1px solid var(--line);background:var(--bg)}
-.sec-label .hint{display:block;text-transform:none;letter-spacing:0;font-size:11px;
-  color:var(--dimmer);margin-top:5px;line-height:1.5}
-#pins{padding:8px 12px 4px;display:grid;gap:8px}
-.pin{display:block;width:100%;text-align:left;background:var(--panel2);
-  border:1px solid var(--line);border-left:2px solid var(--ident);border-radius:3px;
-  color:var(--fg);font-family:var(--mono);font-size:12px;padding:12px 14px;cursor:pointer;line-height:1.5}
-.pin:hover{background:#1a1f27;border-color:var(--line2);border-left-color:var(--ident)}
-.pin .pt{color:var(--ident);font-size:10px;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:5px}
-.pin.fail{border-left-color:var(--bad)}
-.pin.fail .pt{color:var(--bad)}
-#rows{padding:6px 12px 4px;display:grid;gap:5px}
-.row{display:block;width:100%;text-align:left;background:none;
-  border:1px solid transparent;border-radius:3px;
-  color:var(--fg);font-family:var(--mono);font-size:12px;
-  padding:11px 13px;cursor:pointer;border-left:2px solid transparent;line-height:1.5}
-.row:hover{background:var(--panel);border-color:var(--line)}
-.row.on{background:var(--panel2);border-color:var(--line2);border-left-color:var(--fg)}
-.row .id{color:var(--dim);font-size:11px}
-.row .sj{display:block;margin-top:5px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lane{display:inline-block;font-size:9.5px;letter-spacing:.09em;padding:2px 7px;border-radius:2px;
-  border:1px solid;text-transform:uppercase;white-space:nowrap}
-.lane.AUTO_RESOLVE{color:var(--auto);border-color:#1d4429}
-.lane.DRAFT_FOR_HUMAN{color:var(--draft);border-color:#4a3a12}
-.lane.REQUEST_IDENTIFICATION{color:var(--ident);border-color:#173a5e}
-.lane.ESCALATE{color:var(--esc);border-color:#5a1e1c}
-.tagfail{font-size:9.5px;color:var(--bad);border:1px solid #5a1e1c;padding:2px 7px;
-  border-radius:2px;letter-spacing:.09em;margin-left:4px}
-
-/* ---------- numbered trace sections ---------- */
-h2{font-size:10.5px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;
-  margin:0 0 16px;font-weight:600}
-.step{border-top:1px solid var(--line2);margin-top:44px;padding-top:24px}
-.step:first-of-type{margin-top:32px}
-.step>h2 .n{display:inline-block;min-width:22px;height:22px;line-height:21px;text-align:center;
-  border:1px solid var(--line2);border-radius:3px;color:var(--fg);margin-right:10px;
-  font-size:11px;letter-spacing:0;background:var(--panel2)}
-.blurb{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--line2);
-  border-radius:3px;padding:16px 18px;margin:26px 0 0;color:var(--dim);line-height:1.66}
-.blurb.fail{border-left-color:var(--bad);border-color:#3a2220;background:#140f0f;color:#e8b0ac}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:3px;
-  padding:16px 18px;margin-bottom:12px}
-.kv{display:grid;grid-template-columns:168px 1fr;gap:9px 18px;margin:0}
-.kv dt{color:var(--dimmer)}
-.kv dd{margin:0;word-break:break-word}
-@media(max-width:620px){.kv{grid-template-columns:1fr;gap:2px 0}.kv dd{margin-bottom:9px}}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.two .card{margin-bottom:0;height:100%}
-.two .card h3{margin:0 0 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
-.two .raw h3{color:var(--dimmer)}
-.two .built h3{color:var(--ident)}
-.two .built{border-color:#1b3a5c;background:#0e1520}
-pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.6}
-code.eid{color:var(--ident);background:#0f1722;border:1px solid #1b2c40;border-radius:2px;
-  padding:2px 7px;cursor:pointer;font-size:11px;display:inline-block;margin:4px 5px 0 0}
-code.eid:hover{background:#16243a;border-color:#2b4a6b}
-code.eid.state{color:#d2a8ff;background:#170f22;border-color:#2e1d40}
-code.eid.derived{color:#7ee787;background:#0f1a12;border-color:#1d4429}
-.claim{border:1px solid var(--line);border-radius:3px;padding:15px 17px;margin-bottom:10px;background:var(--panel)}
-.claim.root{border-color:var(--line2);background:var(--panel2)}
-.claim .ct{margin-bottom:9px;line-height:1.62}
-.rootlab{font-size:9.5px;letter-spacing:.12em;color:var(--dimmer);text-transform:uppercase;
-  display:block;margin-bottom:8px}
-.vline{margin-top:11px;display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap}
-.v{font-size:10px;letter-spacing:.07em;padding:2px 8px;border-radius:2px;border:1px solid;white-space:nowrap;flex:none}
-.v.SUPPORTED,.v.RESPONSIVE{color:var(--ok);border-color:#1d4429}
-.v.PARTIALLY_SUPPORTED,.v.PARTIALLY_RESPONSIVE{color:var(--warn);border-color:#4a3a12}
-.v.UNSUPPORTED,.v.NON_RESPONSIVE{color:var(--bad);border-color:#5a1e1c}
-.v.none{color:var(--dimmer);border-color:var(--line)}
-.vr{color:var(--dim);font-size:11.5px;line-height:1.55;min-width:0}
-.foot{color:var(--dimmer);margin-top:16px;line-height:1.65;font-size:12px}
-.tool{border:1px solid var(--line);border-radius:3px;margin-bottom:8px;background:var(--panel)}
-.tool>summary{cursor:pointer;padding:12px 16px;color:var(--fg);list-style:none}
-.tool>summary::-webkit-details-marker{display:none}
-.tool>summary:before{content:"▸ ";color:var(--dimmer)}
-.tool[open]>summary:before{content:"▾ "}
-.tool .body{border-top:1px solid var(--line);padding:14px 16px;background:#0d1015;
-  max-height:380px;overflow:auto}
-.tool .n{color:var(--dimmer);margin-right:10px}
-.gate{border:1px solid var(--line);border-left:3px solid var(--line2);padding:18px 20px;
-  background:var(--panel2);border-radius:3px}
-.gate.AUTO_RESOLVE{border-left-color:var(--auto)}
-.gate.DRAFT_FOR_HUMAN{border-left-color:var(--draft)}
-.gate.REQUEST_IDENTIFICATION{border-left-color:var(--ident)}
-.gate.ESCALATE{border-left-color:var(--esc)}
-.gate .gline{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-.gate .rule{color:var(--fg);background:#0d1015;border:1px solid var(--line);padding:2px 8px;border-radius:2px}
-.gate .greason{margin-top:12px;line-height:1.66}
-.posthoc{color:#d29922;border:1px solid #4a3a12;padding:2px 8px;border-radius:2px;
-  font-size:10px;letter-spacing:.08em;white-space:nowrap}
-
-/* ---------- tables / metrics ---------- */
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:3px}
-table{border-collapse:collapse;width:100%;font-size:12px;min-width:460px}
-th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
-tr:last-child td{border-bottom:none}
-th{color:var(--dimmer);font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-  background:var(--panel2)}
-td.num{text-align:right;font-variant-numeric:tabular-nums}
-.big{font-size:24px;letter-spacing:-.02em;margin:6px 0 0}
-.bad{color:var(--bad)}.ok{color:var(--ok)}.warn{color:var(--warn)}.dim{color:var(--dim)}.dimmer{color:var(--dimmer)}
-#metrics{display:none;padding:0 var(--gut) 120px;overflow-y:auto;grid-column:1/-1;min-width:0}
-#metrics>*{max-width:var(--read)}
-#metrics .wide{max-width:none}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:16px 18px}
-.stat .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer)}
-.stat .sub{color:var(--dim);font-size:11.5px;margin-top:8px;line-height:1.55}
-.note{background:#12100b;border:1px solid #4a3a12;border-radius:3px;padding:14px 17px;
-  color:#e3c778;margin:16px 0;line-height:1.66}
-.note.red{background:#140e0e;border-color:#5a1e1c;color:#e8b0ac}
-#metrics ul{padding-left:20px;line-height:1.75}
-#metrics li{margin-bottom:12px}
-
-/* ---------- live panel ---------- */
-#livebox{padding:14px 18px 8px}
-.live{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:15px 16px}
-.live .why{color:var(--dim);line-height:1.62}
-.live .why b{color:var(--fg);font-weight:600}
-.live .st{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);color:var(--dimmer);font-size:11.5px}
-textarea{width:100%;background:#0d1015;color:var(--fg);border:1px solid var(--line);border-radius:3px;
-  font-family:var(--mono);font-size:12px;padding:10px;resize:vertical;line-height:1.55}
-input[type=text]{background:#0d1015;color:var(--fg);border:1px solid var(--line);border-radius:3px;
-  font-family:var(--mono);font-size:12px;padding:8px 10px}
-.btn{background:var(--panel2);border:1px solid var(--line2);color:var(--fg);font-family:var(--mono);
-  font-size:12px;padding:8px 16px;border-radius:2px;cursor:pointer}
-.btn:hover:not(:disabled){background:#1e242d}
-.btn:disabled{color:var(--dimmer);cursor:not-allowed;border-color:var(--line)}
-dialog{background:var(--panel);color:var(--fg);border:1px solid var(--line2);border-radius:4px;
-  max-width:760px;width:92%;padding:0;font-family:var(--mono)}
-dialog::backdrop{background:#000c}
-dialog .dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center}
-dialog .db{padding:16px;max-height:62vh;overflow:auto;font-size:12px}
-
-/* ---------- mobile ---------- */
-@media(max-width:900px){
-  :root{--gut:16px}
-  main{grid-template-columns:1fr;height:auto;min-height:0}
-  #queue{border-right:none;border-bottom:1px solid var(--line);max-height:none;padding-bottom:8px}
-  #queue.collapsed #pins,#queue.collapsed #rows,
-  #queue.collapsed #livebox,#queue.collapsed .sec-label{display:none}
-  .qtoggle{display:block;width:100%;background:var(--panel2);border:none;border-bottom:1px solid var(--line);
-    color:var(--fg);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    padding:14px 16px;cursor:pointer;text-align:left}
-  #detail{padding-bottom:60px}
-  .two{grid-template-columns:1fr}
-  .hlines{max-width:none}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--sans);font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
 }
-@media(min-width:901px){.qtoggle{display:none}}
+button,input,textarea{font-family:inherit;color:inherit}
+.mono{font-family:var(--mono)}
+
+/* ---------------- header ---------------- */
+header{padding:var(--sp3) var(--pad);background:var(--s1);border-bottom:1px solid var(--card-line)}
+.hrow{display:flex;gap:var(--sp2);align-items:baseline;flex-wrap:wrap}
+header h1{font-family:var(--mono);font-size:14px;margin:0;font-weight:600;
+  letter-spacing:.18em;color:var(--fg-strong)}
+header .tag{color:var(--fg-quiet);font-size:13px}
+header .spacer{flex:1}
+header .meta{color:var(--fg-quiet);font-size:12px;font-family:var(--mono)}
+.hlines{margin-top:var(--sp2);display:grid;gap:8px;max-width:var(--read)}
+.hlines div{font-size:14px;color:var(--fg-quiet);line-height:1.55}
+.hlines .idea{color:var(--fg)}
+nav{display:flex;gap:var(--sp1);align-items:center}
+nav button{background:none;border:none;color:var(--fg-quiet);font-size:13px;
+  padding:var(--sp1) var(--sp2);cursor:pointer;border-radius:var(--r);min-height:40px}
+nav button:hover{color:var(--fg);background:var(--s2)}
+nav button.on{color:var(--fg-strong);background:var(--s2)}
+nav .theme{font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+
+/* ---------------- shell ---------------- */
+main{display:block}
+#queue{background:var(--s1);padding-bottom:var(--sp2);border-bottom:1px solid var(--hair)}
+#detail,#metrics{padding:0 var(--pad) var(--sp5);min-width:0}
+#detail>*,#metrics>*{max-width:var(--read)}
+#detail .bleed,#metrics .bleed{max-width:none}
+#metrics{display:none}
+#split{display:none}
+
+.qtoggle{display:block;width:100%;background:var(--s2);border:none;color:var(--fg);
+  font-size:13px;padding:var(--sp2) var(--pad);cursor:pointer;text-align:left;min-height:48px}
+#queue.collapsed #pins,#queue.collapsed #rows,
+#queue.collapsed #livebox,#queue.collapsed .qsec{display:none}
+
+/* ---------------- sidebar ---------------- */
+.qsec{font-size:12px;letter-spacing:.1em;color:var(--fg-quiet);text-transform:uppercase;
+  padding:var(--sp3) var(--pad) var(--sp1);font-family:var(--mono)}
+.qsec .hint{display:block;text-transform:none;letter-spacing:0;font-size:13px;
+  font-family:var(--sans);color:var(--fg-quiet);margin-top:var(--sp1);opacity:.85}
+#pins,#rows{padding:0 var(--sp2);display:grid;gap:4px}
+.pin,.row{display:block;width:100%;text-align:left;background:none;border:none;
+  border-left:2px solid transparent;border-radius:var(--r);
+  color:var(--fg);font-size:14px;padding:var(--sp2);cursor:pointer;line-height:1.5;
+  min-height:72px}
+.pin:hover,.row:hover{background:var(--s2)}
+.pin.on,.row.on{background:var(--s2);color:var(--fg-strong);border-left-color:var(--fg-quiet)}
+.pin .pt{color:var(--fg-quiet);font-size:12px;display:block;margin-bottom:var(--sp1);
+  font-family:var(--mono);letter-spacing:.06em}
+.rmeta{display:grid;grid-template-columns:var(--sn) 1fr auto;align-items:center;
+  margin-bottom:var(--sp1)}
+.rid{font-family:var(--mono);font-size:12px;color:var(--fg-quiet)}
+.sj{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  padding-left:var(--sn)}
+
+.dot{width:8px;height:8px;border-radius:50%;background:var(--fg-quiet);display:inline-block}
+.dot.AUTO_RESOLVE{background:var(--auto)}
+.dot.DRAFT_FOR_HUMAN{background:var(--draft)}
+.dot.REQUEST_IDENTIFICATION{background:var(--ident)}
+.dot.ESCALATE{background:var(--esc)}
+.lane{display:inline-flex;align-items:center;gap:var(--sp1);font-family:var(--mono);
+  font-size:12px;letter-spacing:.08em;color:var(--fg-quiet)}
+.lane.AUTO_RESOLVE{color:var(--auto)}
+.lane.DRAFT_FOR_HUMAN{color:var(--draft)}
+.lane.REQUEST_IDENTIFICATION{color:var(--ident)}
+.lane.ESCALATE{color:var(--esc)}
+.wrongflag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--fail)}
+
+/* ---------------- level 1 ---------------- */
+.l1{padding-top:var(--sp3)}
+.l1top{display:flex;gap:var(--sp2);align-items:baseline;flex-wrap:wrap;margin-bottom:var(--sp1)}
+.l1top .tid{font-family:var(--mono);font-size:13px;color:var(--fg-quiet)}
+.l1top .spacer{flex:1}
+.l1sub{font-size:13px;color:var(--fg-quiet);font-family:var(--mono);margin-bottom:var(--sp3)}
+.quote{font-family:var(--mono);font-size:13.5px;line-height:1.65;color:var(--fg);
+  background:var(--s1);border:1px solid var(--card-line);border-radius:var(--r);
+  padding:var(--sp2) var(--sp3);margin:0 0 var(--sp3);white-space:pre-wrap;word-break:break-word}
+.answer{font-size:20px;line-height:1.5;color:var(--fg-strong);margin:0 0 var(--sp2);font-weight:400}
+.because{color:var(--fg-quiet);margin:0 0 var(--sp2)}
+.verdictstrip{border-left:2px solid var(--fail);padding:var(--sp2);background:var(--s1);
+  border-radius:0 var(--r) var(--r) 0;margin-bottom:var(--sp2)}
+.verdictstrip .vk{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--fail);
+  display:block;margin-bottom:var(--sp1)}
+.verdictstrip.ok{border-left-color:var(--auto)}
+.verdictstrip.ok .vk{color:var(--auto)}
+.note-blurb{color:var(--fg-quiet);margin:0 0 var(--sp2)}
+
+/* ---------------- level 2: stages ---------------- */
+.stages{margin-top:var(--sp5)}
+.stagehead{display:flex;gap:var(--sp2);align-items:baseline;margin-bottom:var(--sp2);flex-wrap:wrap}
+.stagehead h2{font-size:13px;font-weight:500;color:var(--fg-quiet);margin:0;
+  font-family:var(--mono);letter-spacing:.08em;flex:1}
+.stagehead button{background:none;border:none;color:var(--fg-quiet);font-size:13px;
+  cursor:pointer;padding:var(--sp1);border-radius:var(--r);min-height:32px}
+.stagehead button:hover{color:var(--fg-strong);background:var(--s1)}
+
+.stage{border-bottom:1px solid var(--hair)}
+.stage:first-of-type{border-top:1px solid var(--hair)}
+.stage>summary{display:grid;grid-template-columns:var(--sn) 1fr;
+  align-items:baseline;cursor:pointer;padding:var(--sp2);list-style:none;min-height:56px}
+.stage>summary::-webkit-details-marker{display:none}
+.stage>summary:hover{background:var(--s1)}
+.stage[open]>summary{background:var(--s1)}
+.stage .sn{font-family:var(--mono);font-size:12px;color:var(--fg-quiet)}
+.stage .srow{display:grid;grid-template-columns:1fr;gap:4px;min-width:0}
+.stage .sname{font-size:14px;color:var(--fg-strong)}
+.stage .ssum{font-size:13.5px;color:var(--fg-quiet);min-width:0}
+.stage .sbody{padding:var(--sp3) var(--sp2) var(--sp4)}
+@media(min-width:620px){
+  .stage>summary{grid-template-columns:var(--sn) calc(var(--label) - var(--sn)) 1fr}
+  .stage .srow{display:contents}
+}
+
+/* ---------------- stage internals ---------------- */
+.kv{display:grid;grid-template-columns:1fr;gap:4px 0;margin:0 0 var(--sp2)}
+.kv dt{color:var(--fg-quiet);font-size:13px}
+.kv dd{margin:0 0 var(--sp2);word-break:break-word}
+@media(min-width:620px){
+  .kv{grid-template-columns:var(--label) 1fr;gap:var(--sp2) 0}
+  .kv dd{margin-bottom:0}
+}
+.pre{font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap;
+  word-break:break-word;margin:0}
+.sub{color:var(--fg-quiet);font-size:13.5px;line-height:1.6}
+.mt2{margin-top:var(--sp2)}
+.mt3{margin-top:var(--sp3)}
+
+/* retrieval: the one thing allowed to break the reading column */
+.contrast{display:grid;grid-template-columns:1fr;gap:var(--sp2);margin:var(--sp1) 0 0}
+@media(min-width:900px){.contrast{grid-template-columns:1fr 1fr;gap:var(--sp3)}}
+.cpane{background:var(--s2);border-radius:var(--r);padding:var(--sp3);box-shadow:var(--shadow)}
+.cpane.built{background:var(--built)}
+.cpane h3{margin:0 0 var(--sp2);font-size:12px;font-weight:500;letter-spacing:.09em;
+  color:var(--fg-quiet);font-family:var(--mono)}
+.cpane.built h3{color:var(--ident)}
+.cpane .q{font-family:var(--mono);font-size:15px;line-height:1.65;color:var(--fg-strong);
+  white-space:pre-wrap;word-break:break-word}
+
+.eid{font-family:var(--mono);font-size:12px;color:var(--fg-quiet);background:var(--s2);
+  border:none;border-radius:var(--r);padding:6px 10px;cursor:pointer;display:inline-block;
+  margin:var(--sp1) var(--sp1) 0 0;line-height:1.3}
+.eid:hover{color:var(--fg-strong);background:var(--chip-hover)}
+
+.claim{padding:0 0 var(--sp3)}
+.claim+.claim{border-top:1px solid var(--hair);padding-top:var(--sp3)}
+.claim .ct{margin:0}
+.claim .rl{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--fg-quiet);
+  display:block;margin-bottom:var(--sp1)}
+.vrow{display:flex;gap:var(--sp2);align-items:baseline;flex-wrap:wrap;margin-top:var(--sp1)}
+.v{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--fg-quiet);flex:none}
+.v.SUPPORTED,.v.RESPONSIVE{color:var(--auto)}
+.v.PARTIALLY_SUPPORTED,.v.PARTIALLY_RESPONSIVE{color:var(--draft)}
+.v.UNSUPPORTED,.v.NON_RESPONSIVE{color:var(--fail)}
+.vr{color:var(--fg-quiet);font-size:13.5px;flex:1;min-width:180px}
+
+.toolcall{margin-bottom:var(--sp1)}
+.toolcall>summary{cursor:pointer;list-style:none;padding:var(--sp1) 0;font-family:var(--mono);
+  font-size:13px;color:var(--fg);min-height:44px;display:flex;align-items:center;gap:var(--sp2)}
+.toolcall>summary::-webkit-details-marker{display:none}
+.toolcall>summary:before{content:"+";color:var(--fg-quiet);width:var(--sp2);flex:none}
+.toolcall[open]>summary:before{content:"–"}
+.toolcall .args{color:var(--fg-quiet)}
+.jsonbox{background:var(--field);border:1px solid var(--card-line);border-radius:var(--r);
+  padding:var(--sp2);max-height:360px;overflow:auto;-webkit-overflow-scrolling:touch}
+
+.gatehead{display:flex;gap:var(--sp2);align-items:center;flex-wrap:wrap;margin-bottom:var(--sp2)}
+.rulename{font-family:var(--mono);font-size:13px;color:var(--fg-strong)}
+.posthoc{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--draft)}
+
+/* ---------------- metrics ---------------- */
+#metrics h2{font-size:15px;font-weight:500;color:var(--fg-strong);margin:var(--sp4) 0 var(--sp2)}
+#metrics h2:first-child{margin-top:var(--sp3)}
+.mgrid{display:grid;grid-template-columns:1fr;gap:var(--sp2);margin-bottom:var(--sp2)}
+@media(min-width:620px){.mgrid{grid-template-columns:1fr 1fr}}
+.stat{background:var(--s1);border:1px solid var(--card-line);border-radius:var(--r);
+  padding:var(--sp3);box-shadow:var(--shadow)}
+.stat .lab{font-size:13px;color:var(--fg-quiet)}
+.big{font-size:28px;line-height:1.2;margin:var(--sp1) 0 0;color:var(--fg-strong);font-family:var(--mono)}
+.big.bad{color:var(--fail)}
+.big.warn{color:var(--draft)}
+.stat .sub{margin-top:var(--sp1)}
+.note{background:var(--s1);border:1px solid var(--card-line);border-left:2px solid var(--hair-strong);
+  border-radius:0 var(--r) var(--r) 0;padding:var(--sp2) var(--sp3);margin:var(--sp2) 0;
+  color:var(--fg-quiet)}
+.note.red{border-left-color:var(--fail)}
+.note strong{color:var(--fg-strong)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--card-line);
+  border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:440px}
+th,td{text-align:left;padding:var(--sp2);border-bottom:1px solid var(--hair)}
+th:first-child,td:first-child{width:var(--label)}
+tr:last-child td{border-bottom:none}
+th{color:var(--fg-quiet);font-weight:500;font-size:13px;background:var(--s1)}
+td{color:var(--fg)}
+td.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.num.bad{color:var(--fail)}
+td.num.warn{color:var(--draft)}
+#metrics ul{padding-left:var(--sp3);color:var(--fg-quiet)}
+#metrics li{margin-bottom:var(--sp2)}
+#metrics li strong.bad{color:var(--fail)}
+#metrics code{font-family:var(--mono);font-size:13px;color:var(--fg)}
+.bad{color:var(--fail)}
+
+/* ---------------- live ---------------- */
+#livebox{padding:var(--sp1) var(--sp2) 0}
+.live{background:var(--s2);border:1px solid var(--card-line);border-radius:var(--r);padding:var(--sp2)}
+.live .why{font-size:13.5px;color:var(--fg-quiet);line-height:1.6}
+.live .why b{color:var(--fg);font-weight:500}
+.live .st{margin-top:var(--sp2);padding-top:var(--sp2);border-top:1px solid var(--hair);
+  font-size:13px;color:var(--fg-quiet)}
+textarea,input[type=text]{width:100%;background:var(--field);border:1px solid var(--card-line);
+  border-radius:var(--r);font-family:var(--mono);font-size:13px;padding:var(--sp1);line-height:1.55}
+textarea{resize:vertical}
+.btn{background:var(--btn);border:none;font-size:14px;padding:var(--sp2) var(--sp3);
+  border-radius:var(--r);cursor:pointer;min-height:44px;color:var(--fg-strong)}
+.btn:hover:not(:disabled){background:var(--btn-hover)}
+.btn:disabled{color:var(--fg-quiet);cursor:not-allowed}
+
+/* ---------------- level 3: evidence drawer ---------------- */
+dialog#ev{background:var(--s1);color:var(--fg);border:none;padding:0;margin:0;
+  max-width:none;max-height:none;position:fixed;
+  left:0;right:0;bottom:0;top:auto;width:100%;height:76vh;
+  border-radius:var(--r) var(--r) 0 0}
+dialog#ev::backdrop{background:rgba(0,0,0,.55)}
+#ev .dh{padding:var(--sp2) var(--sp3);display:flex;gap:var(--sp2);align-items:center;
+  background:var(--s2);border-bottom:1px solid var(--card-line)}
+#ev .dh .t{font-family:var(--mono);font-size:12px;color:var(--fg-quiet);flex:1;
+  min-width:0;word-break:break-all}
+#ev .db{padding:var(--sp3);overflow:auto;height:calc(100% - 64px);-webkit-overflow-scrolling:touch}
+#ev .db pre{font-family:var(--mono);font-size:13px;line-height:1.6;margin:0;
+  white-space:pre-wrap;word-break:break-word}
+#evgrip{display:none}
+.x{background:none;border:none;color:var(--fg-quiet);font-size:20px;cursor:pointer;
+  padding:0 var(--sp1);min-height:44px;min-width:44px;border-radius:var(--r)}
+.x:hover{color:var(--fg-strong);background:var(--s2)}
+
+/* ---------------- widen: 900px ---------------- */
+@media(min-width:900px){
+  :root{--pad:40px;--read:760px}
+  main{display:grid;grid-template-columns:var(--qw) 1px 1fr;
+       height:calc(100vh - var(--hh,140px));min-height:0;
+       max-width:2200px;margin-inline:auto}
+  #queue{overflow-y:auto;height:100%;border-bottom:none}
+  #detail,#metrics{overflow-y:auto;height:100%}
+  #detail>*,#metrics>*{margin-left:auto;margin-right:auto}
+  #metrics{grid-column:3/-1}
+  .qtoggle{display:none}
+  #queue.collapsed #pins,#queue.collapsed #rows,#queue.collapsed #livebox{display:grid}
+  #queue.collapsed #livebox,#queue.collapsed .qsec{display:block}
+
+  /* draggable divider: 1px line, 9px grab area */
+  #split{display:block;position:relative;background:var(--hair);cursor:col-resize;
+    user-select:none;touch-action:none}
+  #split:before{content:"";position:absolute;top:0;bottom:0;left:-4px;right:-4px;z-index:5}
+  #split:hover,#split.dragging{background:var(--ident)}
+
+  dialog#ev{left:auto;right:0;top:0;bottom:0;height:100%;width:var(--dw);border-radius:0;
+    border-left:1px solid var(--card-line)}
+  #evgrip{display:block;position:absolute;left:0;top:0;bottom:0;width:1px;
+    background:var(--hair);cursor:col-resize;touch-action:none;z-index:10}
+  #evgrip:before{content:"";position:absolute;top:0;bottom:0;left:-4px;right:-4px}
+  #evgrip:hover,#evgrip.dragging{background:var(--ident)}
+}
+
+/* ---------------- widen: large monitors ----------------
+   The column and gutters step up together, but the column stops at
+   ~105 characters. Past that, extra width goes to the queue and to the
+   full-width elements - the retrieval comparison and the metrics tables,
+   which genuinely use it - rather than to longer prose lines, which are
+   strictly worse to read. Past 2200px the whole console centres, so the
+   leftover space sits outside a visibly bounded app instead of pooling
+   inside one stretched panel. */
+@media(min-width:1400px){:root{--pad:56px;--read:820px;--label:192px}}
+@media(min-width:1920px){:root{--pad:72px;--read:880px;--qw:320px}}
+@media(min-width:2400px){:root{--pad:88px;--qw:360px}}
 </style>
 </head>
 <body>
+
 <header>
   <div class="hrow">
     <h1>ANCHOR</h1>
@@ -208,196 +383,365 @@ dialog .db{padding:16px;max-height:62vh;overflow:auto;font-size:12px}
     <nav>
       <button id="tab-queue" class="on" onclick="showTab('queue')">queue</button>
       <button id="tab-metrics" onclick="showTab('metrics')">metrics</button>
+      <button class="theme" id="themebtn" onclick="toggleTheme()"
+              title="Toggle light/dark (shortcut: t)">theme</button>
     </nav>
   </div>
   <div class="hlines">
     <div>Diagnoses a merchant support ticket end to end, then routes it: answer, draft, ask who's asking, or escalate.</div>
-    <div class="idea">Most support root causes live in <b>account state</b>, not documentation — so the agent reads the account first, then finds the rule that explains it.</div>
-    <div class="cta">Click any ticket for the full trace.</div>
+    <div class="idea">Most support root causes live in account state, not documentation — so the agent reads the account first, then finds the rule that explains it.</div>
+    <div>Click any ticket for the full trace.</div>
   </div>
 </header>
 
 <main>
   <div id="queue">
-    <button class="qtoggle" onclick="document.getElementById('queue').classList.toggle('collapsed')">☰ tickets</button>
-    <div class="sec-label">pinned scenarios
-      <span class="hint">The three cases worth two minutes.</span></div>
+    <button class="qtoggle" onclick="document.getElementById('queue').classList.toggle('collapsed')">☰&nbsp;&nbsp;tickets</button>
+    <div class="qsec">Pinned scenarios<span class="hint">The three cases worth two minutes.</span></div>
     <div id="pins"></div>
-    <div class="sec-label">queue — pre-computed
-      <span class="hint">All four routing lanes.</span></div>
+    <div class="qsec">Queue<span class="hint">Pre-computed. All four routing lanes.</span></div>
     <div id="rows"></div>
-    <div class="sec-label">live mode</div>
+    <div class="qsec">Live mode</div>
     <div id="livebox"></div>
   </div>
-  <div id="detail"><div class="dim" style="padding:40px 0">Select a ticket.</div></div>
+  <div id="split" role="separator" aria-orientation="vertical" tabindex="-1"
+       title="Drag to resize · double-click to reset"></div>
+  <div id="detail"></div>
   <div id="metrics"></div>
 </main>
 
-<dialog id="ev"><div class="dh"><code class="eid" id="ev-id"></code><span class="spacer" style="flex:1"></span>
-<button class="btn" onclick="document.getElementById('ev').close()">close</button></div>
-<div class="db"><pre id="ev-body"></pre></div></dialog>
+<dialog id="ev">
+  <div id="evgrip" title="Drag to resize · double-click to reset"></div>
+  <div class="dh"><span class="t" id="ev-id"></span>
+    <button class="x" id="ev-close" onclick="document.getElementById('ev').close()" aria-label="close">×</button></div>
+  <div class="db"><pre id="ev-body"></pre></div>
+</dialog>
 
 <script>
 const $ = s => document.querySelector(s);
+const root = document.documentElement;
 const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const J = o => esc(JSON.stringify(o,null,2));
-const frac = a => a ? `${a[0]}/${a[1]}` + (a[1]? ` = ${Math.round(100*a[0]/a[1])}%` : "") : "—";
-let SNAP=null, ROW=null;
+const desktop = () => window.matchMedia("(min-width:900px)").matches;
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
+};
 
-function evClass(id){ return id.startsWith("state:")?"state":id.startsWith("derived:")?"derived":""; }
-
-function showTab(t){
-  $("#tab-queue").classList.toggle("on",t==="queue");
-  $("#tab-metrics").classList.toggle("on",t==="metrics");
-  document.querySelector("main").style.gridTemplateColumns = t==="queue"?"":"1fr";
-  $("#queue").style.display = t==="queue"?"":"none";
-  $("#detail").style.display = t==="queue"?"":"none";
-  $("#metrics").style.display = t==="metrics"?"block":"none";
+/* Round half to even, matching Python's format(x,'.0%'). Plain Math.round
+   rounds half up, which printed 5/40 as 13% while score_posthoc.py printed
+   12% - a headline number disagreeing with itself. 1/8 had the same bug. */
+function pctRound(a,b){
+  const x = 100*a/b, fl = Math.floor(x), d = x - fl;
+  if(d > 0.5) return fl + 1;
+  if(d < 0.5) return fl;
+  return (fl % 2 === 0) ? fl : fl + 1;
 }
+const frac = a => a ? `${a[0]}/${a[1]}` + (a[1] ? ` = ${pctRound(a[0],a[1])}%` : "") : "—";
 
+let SNAP = null, ROW = null;
+const lane = o => o.replace(/_/g," ").toLowerCase();
+
+/* ================= theme ================= */
+function applyTheme(t){
+  root.dataset.theme = t;
+  const b = $("#themebtn");
+  if(b) b.textContent = t === "dark" ? "light ↺" : "dark ↺";
+}
+function toggleTheme(){
+  const next = root.dataset.theme === "dark" ? "light" : "dark";
+  store.set("anchor-theme", next);
+  applyTheme(next);
+}
+document.addEventListener("keydown", e=>{
+  const typing = /^(INPUT|TEXTAREA)$/.test((e.target&&e.target.tagName)||"");
+  if(typing || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.key === "t" || e.key === "T"){ e.preventDefault(); toggleTheme(); }
+});
+
+/* ================= level 3: evidence drawer ================= */
+let lastFocus = null;
+const EV = () => $("#ev");
 function openEvidence(id){
   const c = (ROW && ROW.evidence_content) ? ROW.evidence_content[id] : null;
+  lastFocus = document.activeElement;
   $("#ev-id").textContent = id;
-  $("#ev-id").className = "eid " + evClass(id);
   $("#ev-body").textContent = c==null
     ? "No content recorded for this evidence id in this run."
     : (typeof c === "string" ? c : JSON.stringify(c,null,2));
-  $("#ev").showModal();
+  EV().showModal();                 /* native: traps focus, closes on Escape */
+  $("#ev-close").focus();
+}
+function chips(ids){
+  return (ids||[]).map(i=>`<button class="eid" onclick="openEvidence('${esc(i)}')">${esc(i)}</button>`).join("");
 }
 
-function chips(ids){
-  return (ids||[]).map(i=>`<code class="eid ${evClass(i)}" onclick="openEvidence('${esc(i)}')">${esc(i)}</code>`).join("");
+/* ================= stage summaries ================= */
+function claimVerdicts(r){
+  return ((r.verification && r.verification.verdicts) || []).filter(v=>!v.is_root_cause);
 }
-function verdictFor(row, text, isRoot){
-  const vs = (row.verification && row.verification.verdicts) || [];
-  return vs.find(v => (isRoot ? v.is_root_cause : !v.is_root_cause) && v.claim === text) || null;
+function rootVerdict(r){
+  return ((r.verification && r.verification.verdicts) || []).find(v=>v.is_root_cause) || null;
 }
-function vbadge(v){
-  return v ? `<span class="v ${esc(v.verdict)}">${esc(v.verdict)}</span>`
-           : `<span class="v none">NOT CHECKED</span>`;
+function sumIdentity(r){
+  const i = r.identity;
+  if(i.outcome === "MISMATCH")
+    return `MISMATCH — ticket claims ${i.claimed_merchant_id}, content resolves to ${i.identified_merchant_id}`;
+  if(i.outcome === "UNIDENTIFIABLE")
+    return "UNIDENTIFIABLE — nothing in the ticket resolves to an account";
+  if(i.evidence && i.evidence.length)
+    return `${i.outcome} — corroborated by ${i.evidence.length} reference${i.evidence.length===1?"":"s"}`;
+  return `${i.outcome} — submitted id is the only signal`;
+}
+function sumRetrieval(r){
+  const built = (r.retrieval.constructed_queries||[]).join(" ");
+  if(!built) return "no policy search ran";
+  return built === r.retrieval.raw_ticket ? "searched on the raw ticket text"
+                                          : "query rewritten after reading state";
+}
+function sumTools(r){
+  const n = (r.tool_calls||[]).length;
+  return n === 0 ? "none — identity never resolved" : `${n} call${n===1?"":"s"}`;
+}
+function sumDiagnosis(r){
+  const n = (r.diagnosis.claims||[]).length;
+  if(!n) return "no claims survived — fail-closed refusal";
+  return n===1 ? "1 claim, cited" : `${n} claims, each cited`;
+}
+function sumChecks(r){
+  const cv = claimVerdicts(r);
+  if(!r.verification.ran && !r.responsiveness.verdict) return "not run — nothing to check";
+  const sup = cv.filter(v=>v.verdict==="SUPPORTED").length;
+  const left = cv.length ? `verifier ${sup}/${cv.length} supported` : "verifier: nothing to check";
+  const RV = {RESPONSIVE:"responsive", PARTIALLY_RESPONSIVE:"partially responsive",
+              NON_RESPONSIVE:"non-responsive"};
+  const rv = r.responsiveness.verdict;
+  return `${left} · responsiveness ${rv ? (RV[rv]||rv.toLowerCase()) : "not run"}`;
+}
+
+/* Which stage makes this ticket interesting. Derived - the snapshot is
+   unchanged. Pinned scenarios win; otherwise the rule that fired says it.
+   This only SEEDS the state below; a click overrides it from then on. */
+const RULE_FOCUS = {
+  uncorroborated_identity_discloses_account_data:"identity",
+  identity_mismatch_data_access_risk:"identity",
+  unidentifiable_request_identification:"identity",
+  non_responsive_root_cause:"checks",
+  root_cause_rejected_by_verifier:"checks",
+  claim_stripped_as_unsupported:"checks",
+  clean_auto_resolve:"diagnosis",
+  too_few_surviving_claims:"diagnosis",
+  insufficient_supported_claim_ratio:"checks",
+  malformed_diagnosis_fail_closed:"gate",
+};
+const PIN_FOCUS = {
+  state_informed_retrieval:"retrieval",
+  identity_mismatch:"identity",
+  evidence_gap_failure:"checks",
+};
+function focusOf(r){
+  return PIN_FOCUS[r.pinned] || RULE_FOCUS[r.gate.rule] || "diagnosis";
+}
+
+/* ================= stage open/closed state ================= */
+/* Per ticket, seeded from focusOf, then owned by the reader. Any number
+   may be open at once; the auto-expanded one is only the starting state. */
+const STAGE_KEYS = ["identity","retrieval","tools","diagnosis","checks","gate","message","answerkey"];
+const stageState = {};
+function stagesFor(r){
+  if(!stageState[r.id]) stageState[r.id] = new Set([focusOf(r)]);
+  return stageState[r.id];
+}
+function onStageToggle(el, key){
+  if(!ROW) return;
+  const s = stagesFor(ROW);
+  if(el.open) s.add(key); else s.delete(key);
+}
+function setAllStages(open){
+  if(!ROW) return;
+  const s = stagesFor(ROW);
+  document.querySelectorAll("#detail details.stage").forEach(d=>{
+    d.open = open;
+    const k = d.dataset.key;
+    if(open) s.add(k); else s.delete(k);
+  });
+}
+
+/* ================= tabs & queue ================= */
+function showTab(t){
+  $("#tab-queue").classList.toggle("on", t==="queue");
+  $("#tab-metrics").classList.toggle("on", t==="metrics");
+  $("#queue").style.display  = t==="queue" ? "" : "none";
+  $("#split").style.display  = t==="queue" ? "" : "none";
+  $("#detail").style.display = t==="queue" ? "" : "none";
+  $("#metrics").style.display= t==="metrics" ? "block" : "none";
 }
 
 function renderQueue(){
+  const card = r => `
+      <span class="rmeta"><span class="dot ${r.gate.outcome}"></span>
+        <span class="rid">${esc(r.id)}</span>
+        ${r.known_failure?'<span class="wrongflag">WRONG</span>':''}</span>
+      <span class="sj">${esc(r.ticket.subject||r.id)}</span>`;
   $("#pins").innerHTML = SNAP.queue.filter(r=>r.pinned).map(r=>`
-    <button class="pin ${r.known_failure?"fail":""}" onclick="select('${r.id}')">
-      <span class="pt">${esc(r.pinned.replace(/_/g," "))}</span>
-      <span class="sj">${esc(r.ticket.subject||r.id)}</span>
-    </button>`).join("");
+    <button class="pin" id="pin-${r.id}" onclick="select('${r.id}')">
+      <span class="pt">${esc(r.pinned.replace(/_/g," "))}</span>${card(r)}</button>`).join("");
   $("#rows").innerHTML = SNAP.queue.map(r=>`
-    <button class="row" id="row-${r.id}" onclick="select('${r.id}')">
-      <span class="lane ${r.gate.outcome}">${r.gate.outcome.replace(/_/g," ")}</span>
-      ${r.known_failure?'<span class="tagfail">WRONG</span>':''}
-      <span class="id"> ${esc(r.id)}</span>
-      <span class="sj">${esc(r.ticket.subject||"(no subject)")}</span>
-    </button>`).join("");
+    <button class="row" id="row-${r.id}" onclick="select('${r.id}')">${card(r)}</button>`).join("");
 }
 
 function select(id){
   showTab("queue");
-  if(window.matchMedia("(max-width:900px)").matches){
-    $("#queue").classList.add("collapsed");
-  }
   ROW = SNAP.queue.find(r=>r.id===id);
-  document.querySelectorAll(".row").forEach(e=>e.classList.remove("on"));
-  const el = $("#row-"+id); if(el) el.classList.add("on");
+  document.querySelectorAll(".row,.pin").forEach(e=>e.classList.remove("on"));
+  [$("#row-"+id), $("#pin-"+id)].forEach(e=>{ if(e) e.classList.add("on"); });
   $("#detail").innerHTML = renderRow(ROW);
   $("#detail").scrollTop = 0;
+  if(!desktop()){
+    $("#queue").classList.add("collapsed");
+    window.scrollTo(0,0);
+  }
 }
 
+/* ================= a stage row ================= */
+function stage(key, n, name, summary, body, open){
+  return `<details class="stage" data-key="${key}"${open?" open":""}
+    ontoggle="onStageToggle(this,'${key}')">
+    <summary><span class="sn">${n}</span><span class="srow"><span class="sname">${esc(name)}</span>
+      <span class="ssum">${esc(summary)}</span></span></summary>
+    <div class="sbody">${body}</div></details>`;
+}
+
+/* ================= the trace ================= */
 function renderRow(r){
-  const g = r.gate, d = r.diagnosis||{}, L = r.labels||{};
-  const idn = r.identity||{};
-  const rootV = d.root_cause ? verdictFor(r,d.root_cause.text,true) : null;
-  const resp = r.responsiveness||{};
+  const g = r.gate, d = r.diagnosis || {}, L = r.labels || {}, idn = r.identity;
+  const resp = r.responsiveness || {};
+  const open = stagesFor(r);
   const postHoc = g.rule === "non_responsive_root_cause";
+  const adj = L.adjudication;
 
-  const claims = (d.claims||[]).map(c=>{
-    const v = verdictFor(r,c.text,false);
-    return `<div class="claim"><div class="ct">${esc(c.text)}</div>
-      <div>${chips(c.evidence)}</div>
-      <div class="vline">${vbadge(v)}${v&&v.reason?`<span class="vr">${esc(v.reason)}</span>`:""}</div></div>`;
-  }).join("") || `<div class="dim">No claims survived. ${r.gate.outcome==="ESCALATE"?"This is the fail-closed path, not an empty answer.":""}</div>`;
+  /* ---- level 1 ---- */
+  const answer = d.root_cause ? d.root_cause.text : "No diagnosis was produced.";
+  const l1 = `
+  <div class="l1">
+    <div class="l1top">
+      <span class="tid">${esc(r.ticket.id)}</span>
+      <span class="spacer"></span>
+      <span class="lane ${g.outcome}"><span class="dot ${g.outcome}"></span>${esc(lane(g.outcome))}</span>
+    </div>
+    <div class="l1sub">${esc(r.ticket.subject||"(no subject)")}
+      · claimed ${esc(r.ticket.merchant_id||"no merchant_id")}
+      · ${esc(r.ticket.channel||"—")}</div>
+    <p class="quote">${esc(r.ticket.body)}</p>
+    <p class="answer">${esc(answer)}</p>
+    <p class="because">${esc(g.reason)}</p>
+    ${adj?`<div class="verdictstrip ${adj==="CORRECT"?"ok":""}">
+      <span class="vk">ADJUDICATED ${esc(adj)}</span>
+      ${esc(L.adjudication_note||"")}</div>`:""}
+    ${r.blurb?`<p class="note-blurb">${esc(r.blurb)}</p>`:""}
+  </div>`;
 
-  return `
-  ${r.blurb?`<div class="blurb ${r.known_failure?"fail":""}">${esc(r.blurb)}</div>`:""}
-
-  <div class="step"><h2>Ticket — exactly what the agent saw</h2>
-  <div class="card"><dl class="kv">
-    <dt>id</dt><dd>${esc(r.ticket.id)}</dd>
-    <dt>claimed merchant_id</dt><dd>${esc(r.ticket.merchant_id||"(none submitted)")}</dd>
-    <dt>channel</dt><dd>${esc(r.ticket.channel||"—")}</dd>
-    <dt>subject</dt><dd>${esc(r.ticket.subject||"—")}</dd>
-  </dl><div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><pre>${esc(r.ticket.body)}</pre></div></div></div>
-
-  <div class="step"><h2><span class="n">1</span>Identity resolution — deterministic, outside the LLM loop</h2>
-  <div class="card">
+  /* ---- stage 1: identity ---- */
+  const s1 = `
     <dl class="kv">
-      <dt>outcome</dt><dd><strong class="${idn.outcome==="MISMATCH"||idn.outcome==="UNIDENTIFIABLE"?"bad":idn.outcome==="UNCORROBORATED"?"warn":"ok"}">${esc(idn.outcome)}</strong></dd>
-      <dt>claimed by ticket</dt><dd>${esc(idn.claimed_merchant_id||"(none submitted)")}</dd>
-      <dt>resolved from content</dt><dd>${esc(idn.identified_merchant_id||"—")} ${idn.business_name?`<span class="dim">· ${esc(idn.business_name)}</span>`:""}</dd>
+      <dt>outcome</dt><dd>${esc(idn.outcome)}</dd>
+      <dt>claimed by ticket</dt><dd class="mono">${esc(idn.claimed_merchant_id||"(none submitted)")}</dd>
+      <dt>resolved from content</dt><dd class="mono">${esc(idn.identified_merchant_id||"—")}${idn.business_name?` <span class="sub">· ${esc(idn.business_name)}</span>`:""}</dd>
       <dt>corroborating evidence</dt><dd>${(idn.evidence&&idn.evidence.length)
         ? chips(idn.evidence.map(e=>e.evidence_id))
-        : '<span class="dim">none — the submitted id is the only signal, so it stays a claim</span>'}</dd>
+        : '<span class="sub">none — the submitted id is the only signal, so it stays a claim</span>'}</dd>
     </dl>
-    ${idn.outcome==="MISMATCH"?`<div class="note red" style="margin-bottom:0">The ticket claims <strong>${esc(idn.claimed_merchant_id)}</strong> but its own content resolves to <strong>${esc(idn.identified_merchant_id)}</strong>. The agent stops here: no state tool is ever bound, so the claimed merchant's data is never read.</div>`:""}
-    ${idn.outcome==="UNCORROBORATED"?`<div class="note" style="margin-bottom:0">Nothing in the body corroborates the submitted id. The diagnosis may proceed, but the gate will not auto-send anything that discloses this account's own data.</div>`:""}
-    <details class="tool" style="margin-top:8px;background:none"><summary>signals searched for</summary>
-      <div class="body"><pre>${J(idn.signals||{})}</pre></div></details>
-  </div></div>
+    ${idn.outcome==="MISMATCH"?`<p class="sub">The ticket claims <span class="mono">${esc(idn.claimed_merchant_id)}</span> but its own content resolves to <span class="mono">${esc(idn.identified_merchant_id)}</span>. The agent stops here: no state tool is ever bound, so the claimed merchant's data is never read.</p>`:""}
+    ${idn.outcome==="UNCORROBORATED"?`<p class="sub">Nothing in the body corroborates the submitted id. The diagnosis may proceed, but the gate will not auto-send anything that discloses this account's own data.</p>`:""}
+    <details class="toolcall mt2"><summary>signals searched for</summary>
+      <div class="jsonbox"><pre class="pre">${J(idn.signals||{})}</pre></div></details>`;
 
-  <div class="step"><h2><span class="n">2</span>Retrieval — raw ticket text vs the query the agent built</h2>
-  <div class="two wide">
-    <div class="card raw"><h3>raw ticket text</h3><pre>${esc(r.retrieval.raw_ticket)}</pre></div>
-    <div class="card built"><h3>constructed query — after reading state</h3>
-      ${r.retrieval.constructed_queries.length
-        ? r.retrieval.constructed_queries.map(q=>`<pre>${esc(q)}</pre>`).join('<hr style="border:0;border-top:1px solid var(--line);margin:7px 0">')
-        : '<span class="dim">No policy search ran — the agent refused before retrieval.</span>'}
+  /* ---- stage 2: retrieval, the one bleed ---- */
+  const s2 = `
+    <p class="sub">Retrieval runs <em>after</em> the account is read, so the query can name a mechanism the merchant never mentioned.</p>
+    <div class="contrast bleed">
+      <div class="cpane"><h3>raw ticket text</h3><div class="q">${esc(r.retrieval.raw_ticket)}</div></div>
+      <div class="cpane built"><h3>constructed query — after reading state</h3>
+        ${r.retrieval.constructed_queries.length
+          ? r.retrieval.constructed_queries.map(q=>`<div class="q">${esc(q)}</div>`).join('<div style="height:16px"></div>')
+          : '<div class="q sub">No policy search ran — the agent refused before retrieval.</div>'}
+      </div>
+    </div>`;
+
+  /* ---- stage 3: tool calls ---- */
+  const s3 = (r.tool_calls||[]).length
+    ? (r.tool_calls||[]).map((t,i)=>`<details class="toolcall"><summary>
+        <span>${i+1}</span><span>${esc(t.tool)}</span>
+        <span class="args">${esc(JSON.stringify(t.args))}</span></summary>
+        <div class="jsonbox"><pre class="pre">${J(t.result)}</pre></div></details>`).join("")
+    : '<p class="sub">None. Identity failed to resolve, so no state was ever read.</p>';
+
+  /* ---- stage 4: diagnosis ---- */
+  const claimList = (d.claims||[]).map(c=>`
+    <div class="claim"><p class="ct">${esc(c.text)}</p><div>${chips(c.evidence)}</div></div>`).join("");
+  const s4 = `
+    ${d.root_cause?`<div class="claim"><span class="rl">ROOT CAUSE</span>
+      <p class="ct">${esc(d.root_cause.text)}</p>
+      <div>${chips(d.root_cause.evidence)}</div></div>`:""}
+    ${claimList || '<p class="sub">No claims survived. This is the fail-closed path, not an empty answer.</p>'}
+    <p class="sub mt3">Each claim carries one checkable fact and cites only the evidence for that fact. Click a citation to read it.</p>`;
+
+  /* ---- stage 5: checks ---- */
+  const rv = rootVerdict(r);
+  const cvs = claimVerdicts(r);
+  const vline = (v, text) => `<div class="claim">
+      <p class="ct">${esc(text)}</p>
+      <div class="vrow"><span class="v ${v?esc(v.verdict):"none"}">${v?esc(v.verdict):"NOT CHECKED"}</span>
+        ${v&&v.reason?`<span class="vr">${esc(v.reason)}</span>`:""}</div></div>`;
+  const s5 = (!r.verification.ran && !resp.verdict)
+    ? '<p class="sub">Neither check ran — there was no grounded diagnosis to check.</p>'
+    : `${d.root_cause?vline(rv, d.root_cause.text):""}
+       ${cvs.map(v=>vline(v, v.claim)).join("")}
+       ${d.root_cause?`<div class="claim">
+         <span class="rl">RESPONSIVENESS — on the root cause</span>
+         <div class="vrow"><span class="v ${esc(resp.verdict||"none")}">${esc(resp.verdict||"NOT CHECKED")}</span>
+           ${resp.reason?`<span class="vr">${esc(resp.reason)}</span>`:""}</div></div>`:""}
+       <p class="sub mt3">Verifier sees the evidence, never the ticket. Responsiveness sees the ticket, never the evidence. Neither can rubber-stamp the other's job.</p>`;
+
+  /* ---- stage 6: gate ---- */
+  const s6 = `
+    <div class="gatehead">
+      <span class="lane ${g.outcome}"><span class="dot ${g.outcome}"></span>${esc(lane(g.outcome))}</span>
+      <span class="sub">via</span><span class="rulename">${esc(g.rule)}</span>
+      ${postHoc?'<span class="posthoc">POST-HOC RULE</span>':''}
     </div>
-  </div></div>
+    <p>${esc(g.reason)}</p>
+    ${postHoc?'<div class="note">This rule was added <em>after</em> the frozen held-out run was scored. Its effect is reported separately in the metrics tab and never merged into the frozen numbers.</div>':''}
+    <details class="toolcall mt2"><summary>inputs the gate read</summary>
+      <div class="jsonbox"><pre class="pre">${J(g.inputs)}</pre></div></details>`;
 
-  <div class="step"><h2><span class="n">3</span>Tool calls (${(r.tool_calls||[]).length})</h2>
-  ${(r.tool_calls||[]).map((t,i)=>`<details class="tool"><summary><span class="n">${i+1}</span>${esc(t.tool)}<span class="dim"> ${esc(JSON.stringify(t.args))}</span></summary>
-     <div class="body"><pre>${J(t.result)}</pre></div></details>`).join("")
-    || '<div class="dim">None. Identity failed to resolve, so no state was ever read.</div>'}</div>
+  /* ---- unnumbered tails ---- */
+  const tailMsg = r.rendered_prose
+    ? stage("message","","Message","the reply this produces",
+        `<p class="pre">${esc(r.rendered_prose)}</p>`, open.has("message")) : "";
+  const tailKey = L.true_root_cause
+    ? stage("answerkey","","Answer key","eval labels, never shown to the agent",
+        `<dl class="kv">
+          <dt>labelled root cause</dt><dd>${esc(Array.isArray(L.true_root_cause)?L.true_root_cause.join("  +  "):L.true_root_cause)}</dd>
+          <dt>labelled routing</dt><dd>${esc(L.correct_routing||"—")}</dd>
+          ${L.refusal_type?`<dt>refusal type</dt><dd>${esc(L.refusal_type)}</dd>`:""}
+          ${L.evidence_gap_fact?`<dt>the missing fact</dt><dd>${esc(L.evidence_gap_fact)}</dd>`:""}
+          ${adj?`<dt>adjudicated</dt><dd>${esc(adj)}</dd>`:""}
+          ${L.adjudication_note?`<dt>why</dt><dd class="sub">${esc(L.adjudication_note)}</dd>`:""}
+        </dl>`, open.has("answerkey")) : "";
 
-  <div class="step"><h2><span class="n">4</span>Diagnosis — atomic claims, one checkable fact each</h2>
-  ${d.root_cause?`<div class="claim root"><span class="rootlab">root cause</span>
-     <div class="ct">${esc(d.root_cause.text)}</div>
-     <div>${chips(d.root_cause.evidence)}</div>
-     <div class="vline">${vbadge(rootV)}${rootV&&rootV.reason?`<span class="vr">${esc(rootV.reason)}</span>`:""}</div>
-     <div class="vline">
-       <span class="v ${esc(resp.verdict||"none")}">${esc(resp.verdict||"NOT CHECKED")}</span>
-       ${resp.reason?`<span class="vr">${esc(resp.reason)}</span>`:""}
-     </div></div>`:""}
-  ${claims}
-  <div class="foot">
-    Verifier sees the evidence, never the ticket. Responsiveness sees the ticket, never the evidence.
-    Neither can rubber-stamp the other's job.
-  </div></div>
-
-  <div class="step"><h2><span class="n">5</span>Gate decision — deterministic, no model</h2>
-  <div class="gate ${g.outcome}">
-    <div class="gline"><span class="lane ${g.outcome}">${g.outcome.replace(/_/g," ")}</span>
-      <span class="dim">via</span> <span class="rule">${esc(g.rule)}</span>
-      ${postHoc?'<span class="posthoc">POST-HOC RULE</span>':''}</div>
-    <div class="greason">${esc(g.reason)}</div>
-    ${postHoc?'<div class="note" style="margin-top:9px">This rule was added <em>after</em> the frozen held-out run was scored. Its effect is reported separately in the metrics tab and never merged into the frozen numbers.</div>':''}
-    <details class="tool" style="margin-top:9px;background:none"><summary>inputs the gate read</summary>
-      <div class="body"><pre>${J(g.inputs)}</pre></div></details>
-  </div></div>
-
-  ${r.rendered_prose?`<div class="step"><h2><span class="n">6</span>The message this produces</h2><div class="card"><pre>${esc(r.rendered_prose)}</pre></div></div>`:""}
-
-  ${L.true_root_cause?`<div class="step"><h2>Answer key — eval labels, never shown to the agent</h2>
-  <div class="card"><dl class="kv">
-    <dt>labelled root cause</dt><dd>${esc(Array.isArray(L.true_root_cause)?L.true_root_cause.join("  +  "):L.true_root_cause)}</dd>
-    <dt>labelled routing</dt><dd>${esc(L.correct_routing||"—")}</dd>
-    ${L.refusal_type?`<dt>refusal type</dt><dd>${esc(L.refusal_type)}</dd>`:""}
-    ${L.evidence_gap_fact?`<dt>the missing fact</dt><dd>${esc(L.evidence_gap_fact)}</dd>`:""}
-    ${L.adjudication?`<dt>adjudicated</dt><dd class="${L.adjudication==="WRONG"?"bad":L.adjudication==="CORRECT"?"ok":"warn"}">${esc(L.adjudication)}</dd>`:""}
-    ${L.adjudication_note?`<dt>why</dt><dd class="dim">${esc(L.adjudication_note)}</dd>`:""}
-  </dl></div></div>`:""}
-  `;
+  return l1 + `<div class="stages">
+      <div class="stagehead"><h2>How it got there</h2>
+        <button onclick="setAllStages(true)">expand all</button>
+        <button onclick="setAllStages(false)">collapse all</button></div>`
+    + stage("identity", 1,"Identity",   sumIdentity(r),  s1, open.has("identity"))
+    + stage("retrieval",2,"Retrieval",  sumRetrieval(r), s2, open.has("retrieval"))
+    + stage("tools",    3,"Tool calls", sumTools(r),     s3, open.has("tools"))
+    + stage("diagnosis",4,"Diagnosis",  sumDiagnosis(r), s4, open.has("diagnosis"))
+    + stage("checks",   5,"Checks",     sumChecks(r),    s5, open.has("checks"))
+    + stage("gate",     6,"Gate",       g.rule,          s6, open.has("gate"))
+    + tailMsg + tailKey + `</div>`;
 }
 
 function renderMetrics(){
@@ -425,7 +769,7 @@ function renderMetrics(){
   </div>
 
   <h2>Frozen vs post-hoc — kept separate on purpose</h2>
-  <div class="scroll wide"><table>
+  <div class="scroll bleed"><table>
     <tr><th>metric</th><th>frozen gate</th><th>+ post-hoc rule</th></tr>
     <tr><td>routing accuracy</td><td class="num">${frac(f.routing)}</td><td class="num">${frac(p.routing)}</td></tr>
     <tr><td>auto-resolved</td><td class="num">${frac(f.auto_resolved)}</td><td class="num">${frac(p.auto_resolved)}</td></tr>
@@ -441,7 +785,7 @@ function renderMetrics(){
     which tickets it would face. One ticket changed lane. Reporting them merged would hide that.</div>
 
   <h2>The verifier ablation — its honest result</h2>
-  <div class="scroll wide"><table>
+  <div class="scroll bleed"><table>
     <tr><th>metric</th><th>verifier ON</th><th>verifier OFF</th></tr>
     <tr><td>false auto-resolve</td><td class="num">${frac(f.false_auto)}</td><td class="num">${frac(off.false_auto)}</td></tr>
     <tr><td>routing accuracy</td><td class="num">${frac(f.routing)}</td><td class="num">${frac(off.routing)}</td></tr>
@@ -452,7 +796,7 @@ function renderMetrics(){
     responsiveness check was built for.</div>
 
   <h2>What each check catches, of the ${a.wrong} wrong root causes</h2>
-  <div class="scroll wide"><table>
+  <div class="scroll bleed"><table>
     <tr><th>check</th><th>caught</th><th>false flags (of ${a.correct} correct)</th></tr>
     <tr><td>verifier — sees evidence, not the question</td><td class="num">${frac(c.verifier_caught)}</td><td class="num">${frac(c.verifier_false_reject)}</td></tr>
     <tr><td>responsiveness — sees the question, not evidence</td><td class="num">${frac(c.responsiveness_caught)}</td><td class="num">${frac(c.responsiveness_false_flag)}</td></tr>
@@ -463,7 +807,7 @@ function renderMetrics(){
     so the rule's <em>independent</em> contribution was one ticket in forty, not the flag rate.</div>
 
   <h2>Known failures in this build</h2>
-  <ul class="dim" style="padding-left:18px">
+  <ul>
     <li><strong class="bad">EVIDENCE_GAP is the weak spot: ${frac(f.refusal.EVIDENCE_GAP)}.</strong>
         Asked something adjacent to covered policy but not in it, the agent answers from the neighbouring
         section rather than saying the corpus does not cover it. <code>heldout_008</code> in the queue is this.</li>
@@ -485,47 +829,114 @@ and no model reachable.</div>`;
   $("#livebox").innerHTML = h.live_enabled
     ? `<div class="live">${intent}
        <div class="st">Run your own ticket through the same pipeline — ${left} of ${h.live_budget} left this session.</div>
-       <textarea id="lb" rows="4" placeholder="paste a merchant ticket…" style="margin-top:11px"></textarea>
-       <div style="display:flex;gap:8px;margin-top:9px;align-items:center">
+       <textarea id="lb" rows="4" placeholder="paste a merchant ticket…" style="margin-top:16px"></textarea>
+       <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
          <input type="text" id="lm" placeholder="merchant_id (optional)" style="flex:1;min-width:0">
          <button class="btn" id="lgo" onclick="runLive()">run</button>
-       </div><div id="lmsg" class="dim" style="margin-top:10px"></div></div>`
+       </div><div id="lmsg" class="sub" style="margin-top:16px"></div></div>`
     : `<div class="live">${intent}
        <div class="st">Typing your own ticket is unavailable here — ${esc(h.live_reason)}</div></div>`;
 }
 
 async function runLive(){
-  const btn=$("#lgo"), msg=$("#lmsg");
-  btn.disabled=true; msg.textContent="running…";
+  const btn = $("#lgo"), msg = $("#lmsg");
+  btn.disabled = true; msg.textContent = "running…";
   try{
     const res = await fetch("/api/diagnose",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({body:$("#lb").value, merchant_id:$("#lm").value||null})});
     const data = await res.json();
-    if(!data.ok){ msg.innerHTML=`<span class="bad">${esc(data.reason)}</span>`; }
+    if(!data.ok){ msg.innerHTML = `<span class="bad">${esc(data.reason)}</span>`; }
     else{
-      msg.textContent="";
-      ROW = data.row; ROW.blurb="Live run — not part of the evaluated set.";
-      document.querySelectorAll(".row").forEach(e=>e.classList.remove("on"));
-      $("#detail").innerHTML = renderRow(ROW); $("#detail").scrollTop=0;
+      msg.textContent = "";
+      ROW = data.row; ROW.blurb = "Live run — not part of the evaluated set.";
+      document.querySelectorAll(".row,.pin").forEach(e=>e.classList.remove("on"));
+      $("#detail").innerHTML = renderRow(ROW); $("#detail").scrollTop = 0;
     }
-  }catch(e){ msg.innerHTML=`<span class="bad">Request failed. The pre-computed queue is unaffected.</span>`; }
-  btn.disabled=false;
+  }catch(e){ msg.innerHTML = '<span class="bad">Request failed. The pre-computed queue is unaffected.</span>'; }
+  btn.disabled = false;
   fetch("/api/health").then(r=>r.json()).then(renderLive);
 }
 
+/* ================= resizable dividers (desktop only) ================= */
+const DEFAULT_QW = 280, DEFAULT_DW = 440;
+const QW_MIN = 200, QW_MAX = 520;
+const DW_MIN = 320, DW_MAX = 820;
+let dragged = store.get("anchor-dragged","0") === "1";
+
+function headerHeight(){
+  const h = document.querySelector("header");
+  root.style.setProperty("--hh", (h ? h.offsetHeight : 140) + "px");
+}
+/* The reading column follows the panel once the reader has resized
+   anything - otherwise dragging wider would do nothing visible. Before
+   that, the per-breakpoint cap in CSS wins. */
+function syncRead(){
+  if(!desktop() || !dragged){ root.style.removeProperty("--read"); return; }
+  const mainW = $("#detail").clientWidth;
+  const pad = parseFloat(getComputedStyle(root).getPropertyValue("--pad")) || 40;
+  root.style.setProperty("--read", Math.max(560, Math.min(mainW - 2*pad, 1120)) + "px");
+}
+function setWidth(varName, px, key){
+  root.style.setProperty(varName, px + "px");
+  store.set(key, String(px));
+  dragged = true; store.set("anchor-dragged","1");
+  syncRead();
+}
+function makeDivider(el, opts){
+  if(!el) return;
+  let active = false;
+  el.addEventListener("pointerdown", e=>{
+    if(!desktop()) return;
+    active = true; el.classList.add("dragging");
+    el.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  el.addEventListener("pointermove", e=>{
+    if(!active) return;
+    const px = Math.round(opts.measure(e));
+    setWidth(opts.varName, Math.max(opts.min, Math.min(px, opts.max)), opts.key);
+  });
+  const stop = e=>{ if(!active) return; active = false; el.classList.remove("dragging");
+    try{ el.releasePointerCapture(e.pointerId); }catch(_){} };
+  el.addEventListener("pointerup", stop);
+  el.addEventListener("pointercancel", stop);
+  el.addEventListener("dblclick", ()=>{
+    root.style.setProperty(opts.varName, opts.def + "px");
+    store.set(opts.key, String(opts.def));
+    syncRead();
+  });
+}
+function initDividers(){
+  const qw = parseInt(store.get("anchor-qw", ""), 10);
+  const dw = parseInt(store.get("anchor-dw", ""), 10);
+  if(qw) root.style.setProperty("--qw", Math.max(QW_MIN, Math.min(qw, QW_MAX)) + "px");
+  if(dw) root.style.setProperty("--dw", Math.max(DW_MIN, Math.min(dw, DW_MAX)) + "px");
+
+  makeDivider($("#split"), {varName:"--qw", key:"anchor-qw", def:DEFAULT_QW,
+    min:QW_MIN, max:QW_MAX, measure: e => e.clientX});
+  makeDivider($("#evgrip"), {varName:"--dw", key:"anchor-dw", def:DEFAULT_DW,
+    min:DW_MIN, max:DW_MAX, measure: e => window.innerWidth - e.clientX});
+}
+
+window.addEventListener("resize", ()=>{ headerHeight(); syncRead(); });
+
+/* ================= boot ================= */
 (async function(){
+  applyTheme(root.dataset.theme || "dark");
+  headerHeight();
+  initDividers();
+
+  EV().addEventListener("close", ()=>{ if(lastFocus && lastFocus.focus) lastFocus.focus(); });
+
   try{
     SNAP = await (await fetch("/api/snapshot")).json();
-    if(SNAP.error){ $("#detail").innerHTML=`<div class="note red" style="margin-top:20px">${esc(SNAP.error)}</div>`; }
-    $("#hmeta").textContent = `${SNAP.queue.length} tickets pre-computed · ${SNAP.model||""}`;
+    if(SNAP.error){ $("#detail").innerHTML = `<div class="note red">${esc(SNAP.error)}</div>`; }
+    $("#hmeta").textContent = `${SNAP.queue.length} pre-computed · ${SNAP.model||""}`;
     renderQueue(); renderMetrics();
     if(SNAP.queue.length) select(SNAP.queue[0].id);
-    if(window.matchMedia("(max-width:900px)").matches){
-      $("#queue").classList.add("collapsed");
-    }
+    syncRead();
     renderLive(await (await fetch("/api/health")).json());
   }catch(e){
-    $("#detail").innerHTML = '<div class="note red" style="margin-top:20px">Could not load the snapshot.</div>';
+    $("#detail").innerHTML = '<div class="note red">Could not load the snapshot.</div>';
   }
 })();
 </script>

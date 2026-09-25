@@ -251,3 +251,204 @@ def test_reading_column_is_capped():
     html = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
     assert "--read:" in html
     assert "max-width:var(--read)" in html
+
+
+# --- information architecture ---------------------------------------------
+
+HTML = (ROOT / "demo" / "static" / "index.html").read_text(encoding="utf-8")
+
+
+def test_trace_uses_progressive_disclosure_not_six_stacked_sections():
+    """A ticket opens on the answer; the six stages are collapsed rows."""
+    assert '<details class="stage"' in HTML
+    assert "function stage(" in HTML
+    # exactly one stage auto-expands, chosen per ticket
+    assert "PIN_FOCUS" in HTML and "RULE_FOCUS" in HTML and "function focusOf(" in HTML
+    for pinned, stage_name in (("state_informed_retrieval", "retrieval"),
+                               ("identity_mismatch", "identity"),
+                               ("evidence_gap_failure", "checks")):
+        assert f'{pinned}:"{stage_name}"' in HTML
+
+
+def test_prose_is_sans_and_monospace_is_reserved():
+    import re
+    css = HTML[HTML.index("<style>"):HTML.index("</style>")]
+    # the standalone `body{` rule, not the `html,body{` reset before it
+    body = re.search(r"\nbody\{([^}]*)\}", css).group(1)
+    assert "var(--sans)" in body and "var(--mono)" not in body
+    assert "--sans:" in css and "--mono:" in css
+    # mono survives for the things that are genuinely code-like
+    for mono_class in (".mono", ".quote", ".eid", ".pre"):
+        assert mono_class in css
+
+
+def test_mobile_first_widens_rather_than_shrinks():
+    css = HTML[HTML.index("<style>"):HTML.index("</style>")]
+    assert "@media(max-width" not in css, "mobile-first means min-width queries only"
+    assert "@media(min-width:900px)" in css
+
+
+def _py_round(a, b):
+    return format(a / b, ".0%")
+
+
+def _js_round(a, b):
+    """The page's pctRound, reimplemented: round half to even."""
+    x = 100 * a / b
+    fl = int(x // 1)
+    d = x - fl
+    if d > 0.5:
+        return fl + 1
+    if d < 0.5:
+        return fl
+    return fl if fl % 2 == 0 else fl + 1
+
+
+def test_console_percentages_round_like_python():
+    """5/40 rendered as 13% while score_posthoc.py printed 12% - a headline
+    number disagreeing with itself. 1/8 had the identical half-value bug."""
+    assert "function pctRound(" in HTML
+    assert "Math.round(100" not in HTML, "Math.round rounds half up; Python does not"
+    for a, b in ((5, 40), (1, 8), (25, 40), (6, 40), (24, 40), (2, 13), (8, 13)):
+        assert f"{_js_round(a, b)}%" == _py_round(a, b), (a, b)
+
+
+def test_evidence_opens_in_a_drawer_not_a_new_page():
+    assert 'dialog id="ev"' in HTML
+    assert "showModal()" in HTML
+    assert "function openEvidence(" in HTML
+
+
+# --- theming ---------------------------------------------------------------
+
+def _tokens(theme: str) -> dict:
+    """Pull one theme's custom properties straight out of the stylesheet, so
+    these assertions test the shipped palette rather than a copy of it."""
+    import re
+    sel = r':root,:root\[data-theme="dark"\]\{' if theme == "dark" \
+        else r':root\[data-theme="light"\]\{'
+    block = re.search(sel + r"([^}]*)\}", HTML).group(1)
+    return dict(re.findall(r"--([\w-]+):\s*([^;]+);", block))
+
+
+def _lum(h):
+    h = h.strip().lstrip("#")
+    c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    c = [(x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4) for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def _contrast(a, b):
+    l1, l2 = sorted((_lum(a), _lum(b)), reverse=True)
+    return (l1 + 0.05) / (l2 + 0.05)
+
+
+def test_both_themes_define_the_same_tokens():
+    dark, light = _tokens("dark"), _tokens("light")
+    assert set(dark) == set(light), set(dark) ^ set(light)
+    assert {"bg", "fg", "fg-quiet", "auto", "draft", "ident", "esc", "fail"} <= set(dark)
+
+
+@pytest.mark.parametrize("theme", ["dark", "light"])
+def test_text_and_lane_colours_meet_aa_on_their_own_background(theme):
+    t = _tokens(theme)
+    bg = t["bg"]
+    for token in ("fg", "fg-strong", "fg-quiet", "auto", "draft", "ident", "esc", "fail"):
+        ratio = _contrast(t[token], bg)
+        assert ratio >= 4.5, f"{theme} --{token} is {ratio:.2f}:1 on --bg, below AA"
+
+
+@pytest.mark.parametrize("theme", ["dark", "light"])
+def test_lane_colours_are_legible_on_a_raised_surface_too(theme):
+    """Lane labels appear on cards, not only on the page background."""
+    t = _tokens(theme)
+    for token in ("auto", "draft", "ident", "esc"):
+        assert _contrast(t[token], t["s1"]) >= 4.5, f"{theme} --{token} on --s1"
+
+
+@pytest.mark.parametrize("theme", ["dark", "light"])
+def test_the_four_lanes_carry_equal_visual_weight(theme):
+    """No lane should shout louder than another - they are peers."""
+    t = _tokens(theme)
+    ratios = [_contrast(t[k], t["bg"]) for k in ("auto", "draft", "ident", "esc")]
+    assert max(ratios) / min(ratios) < 1.6, f"{theme} lanes uneven: {ratios}"
+
+
+def test_light_is_a_document_not_an_inverted_dark_mode():
+    light = _tokens("light")
+    assert light["bg"].lower() != "#ffffff", "off-white, not pure white"
+    assert _lum(light["bg"]) > 0.85
+    assert _lum(light["fg"]) < 0.03, "near-black body text"
+
+
+def test_retrieval_pane_is_hue_separated_not_lightness_separated():
+    """The blue tint must sit at the same luminance as the pane beside it.
+    Lighter and it glows; darker and it reads as a hole. Dark mode holds
+    this relationship at 1.002:1; light has to match."""
+    for theme in ("dark", "light"):
+        t = _tokens(theme)
+        ratio = _contrast(t["built"], t["s2"])
+        assert ratio < 1.06, f"{theme} --built is {ratio:.3f}:1 from --s2, too far apart"
+
+
+def test_theme_persists_and_respects_the_system_preference_first():
+    assert "prefers-color-scheme: light" in HTML
+    assert 'localStorage.getItem("anchor-theme")' in HTML
+    assert 'store.set("anchor-theme"' in HTML
+    # applied before first paint, so there is no flash of the wrong theme
+    assert HTML.index("anchor-theme") < HTML.index("<style>")
+
+
+def test_theme_has_a_keyboard_shortcut_that_does_not_fire_while_typing():
+    assert 'e.key === "t"' in HTML
+    assert "INPUT|TEXTAREA" in HTML
+
+
+def test_card_edges_are_light_only_so_dark_keeps_its_borderless_layout():
+    assert "--card-line:transparent" in HTML
+    assert "--card-line:var(--hair)" in HTML
+
+
+# --- stages, dividers, drawer ---------------------------------------------
+
+def test_any_number_of_stages_can_be_open_and_the_reader_owns_the_state():
+    assert "const stageState = {}" in HTML
+    assert "function stagesFor(" in HTML and "function onStageToggle(" in HTML
+    assert "ontoggle=" in HTML                       # a click updates the map
+    assert "setAllStages(true)" in HTML and "setAllStages(false)" in HTML
+    assert "new Set([focusOf(r)])" in HTML           # focus only SEEDS it
+
+
+def test_dividers_are_bounded_persisted_and_resettable():
+    for token in ("QW_MIN", "QW_MAX", "DW_MIN", "DW_MAX",
+                  "anchor-qw", "anchor-dw", "dblclick", "pointerdown"):
+        assert token in HTML, token
+    css = HTML[HTML.index("<style>"):HTML.index("</style>")]
+    # 1px line, ~9px grab area, and only inside the desktop breakpoint
+    desktop = css[css.index("@media(min-width:900px)"):]
+    assert "#split" in desktop and "cursor:col-resize" in desktop
+    assert "left:-4px;right:-4px" in desktop
+    # mobile-first: the base rule only hides it; nothing interactive there
+    base = css[:css.index("@media(min-width:900px)")]
+    assert "#split{display:none}" in base
+    assert "col-resize" not in base
+
+
+def test_reading_column_follows_the_panel_once_resized():
+    assert "function syncRead(" in HTML
+    assert 'root.style.setProperty("--read"' in HTML
+    assert "!dragged" in HTML, "before any drag, the breakpoint cap wins"
+
+
+def test_drawer_traps_focus_and_restores_it_on_close():
+    assert "showModal()" in HTML                     # native focus trap + Escape
+    assert '$("#ev-close").focus()' in HTML
+    assert 'EV().addEventListener("close"' in HTML
+    assert "lastFocus.focus()" in HTML
+
+
+def test_layout_steps_up_on_large_monitors():
+    css = HTML[HTML.index("<style>"):HTML.index("</style>")]
+    for bp in ("@media(min-width:1400px)", "@media(min-width:1920px)", "@media(min-width:2400px)"):
+        assert bp in css, bp
+    assert "max-width:2200px" in css                 # the app centres, not stretches
